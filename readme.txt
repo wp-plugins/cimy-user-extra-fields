@@ -1,6 +1,6 @@
 === Cimy User Extra Fields ===
 Contributors: Marco Cimmino
-Donate link: cimmino.marco@gmail.com
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=cimmino%2emarco%40gmail%2ecom&no_shipping=0&no_note=1&tax=0&currency_code=EUR&lc=IT&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: admin, registration, profile
 Requires at least: 2.1
 Tested up to: 2.2.1
@@ -32,10 +32,19 @@ New fields will be visible in the profile and in the registration.
 
 As for now the plug-in supports: text, textarea, password, checkbox, radio and drop-down fields, future versions can have more.
 
+== Frequently Asked Questions ==
+
+= I have a lot of questions and I want support where can I go? =
+
+http://www.cimatti.it/blog/2007/02/12/cimy-user-extra-fields-for-wordpress-21/
+
 == Installation ==
 
 Just copy the plug-in in your plug-in directory and activate it
 
 == Screenshots ==
 
-
+1. Registration form with extra fields
+3. User's profile with extra fields
+1. Main options page
+2. Add a new field form

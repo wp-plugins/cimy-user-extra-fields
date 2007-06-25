@@ -1,6 +1,6 @@
 === Cimy User Extra Fields ===
 Contributors: Marco Cimmino
-Donate link: cimmino.marco@gmail.com
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=cimmino%2emarco%40gmail%2ecom&no_shipping=0&no_note=1&tax=0&currency_code=EUR&lc=IT&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: admin, registration, profile
 Requires at least: 2.1
 Tested up to: 2.2.1

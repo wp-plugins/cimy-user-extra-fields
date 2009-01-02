@@ -69,6 +69,6 @@ Just copy the plug-in in your plug-in directory and activate it
 == Screenshots ==
 
 1. Registration form with extra fields
-3. User's profile with extra fields
-1. Main options page
-2. Add a new field form
+2. User's profile with extra fields
+3. Main options page
+4. Add a new field form

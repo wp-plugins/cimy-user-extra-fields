@@ -253,15 +253,15 @@ function cimy_delete_users_info($fields_id) {
 	$wpdb->query($sql);
 }
 
-// taken from PHP unlink's documentation comment by torch - torchsdomain dot com @ 22-Nov-2006 09:27
-// modified by Marco Cimmino to delete correctly call recursion before so can also delete subdir when empty
 function cimy_delete_user_info($user_id) {
 	global $wpdb, $wpdb_data_table, $cuef_upload_path;
 	
 	if (!current_user_can('edit_user', $user_id))
 		return;
 	
-	// function to delete all files in a path
+	// function to delete all files/subdirs in a path
+	// taken from PHP unlink's documentation comment by torch - torchsdomain dot com @ 22-Nov-2006 09:27
+	// modified by Marco Cimmino to delete correctly call recursion before so can also delete subdirs when empty
 	if (!function_exists(cimy_rfr)) {
 		function cimy_rfr($path, $match) {
 			static $deld = 0, $dsize = 0;

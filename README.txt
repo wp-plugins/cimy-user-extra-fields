@@ -45,9 +45,32 @@ Rules are:
 	[all]
 
 New fields will be visible in the profile and in the registration.
-As for now the plug-in supports: text, textarea, textarea-rich, password, checkbox, radio, drop-down, picture, picture-url, registration-date and avatar fields, future versions can have more.
 
-Following WordPress hidden fields can be enabled during registration: password, name, surname, nickname, website, Aim, Yahoo im, Jabber/Google Talk
+As for now the plug-in supports:
+ * text
+ * textarea
+ * textarea-rich
+ * password
+ * checkbox
+ * radio
+ * drop-down
+ * picture
+ * picture-url
+ * registration-date
+ * avatar
+
+future versions can have more.
+
+Following WordPress hidden fields can be enabled during registration:
+ * password
+ * first name
+ * last name
+ * nickname
+ * website
+ * Aim
+ * Yahoo IM
+ * Jabber/Google Talk
+ * biographical info
 
 Bugs or suggestions can be mailed at: cimmino.marco@gmail.com
 
@@ -292,8 +315,8 @@ User will provide only a link and the image will be linked from that site, it wi
 [PICTURE]
 User will upload the image that is stored into his/her computer and the image will be copied into the server
 
-First of all you need a directory where all pictures will be stored, the directory MUST HAVE the same identical name of the plug-in directory and MUST BE placed under "wp-content" dir
-So if you for example didn't change the default plug-in directory then you must create <wp_dir>/wp-content/Cimy_User_Extra_Fields directory and give it 777 permissions if you are under Linux (or 770 and group to "www-data" if you are under Ubuntu Linux).
+First of all you need a directory where all pictures will be stored, the directory MUST HAVE this name: 'Cimy_User_Extra_Fields' and MUST BE placed under: "wp-content" dir
+example: /wp-content/Cimy_User_Extra_Fields directory and give it 777 permissions if you are under Linux (or 770 and group to "www-data" if you are under Ubuntu Linux).
 
 HOW TO USE AVATAR SUPPORT:
 Create the same directory needed for PICTURE support, avatars will be stored in a subdirectory and will not interfere with other pictures uploaded by the same plug-in
@@ -375,6 +398,14 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v1.3.1 - 02/01/2009
+- Added WordPress Biographical Info field support
+- Fixed Wordpress hidden fields' labels not translated
+- Fixed WordPress password field' description not translated
+- Fixed subdir for uploading pictures/avatars since there is no need to have it changing
+- General cosmetic fixes
+- Readme file updated
+
 v1.3.0 "Happy New Year" - 01/01/2009
 - XHTML 1.0 Transitional compliant bug fixes:
   - Fixed JS inclusion for picture and avatar uploads under profile page (introduced with v1.1.0 beta2)
@@ -393,7 +424,7 @@ v1.3.0 "Happy New Year" - 01/01/2009
 - Fixed picture extensions check not always performed
 - Fixed max length rule didn't recognize avatars as files to be uploaded
 - Fixed max length rule wrongly shown to 20000 in certain cases
-  Changed JS/CSS inclusions: now WP standard APIs are used
+- Changed JS/CSS inclusions: now WP standard APIs are used
 - Relaxed a bit security fix introduced in v1.2.0 now some html tags are allowed, script execution is anyway forbidden
 - Moved uploadPic() JS function to a stand-alone file
 - Again DB migration code cleanup, yes less is better :)

@@ -53,9 +53,32 @@ Rules are:
 	[all]
 
 New fields will be visible in the profile and in the registration.
-As for now the plug-in supports: text, textarea, textarea-rich, password, checkbox, radio, drop-down, picture, picture-url, registration-date and avatar fields, future versions can have more.
 
-Following WordPress hidden fields can be enabled during registration: password, name, surname, nickname, website, Aim, Yahoo im, Jabber/Google Talk
+As for now the plug-in supports:
+ * text
+ * textarea
+ * textarea-rich
+ * password
+ * checkbox
+ * radio
+ * drop-down
+ * picture
+ * picture-url
+ * registration-date
+ * avatar
+
+future versions can have more.
+
+Following WordPress hidden fields can be enabled during registration:
+ * password
+ * first name
+ * last name
+ * nickname
+ * website
+ * Aim
+ * Yahoo IM
+ * Jabber/Google Talk
+ * biographical info
 
 == Frequently Asked Questions ==
 

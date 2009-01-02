@@ -719,7 +719,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 		_e("None!", $cimy_uef_domain);
 	else {
 		?>
-		<p class="submit" style="border-width: 0px; margin-top: 0px;">
+		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
 		<input type="button" value="<?php _e("Invert selection", $cimy_uef_domain); ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php _e("Invert selection", $cimy_uef_domain); ?>')" />
 		<input name="submit" type="submit" value="<?php echo $order_caption ?>" />
 		
@@ -727,18 +727,23 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 			<input name="submit" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php _e("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain); ?>');" />
 		<?php } ?>
 		</p>
-		<p></p>
 
 		<table class="widefat" cellpadding="10">
+		<?php
+		$thead_tfoot = '<tr>
+			<th style="text-align: center;"><h3>'.__("Order", $cimy_uef_domain).'</h3></th>
+			<th style="text-align: center;"><h3>'.__("Name").' - '.__("Value").' - '.__("Type", $cimy_uef_domain).'</h3></th>
+			<th style="text-align: center;"><h3>'.__("Label", $cimy_uef_domain).' - '.__("Description").'</h3></th>
+			<th style="text-align: center;"><h3>'.__("Rules", $cimy_uef_domain).'</h3></th>
+			<th style="text-align: center;"><h3>'.__("Actions").'</h3></th>
+		</tr>';
+		?>
 		<thead align="center">
-		<tr>
-			<th style="text-align: center;"><h3><?php _e("Order", $cimy_uef_domain); ?></h3></th>
-			<th style="text-align: center;"><h3><?php _e("Name"); ?> - <?php _e("Value"); ?> - <?php _e("Type", $cimy_uef_domain); ?></h3></th>
-			<th style="text-align: center;"><h3><?php _e("Label", $cimy_uef_domain); ?> - <?php _e("Description"); ?></h3></th>
-			<th style="text-align: center;"><h3><?php _e("Rules", $cimy_uef_domain); ?></h3></th>
-			<th style="text-align: center;"><h3><?php _e("Actions"); ?></h3></th>
-		</tr>
+			<?php echo $thead_tfoot; ?>
 		</thead>
+		<tfoot align="center">
+			<?php echo $thead_tfoot; ?>
+		</tfoot>
 		<tbody>
 		<?php
 
@@ -995,6 +1000,15 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 		?>
 		</tbody>
 		</table>
+		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
+		<input type="button" value="<?php _e("Invert selection", $cimy_uef_domain); ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php _e("Invert selection", $cimy_uef_domain); ?>')" />
+		<input name="submit" type="submit" value="<?php echo $order_caption ?>" />
+		
+		<?php if (!$wp_fields) { ?>
+			<input name="submit" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php _e("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain); ?>');" />
+		<?php } ?>
+		</p>
+		<br />
 		<?php
 	}
 

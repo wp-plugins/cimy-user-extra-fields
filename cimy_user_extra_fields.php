@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 1.3.0
+Version: 1.3.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -11,7 +11,7 @@ Author URI: mailto:cimmino.marco@gmail.com
 /*
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
-Copyright (c) 2006-2008 Marco Cimmino
+Copyright (c) 2006-2009 Marco Cimmino
 
 Code for drop-down support is in part from Raymond Elferink raymond@raycom.com
 
@@ -128,8 +128,8 @@ if (!defined("WP_CONTENT_DIR"))
 
 $cuef_plugin_name = basename(__FILE__);
 $cuef_plugin_path = plugin_basename(dirname(__FILE__))."/";
-$cuef_upload_path = WP_CONTENT_DIR."/".$cuef_plugin_path;
-$cuef_upload_webpath = WP_CONTENT_URL."/".$cuef_plugin_path;
+$cuef_upload_path = WP_CONTENT_DIR."/Cimy_User_Extra_Fields/";
+$cuef_upload_webpath = WP_CONTENT_URL."/Cimy_User_Extra_Fields/";
 
 if ($is_mu) {
 	$cuef_plugin_dir = WP_CONTENT_DIR."/mu-plugins/".$cuef_plugin_path;
@@ -154,12 +154,12 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "1.3.0";
+$cimy_uef_version = "1.3.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 
 $start_cimy_uef_comment = "<!--\n";
 $start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version."\n";
-$start_cimy_uef_comment .= "\tCopyright (c) 2006-2008 Marco Cimmino\n";
+$start_cimy_uef_comment .= "\tCopyright (c) 2006-2009 Marco Cimmino\n";
 $start_cimy_uef_comment .= "\t".$cimy_uef_url."\n";
 $start_cimy_uef_comment .= "-->\n";
 
@@ -167,12 +167,16 @@ $end_cimy_uef_comment = "\n<!--\n";
 $end_cimy_uef_comment .= "\tEnd of code from ".$cimy_uef_name."\n";
 $end_cimy_uef_comment .= "-->\n";
 
+$cimy_uef_domain = 'cimy_uef';
+$cimy_uef_i18n_is_setup = 0;
+cimy_uef_i18n_setup();
+
 $wp_hidden_fields = array(
 			'password' => array(
 						'name' => "PASSWORD",
 						'post_name' => "user_pass",
 						'type' => "password",
-						'label' => "Password:",
+						'label' => __("Password"),
 						'desc' => __('<strong>Note:</strong> this website let you personalize your password; after the registration you will receive an e-mail with another password, do not care about that!', $cimy_uef_domain),
 						'value' => '',
 						'store_rule' => array(
@@ -189,7 +193,7 @@ $wp_hidden_fields = array(
 						'name' => "FIRSTNAME",
 						'post_name' => "first_name",
 						'type' => "text",
-						'label' => "First name:",
+						'label' => __("First name"),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
@@ -206,7 +210,7 @@ $wp_hidden_fields = array(
 						'name' => "LASTNAME",
 						'post_name' => "last_name",
 						'type' => "text",
-						'label' => "Last name:",
+						'label' => __("Last name"),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
@@ -223,7 +227,7 @@ $wp_hidden_fields = array(
 						'name' => "NICKNAME",
 						'post_name' => "nickname",
 						'type' => "text",
-						'label' => "Nickname:",
+						'label' => __("Nickname"),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
@@ -240,7 +244,7 @@ $wp_hidden_fields = array(
 						'name' => "WEBSITE",
 						'post_name' => "user_url",
 						'type' => "text",
-						'label' => "Website:",
+						'label' => __("Website"),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
@@ -257,7 +261,7 @@ $wp_hidden_fields = array(
 						'name' => "AIM",
 						'post_name' => "aim",
 						'type' => "text",
-						'label' => "AIM:",
+						'label' => __("AIM"),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
@@ -274,7 +278,7 @@ $wp_hidden_fields = array(
 						'name' => "YAHOO",
 						'post_name' => "yim",
 						'type' => "text",
-						'label' => "Yahoo IM:",
+						'label' => __("Yahoo IM"),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
@@ -291,11 +295,28 @@ $wp_hidden_fields = array(
 						'name' => "JGT",
 						'post_name' => "jabber",
 						'type' => "text",
-						'label' => "Jabber / Google Talk:",
+						'label' => __("Jabber / Google Talk"),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
 								'max_length' => 100,
+								'can_be_empty' => true,
+								'edit' => 'ok_edit',
+								'email' => false,
+								'show_in_reg' => true,
+								'show_in_profile' => true,
+								'show_in_aeu' => true,
+								),
+					),
+			'bio-info' => array(
+						'name' => "BIO-INFO",
+						'post_name' => "description",
+						'type' => "textarea",
+						'label' => __("Biographical Info"),
+						'desc' => '',
+						'value' => '',
+						'store_rule' => array(
+								'max_length' => 5000,
 								'can_be_empty' => true,
 								'edit' => 'ok_edit',
 								'email' => false,
@@ -456,10 +477,6 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 function cimy_uef_register_css() {
 	wp_print_styles("cimy_uef_register");
 }
-
-$cimy_uef_domain = 'cimy_uef';
-$cimy_uef_i18n_is_setup = 0;
-cimy_uef_i18n_setup();
 
 function cimy_uef_i18n_setup() {
 	global $cimy_uef_domain, $cimy_uef_i18n_is_setup, $cuef_plugin_path;

@@ -232,6 +232,19 @@ function cimy_save_options() {
 				cimy_save_field($action, $wpdb_wp_fields_table, $data);
 			}
 		}
+
+		if (isset($_POST['show_wp_bio_info'])) {
+			array_push($options['wp_hidden_fields'], 'bio-info');
+			
+			if (!in_array("bio-info", $old_wp_hidden_fields)) {
+				$data = $wp_hidden_fields['bio-info'];
+				
+				$data['num_fields'] = $tot_wp_hidden_fields;
+				$tot_wp_hidden_fields++;
+				
+				cimy_save_field($action, $wpdb_wp_fields_table, $data);
+			}
+		}
 	}
 
 	$all_wp_fields = get_cimyFields(true);
@@ -341,6 +354,7 @@ function cimy_show_options($results, $embedded) {
 		in_array('aim', $options['wp_hidden_fields']) ? $show_wp_aim = ' checked="checked"' : $show_wp_aim = '';
 		in_array('yahoo', $options['wp_hidden_fields']) ? $show_wp_yahoo = ' checked="checked"' : $show_wp_yahoo = '';
 		in_array('jgt', $options['wp_hidden_fields']) ? $show_wp_jgt = ' checked="checked"' : $show_wp_jgt = '';
+		in_array('bio-info', $options['wp_hidden_fields']) ? $show_wp_bio_info = ' checked="checked"' : $show_wp_bio_info = '';
 		
 		$db_options = true;
 	}
@@ -362,6 +376,7 @@ function cimy_show_options($results, $embedded) {
 		$show_wp_aim = '';
 		$show_wp_yahoo = '';
 		$show_wp_jgt = '';
+		$show_wp_bio_info = '';
 	}
 	
 	if ($wpdb->get_var("SHOW TABLES LIKE '$wpdb_wp_fields_table'") == $wpdb_wp_fields_table) {
@@ -605,6 +620,10 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row"><input type="checkbox" name="show_wp_jgt" value="1"<?php echo $show_wp_jgt.$dis_wp_fields; ?> /> <?php _e("Show Jabber / Google Talk", $cimy_uef_domain); ?></th>
+			<td></td>
+		</tr>
+		<tr>
+			<th scope="row"><input type="checkbox" name="show_wp_bio_info" value="1"<?php echo $show_wp_bio_info.$dis_wp_fields; ?> /> <?php _e("Show Biographical Info", $cimy_uef_domain); ?></th>
 			<td></td>
 		</tr>
 	</table>

@@ -12,6 +12,8 @@ Add some useful fields to registration and user's info
 
 WordPress is becoming more than ever a tool to open blog/websites and CMSs in an easier way. Users are increasing day by day; one of the limits however is the restricted and predefined fields that are available in the registered users profile: it is difficult for example to ask for the acceptance of "Terms and Conditions of Use" or "Permission to use personal data".
 
+= Features =
+
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
 
 Two new menus are:

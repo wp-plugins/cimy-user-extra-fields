@@ -17,44 +17,44 @@ WordPress is becoming more than ever a tool to open blog/websites and CMSs in an
 
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
 
-Two new menus are:
+= Two new menus are: =
 
-    * "Users-> A&U Extended" lets you show users lists with the new fields that are created
-    * "Options-> Cimy User Extra Fields" lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+  * "Users-> A&U Extended" lets you show users lists with the new fields that are created
+  * "Options-> Cimy User Extra Fields" lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
-Rules are:
+= Rules are: =
 
-    * min/exact/max length admitted
+  * min/exact/max length admitted
 	[only for text, textarea, textarea-rich, password, picture, picture-url, avatar]
 
-    * field can be empty
+  * field can be empty
 	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, avatar]
 
-    * check for e-mail address syntax
+  * check for e-mail address syntax
 	[only for text, textarea, textarea-rich, password]
 
-    * field can be modified after the registration
+  * field can be modified after the registration
 	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, avatar]
 	[for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
 
-    * field equal to some value (for example accept terms and conditions)
+  * field equal to some value (for example accept terms and conditions)
 	[all except avatar by default set to 512]
 
-      * equal to can be or not case sensitive
+  * equal to can be or not case sensitive
 	[only for text, textarea, textarea-rich, password, dropdown]
 
-    * field can be hidden during registration
+  * field can be hidden during registration
 	[all]
 
-    * field can be hidden in user's profile
+  * field can be hidden in user's profile
 	[all]
 
-    * field can be hidden in A&U Extended page
+  * field can be hidden in A&U Extended page
 	[all]
 
 New fields will be visible in the profile and in the registration.
 
-As for now the plug-in supports:
+= As for now the plug-in supports: =
  * text
  * textarea
  * textarea-rich
@@ -69,7 +69,7 @@ As for now the plug-in supports:
 
 future versions can have more.
 
-Following WordPress hidden fields can be enabled during registration:
+= Following WordPress hidden fields can be enabled during registration: =
  * password
  * first name
  * last name

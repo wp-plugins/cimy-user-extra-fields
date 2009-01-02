@@ -2,9 +2,9 @@
 Contributors: Marco Cimmino
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=cimmino%2emarco%40gmail%2ecom&no_shipping=0&no_note=1&tax=0&currency_code=EUR&lc=IT&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: admin, registration, profile
-Requires at least: 2.1
-Tested up to: 2.2.1
-Stable tag: 0.9.4
+Requires at least: 2.5
+Tested up to: 2.7
+Stable tag: 1.3.0
 
 Add some useful fields to registration and user's info
 
@@ -16,27 +16,49 @@ The plug-in adds two new menu voices in the admin for the administrator and two 
 
 Two new menus are:
 
-    * “Users -> A&U Extended” lets you show users lists with the new fields that are created
-    * “Options -> Cimy User Extra Fields” lets administrators add as many new fields as are needed to the users’ profile, giving the possibility to set some interesting rules.
+    * "Users-> A&U Extended" lets you show users lists with the new fields that are created
+    * "Options-> Cimy User Extra Fields" lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Rules are:
 
-    * max length admitted (only for text, textarea and password fields)
-    * field needed (only for text, textarea and password fields)
-    * check for e-mail address syntax (only for text, textarea and password fields)
+    * min/exact/max length admitted
+	[only for text, textarea, textarea-rich, password, picture, picture-url, avatar]
+
+    * field can be empty
+	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, avatar]
+
+    * check for e-mail address syntax
+	[only for text, textarea, textarea-rich, password]
+
     * field can be modified after the registration
+	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, avatar]
+	[for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
+
     * field equal to some value (for example accept terms and conditions)
-    * field hidden during registration
+	[all except avatar by default set to 512]
+
+      * equal to can be or not case sensitive
+	[only for text, textarea, textarea-rich, password, dropdown]
+
+    * field can be hidden during registration
+	[all]
+
+    * field can be hidden in user's profile
+	[all]
+
+    * field can be hidden in A&U Extended page
+	[all]
 
 New fields will be visible in the profile and in the registration.
+As for now the plug-in supports: text, textarea, textarea-rich, password, checkbox, radio, drop-down, picture, picture-url, registration-date and avatar fields, future versions can have more.
 
-As for now the plug-in supports: text, textarea, password, checkbox, radio and drop-down fields, future versions can have more.
+Following WordPress hidden fields can be enabled during registration: password, name, surname, nickname, website, Aim, Yahoo im, Jabber/Google Talk
 
 == Frequently Asked Questions ==
 
 = I have a lot of questions and I want support where can I go? =
 
-http://www.cimatti.it/blog/2007/02/12/cimy-user-extra-fields-for-wordpress-21/
+http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 
 == Installation ==
 

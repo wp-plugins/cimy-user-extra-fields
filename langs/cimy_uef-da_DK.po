@@ -1,0 +1,730 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Cimy User Extra Fields\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-29 12:44+0100\n"
+"PO-Revision-Date: 2008-12-29 12:44+0100\n"
+"Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /var/www/wp-content/plugins/Cimy_User_Extra_Fields\n"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_missing_functions.php:16
+#, php-format
+msgid "File '%s' doesn't exist?"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_missing_functions.php:19
+msgid "The GD image library is not installed."
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_missing_functions.php:26
+#, php-format
+msgid "File '%s' is not an image."
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:35
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:708
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:406
+msgid "Extra Fields"
+msgstr "Ekstra felter"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:269
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:494
+msgid "Please upload an image with one of the following extensions"
+msgstr "Upload venligst et billede af en af følgende filtyper"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:371
+#, fuzzy
+msgid "Delete the picture"
+msgstr "Slet felt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:373
+#, fuzzy
+msgid "Update the picture"
+msgstr "Opdater felt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:392
+msgid "Picture URL:"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:173
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:178
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:201
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:208
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:219
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:225
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:237
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:243
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:255
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:261
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:403
+msgid "ERROR"
+msgstr "FEJL"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:173
+msgid "hasn&#8217;t a correct email syntax."
+msgstr "E-mail adresse angivet forkert. "
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:178
+msgid "couldn&#8217;t be empty."
+msgstr "Må ikke være tomt."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:194
+msgid "YES"
+msgstr "JA"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:194
+msgid "NO"
+msgstr "NEJ"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:197
+msgid "isn&#8217;t correct"
+msgstr "er forkert"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:199
+msgid "should be"
+msgstr "skulle være"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:208
+msgid "should be an image."
+msgstr "burde være et billede."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:219
+msgid "couldn&#8217;t have size less than"
+msgstr "Størrelse må ikke være mindre end"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:225
+msgid "couldn&#8217;t have length less than"
+msgstr "Længden må ikke være mindre end"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:237
+msgid "couldn&#8217;t have size different than"
+msgstr "Størrelse må ikke afvige fra"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:243
+msgid "couldn&#8217;t have length different than"
+msgstr "Længde må ikke afvige fra"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:255
+msgid "couldn&#8217;t have size more than"
+msgstr "Størrelse må ikke overstige"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:261
+msgid "couldn&#8217;t have length more than"
+msgstr "Længde må ikke overstige"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:175
+msgid "<strong>Note:</strong> this website let you personalize your password; after the registration you will receive an e-mail with another password, do not care about that!"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:475
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:403
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:454
+msgid "Options"
+msgstr "Indstillinger"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:476
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:111
+msgid "Fields"
+msgstr "Felter"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:477
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:481
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:544
+msgid "Authors &amp; Users Extended"
+msgstr "Bruger liste"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:477
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:481
+msgid "A&amp;U Extended"
+msgstr "Bruger liste"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:12
+msgid "Add field"
+msgstr "Tilføj felt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:13
+msgid "Update field"
+msgstr "Opdater felt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:14
+msgid "Delete field"
+msgstr "Slet felt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:15
+msgid "Delete selected fields"
+msgstr "Slet valgte felter"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:16
+msgid "Change order"
+msgstr "Ændre rækkefølge"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:25
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:892
+msgid "Min length"
+msgstr "Min. længde"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:26
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:893
+msgid "Exact length"
+msgstr "Eksakt længde"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:27
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:894
+msgid "Max length"
+msgstr "Max. længde"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:28
+msgid "Exact or Max length"
+msgstr "Eksakt eller max. længde"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:111
+msgid "changed to"
+msgstr "ændret til"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:114
+msgid "You cannot give an order that misses some numbers"
+msgstr "Ved angivelse af rækkefølge skal hele talrækken med."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:117
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:190
+msgid "Nothing selected"
+msgstr "Ingenting valgt "
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:187
+msgid "Field(s)"
+msgstr "Felt(er)"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:187
+msgid "deleted correctly"
+msgstr "Sletning gennemført"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:218
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:884
+msgid "Min size"
+msgstr "Min. størrelse"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:219
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:885
+msgid "Exact size"
+msgstr "Eksakt størrelse"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:220
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:886
+msgid "Max size"
+msgstr "Max. størrelse"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:222
+msgid "Exact or Max size"
+msgstr "Eksakt eller Max. størrelse"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:263
+msgid "Name not specified"
+msgstr "Navn ikke angivet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:265
+msgid "Name cannot contains spaces"
+msgstr "Navnet må ikke indeholde mellemrum"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:268
+msgid "Label not specified"
+msgstr "Betegnelse ikke angivet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:273
+msgid "not selected (with this type is necessary)"
+msgstr "ikke valgt (kræves ved denne Type)"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:279
+msgid "If you select"
+msgstr "Ved valg"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:279
+msgid "you cannot select Min or Max"
+msgstr "Min eller Max kan ikke vælges"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:284
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:289
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:294
+msgid "should be in the range of"
+msgstr "skal angives indenfor følgende talrække"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:304
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:306
+msgid "Equal TO not specified"
+msgstr "LIG MED ikke angivet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:309
+msgid "With checkbox type Equal TO can only be"
+msgstr "Ved 'Type' - 'checkbox' kan LIG MED kun være"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:312
+msgid "With radio type Equal TO can only be"
+msgstr "Ved 'Type' - 'radio' kan LIG MED kun være"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:323
+msgid "With checkbox type Value can only be"
+msgstr "Ved 'Type' - 'checkbox' kan 'Værdi' kun være"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:326
+msgid "With radio type Value can only be"
+msgstr "Ved 'Type' - 'radio' kan 'Værdi' kun være"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:375
+msgid "Field inserted correctly"
+msgstr "Felt indsat"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:377
+msgid "Field #"
+msgstr "Felt #"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:377
+msgid "updated correctly"
+msgstr "Opdatering gennemført"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:380
+msgid "Name inserted is just in the database, change to another one"
+msgstr "Det valgte navn findes allerede, vælg venligst et andet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:395
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:406
+msgid "Add a new Field"
+msgstr "Tilføj et nyt felt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:422
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:414
+msgid "SUCCESSFUL"
+msgstr "GENNEMFØRT"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:569
+msgid "To add a new field you have to choose a name, type and label; optional are value and description. Rules are applied during user registration."
+msgstr "For at tilføje et nyt felt kræves angivelse af navn, type og betegnelse; værdi og beskrivelse kan fravælges. Reglerne anvendes under brugerregistrering."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:571
+msgid "With <strong>radio</strong> and <strong>checkbox</strong>: <em>Value</em> and <em>equal TO</em> can only be 'Yes' or 'No' that means 'selected' or 'not selected'"
+msgstr "<strong>radio</strong> og <strong>checkbox</strong>: <em>Værdi</em> og <em>LIG MED</em> kan kun have værdierne 'Yes' eller 'No', dvs. valgt eller ikke valgt."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:572
+msgid "With <strong>drop-down</strong>: you have to add all options into label for example: label/item1,item2,item3"
+msgstr "<strong>drop-down</strong>: Du skal angive de mulige valgmuligheder under 'betegnelse' i følgende format: Betegnelse/værdi1,værdi2. F. eks.: Køn/mand,kvinde"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:573
+msgid "With <strong>picture</strong>: you can preload a default image putting url in <em>Value</em>; 'min,exact,max size' are in KB; <em>equal TO</em> means max pixel size (width or height) for thumbnail"
+msgstr "<strong>picture</strong>: Du kan anvende et standardbillede ved angivelse af billedets adresse (URL) under <em>Værdi</em>; 'min, eksakt, max størrelse' angives i KB;<em>er LIG MED</em> betegner den maksimale pixelstørrelse (højde eller bredde) for thumbnail-billede."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:574
+msgid "With <strong>picture-url</strong>: you can preload a default image putting url in <em>Value</em>; <em>equal TO</em> means max width pixel size (height will be proportional)"
+msgstr "<strong>picture-url</strong>: Du kan anvende et standardbillede ved angivelse af billedets adresse (URL) under <em>Værdi</em>; <em>er LIG MED</em> betegner billedets maksimale pixelbredde (højden reguleres proportionelt)."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:575
+msgid "With <strong>registration-date</strong>: <em>equal TO</em> means date and time format"
+msgstr "<strong>registration-date</strong>: <em>LIG MED</em> henviser til dato- og tidsformat."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:576
+#, fuzzy
+msgid "With <strong>avatar</strong>: you can preload a default image putting url in <em>Value</em>; 'min,exact,max size' are in KB; <em>equal TO</em> is automatically set to 512 pixels"
+msgstr "<strong>picture</strong>: Du kan anvende et standardbillede ved angivelse af billedets adresse (URL) under <em>Værdi</em>; 'min, eksakt, max størrelse' angives i KB;<em>er LIG MED</em> betegner den maksimale pixelstørrelse (højde eller bredde) for thumbnail-billede."
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:583
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:593
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:736
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:915
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1235
+msgid "Name"
+msgstr "Navn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:583
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:594
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:736
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:918
+msgid "Value"
+msgstr "Værdi"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:584
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:597
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:736
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:921
+msgid "Type"
+msgstr "Type"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:585
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:612
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:737
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:936
+msgid "Label"
+msgstr "Betegnelse"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:585
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:613
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:737
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:939
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:586
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:738
+msgid "Rules"
+msgstr "Regler"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:587
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:739
+msgid "Actions"
+msgstr "Handlinger"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:625
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:953
+msgid "Can be empty"
+msgstr "Kan være tomt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:626
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:954
+msgid "Check for E-mail syntax"
+msgstr "Kontroller venligst e-mailadressen"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:629
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:957
+msgid "Can be modified"
+msgstr "Kan ændres"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:630
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:958
+msgid "Can be modified only if empty"
+msgstr "Kan kun ændres hvis feltet er tomt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:631
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:959
+msgid "Can be modified only by admin"
+msgstr "Kan kun ændres af Administrator"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:632
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:960
+msgid "Can be modified only by admin or if empty"
+msgstr "Kan kun ændres hvis det er tomt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:633
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:961
+msgid "Cannot be modified"
+msgstr "Kan ikke ændres"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:641
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:966
+msgid "Should be equal TO"
+msgstr "Skal være LIG MED"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:643
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:968
+msgid "Case sensitive"
+msgstr "Forskel på store og små bogstaver"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:646
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:972
+msgid "Show the field in the registration"
+msgstr "Vis felt i forbindelse med brugerregistrering"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:649
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:975
+msgid "Show the field in User's profile"
+msgstr "Vis felt i 'Brugerprofil'"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:652
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:978
+msgid "Show the field in A&amp;U Extended menu"
+msgstr "Vis felt under 'Vis alle brugere'"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:656
+msgid "Clear"
+msgstr "Slet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:706
+msgid "WordPress Fields"
+msgstr "WordPress felter"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:719
+msgid "None!"
+msgstr "Ingen!"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:723
+msgid "Invert selection"
+msgstr "Omvend markering"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:727
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:986
+msgid "Are you sure you want to delete field(s) and all data inserted into by users?"
+msgstr "Er du sikker på at du vil slette dette/disse felt(er) og al tilknyttet brugerdata?"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:735
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:903
+msgid "Order"
+msgstr "Rækkefølge"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:982
+msgid "Reset"
+msgstr "Nulstil"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1119
+#, php-format
+msgid "Users Matching \"%s\""
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1121
+msgid "Authors &amp; Users Extended List"
+msgstr "Vis alle brugere"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1172
+msgid "Search Users"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1198
+msgid "&laquo; Back to All Users"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1205
+#, fuzzy
+msgid "Users per page"
+msgstr "Tabel for brugerdata"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1219
+msgid "Apply"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1231
+msgid "Username"
+msgstr "Brugernavn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1239
+msgid "E-mail"
+msgstr "E-mail"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1243
+#, fuzzy
+msgid "Role"
+msgstr "Regler"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1247
+msgid "Website"
+msgstr "Website"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1251
+msgid "Posts"
+msgstr "Indlæg"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1342
+msgid "View posts by this author"
+msgstr "Vis denne brugers indlæg"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:1373
+#, php-format
+msgid "e-mail: %s"
+msgstr "e-mail: %s"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:39
+msgid "WordPress Fields table emptied"
+msgstr "WordPress tabel tømt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:44
+msgid "WordPress Fields table deleted"
+msgstr "WordPress tabel slettet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:53
+msgid "Extra Fields table emptied"
+msgstr "Tabel med ekstra felter tømt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:58
+msgid "Extra Fields table deleted"
+msgstr "Tabel med ekstra felter slettet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:67
+msgid "Users Data table emptied"
+msgstr "Tabellen med brugerdata er blevet tømt"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:72
+msgid "Users Data table deleted"
+msgstr "Tabellen med brugerdata er blevet slettet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:83
+msgid "Options set to default values"
+msgstr "Indstillinger nulstillet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:89
+msgid "Options deleted"
+msgstr "Indstillinger slettet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:299
+msgid "Options changed"
+msgstr "Indstillinger ændret"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:427
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:612
+msgid "Save Changes"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:428
+msgid "General"
+msgstr "Generelle indstillinger"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:436
+msgid "installed is"
+msgstr "installeret er"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:440
+msgid "OPTIONS DELETED!"
+msgstr "INDSTILLINGER SLETTET!"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:444
+msgid "VERSIONS MISMATCH! This because you haven't de-activated and re-activated the plug-in after the update! This could give problems..."
+msgstr "VERSIONSKONFLIKT! Husk at deaktivere og genaktivere plugin'et efter opdatering!"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:451
+msgid "Database"
+msgstr "Database administration"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:460
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:478
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:497
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:514
+msgid "select action"
+msgstr "Vælg handling"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:461
+msgid "Default values"
+msgstr "Standard værdier"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:462
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:480
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:499
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:516
+msgid "Delete"
+msgstr "Slet"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:466
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:485
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:503
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:521
+msgid "NOT PRESENT"
+msgstr "FINDES IKKE"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:471
+msgid "WordPress Fields table"
+msgstr "WordPress tabel"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:479
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:498
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:515
+msgid "Empty"
+msgstr "Tøm"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:491
+msgid "Extra Fields table"
+msgstr "Tabel med ekstra felter"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:508
+msgid "Users Data table"
+msgstr "Tabel for brugerdata"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:518
+msgid "all data inserted by users in all and only extra fields"
+msgstr "al brugerdata i alle ekstra felter"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:526
+msgid "Force tables creation"
+msgstr "Gennemtving oprettelse af tabeller"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:531
+msgid "User Profile"
+msgstr "Brugerprofil"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:534
+msgid "Items per fieldset"
+msgstr "Objekter pr. feltrække"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:538
+msgid "Fieldset's titles, separates with comma"
+msgstr "Feltrækkernes titel, adkilt med komma"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:538
+msgid "example: title1,title2,title3"
+msgstr "F. eks.: Titel1,Titel2,Titel3"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:548
+msgid "Hide username field"
+msgstr "Skjul brugernavn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:554
+msgid "Hide name field"
+msgstr "Skjul fornavn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:559
+msgid "Hide email field"
+msgstr "Skjul e-mailadresse"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:563
+#, fuzzy
+msgid "Hide role field"
+msgstr "Skjul fornavn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:567
+msgid "Hide website field"
+msgstr "Skjul website"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:571
+msgid "Hide n. posts field"
+msgstr "Skjul angivelse af antal af brugerindlæg"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:576
+msgid "WordPress hidden fields"
+msgstr "Wordpress skjulte felter"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:579
+msgid "Show password"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:583
+msgid "Show first name"
+msgstr "Vis fornavn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:587
+msgid "Show last name"
+msgstr "Vis Efternavn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:591
+msgid "Show nickname"
+msgstr "Vis Kaldenavn"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:595
+msgid "Show website"
+msgstr "Website"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:599
+msgid "Show AIM"
+msgstr "Vis AIM"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:603
+msgid "Show Yahoo IM"
+msgstr "Vis Yahoo IM"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:607
+msgid "Show Jabber / Google Talk"
+msgstr "Vis Jabber / Google Talk"
+
+#~ msgid "Disable get_cimyFieldValue function"
+#~ msgstr "Slå funktionen get_cimyFieldValue fra"
+#~ msgid "leave disabled if you don't know what to do"
+#~ msgstr "slå denne funktion fra hvis du ikke ved hvad du skal bruge den til"
+#~ msgid "Update Options &raquo;"
+#~ msgstr "Opdater Valgmuligeder &raquo;"
+#~ msgid "Hide actions button"
+#~ msgstr "Skjul 'handlinger' knappen"
+#~ msgid "User ID"
+#~ msgstr "Bruger ID"
+#~ msgid "Edit"
+#~ msgstr "Rediger"
+#~ msgid "label"
+#~ msgstr "Betegnelse"
+

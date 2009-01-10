@@ -212,8 +212,18 @@ EXAMPLE:
 
 
 ADDITIONAL EXAMPLES:
+This is an example how to retrieve and display one uploaded image of the current user logged in.
 
-This is an entire example that can be used into your theme for example to retrieve the value from SITE extra field that of course was created
+$user = wp_get_current_user();
+
+// is there someone logged?
+if ($user->ID) {
+	$value = cimy_uef_sanitize_content(get_cimyFieldValue($user->ID, 'IMAGE'));
+	echo '<img src="'.$value.'" alt="description_here" />';
+}
+
+
+This is an entire example that can be used into your theme for example to retrieve the value from SITE extra field that of course was created.
 If you put the example just inside an existing loop you shouldn't add it again, just use get_cimyFieldValue call and echo call.
 
 if (have_posts()) {
@@ -398,6 +408,16 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v1.3.2 - 10/01/2009
+- Added possibility to change/remove Extra Fields section title under user profile
+- Fixed bug where options were not correctly migrated for certain versions (introduced with v1.3.0 beta2)
+- Fixed bug where A&U Extended page where showing 0 users due to previous bug (thanx to Alessandra)
+- Fixed avatar support for installations with different table prefix (thanx to Sergey for pointing it)
+- Fixed Table Creation option to not perform anything else when selected
+- Fixed unitialized variable under options code
+- Updated Italian translation
+- Readme file updated and renamed to README_OFFICIAL.txt due to WordPress Plugin Directory rules
+
 v1.3.1 - 02/01/2009
 - Added WordPress Biographical Info field support
 - Fixed Wordpress hidden fields' labels not translated

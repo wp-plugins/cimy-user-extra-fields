@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cimy User Extra Fields\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-02 17:44+0100\n"
-"PO-Revision-Date: 2009-01-02 17:44+0100\n"
+"POT-Creation-Date: 2009-01-10 19:30+0300\n"
+"PO-Revision-Date: 2009-01-10 19:30+0300\n"
 "Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,28 +30,22 @@ msgstr ""
 msgid "File '%s' is not an image."
 msgstr ""
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:35
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:708
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:421
-msgid "Extra Fields"
-msgstr "Zusätzliche Felder"
-
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:266
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:267
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:493
 msgid "Please upload an image with one of the following extensions"
 msgstr "Bitte lade ein Bild mit einer der folgenden Optionen hoch"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:368
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:369
 #, fuzzy
 msgid "Delete the picture"
 msgstr "Feld löschen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:370
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:371
 #, fuzzy
 msgid "Update the picture"
 msgstr "Feld ändern"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:389
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:390
 msgid "Picture URL:"
 msgstr ""
 
@@ -168,25 +162,25 @@ msgstr "Zeige Jabber / Google Talk"
 msgid "Biographical Info"
 msgstr ""
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:497
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:418
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:469
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:498
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:423
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:474
 msgid "Options"
 msgstr "Optionen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:498
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:499
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:111
 msgid "Fields"
 msgstr "Felder"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:499
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:503
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:559
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:500
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:504
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:572
 msgid "Authors &amp; Users Extended"
 msgstr "Autoren &amp; Benutzer erweitert"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:499
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:503
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:500
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:504
 msgid "A&amp;U Extended"
 msgstr "A&amp;B erweitert"
 
@@ -337,12 +331,12 @@ msgid "Name inserted is just in the database, change to another one"
 msgstr "Dieser Name ist bereits vorhanden, bitte wähle einen anderen"
 
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:395
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:421
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:426
 msgid "Add a new Field"
 msgstr "Ein neues Feld hinzufügen"
 
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:422
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:429
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:434
 msgid "SUCCESSFUL"
 msgstr "ERFOLGREICH"
 
@@ -490,6 +484,13 @@ msgstr "Löschen"
 msgid "WordPress Fields"
 msgstr "WordPress Felder"
 
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:708
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_db.php:122
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_db.php:172
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:426
+msgid "Extra Fields"
+msgstr "Zusätzliche Felder"
+
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:719
 msgid "None!"
 msgstr "Keine!"
@@ -570,199 +571,208 @@ msgstr "Zeige Beiträge dieses Autors"
 msgid "e-mail: %s"
 msgstr "e-mail: %s"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:39
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:44
 #, fuzzy
 msgid "WordPress Fields table emptied"
 msgstr "Tabelle Zusatzfelder geleert"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:44
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:49
 #, fuzzy
 msgid "WordPress Fields table deleted"
 msgstr "Tabelle Zusatzfelder gelöscht"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:53
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:58
 msgid "Extra Fields table emptied"
 msgstr "Tabelle Zusatzfelder geleert"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:58
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:63
 msgid "Extra Fields table deleted"
 msgstr "Tabelle Zusatzfelder gelöscht"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:67
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:72
 msgid "Users Data table emptied"
 msgstr "Tabelle Userdaten geleert"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:72
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:77
 msgid "Users Data table deleted"
 msgstr "Tabelle Userdaten gelöscht"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:83
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:88
 msgid "Options set to default values"
 msgstr "Optionen auf Grundeinstellungen gesetzt"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:89
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:94
 msgid "Options deleted"
 msgstr "Optionen gelöscht"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:312
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:317
 msgid "Options changed"
 msgstr "Opitionen geändert"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:442
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:631
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:447
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:644
 #, fuzzy
 msgid "Save Changes"
 msgstr "Regeln"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:443
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:448
 msgid "General"
 msgstr "Allgemein"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:451
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:456
 msgid "installed is"
 msgstr "installiert ist"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:455
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:460
 msgid "OPTIONS DELETED!"
 msgstr "OPTIONEN GELÖSCHT!"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:459
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:464
 msgid "VERSIONS MISMATCH! This because you haven't de-activated and re-activated the plug-in after the update! This could give problems..."
 msgstr "VERSIONEN NICHT KOMPATIBEL! Du hast das Plugin vor dem Update nicht deaktiviert und anschließend reaktiviert. Das könnte Probleme geben..."
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:466
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:471
 msgid "Database"
 msgstr "Datenbasis"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:475
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:493
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:512
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:529
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:480
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:498
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:517
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:534
 msgid "select action"
 msgstr "Wähle bei Bedarf:"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:476
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:481
 msgid "Default values"
 msgstr "Werte in Grundeinstellung"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:477
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:495
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:514
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:531
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:482
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:500
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:519
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:536
 msgid "Delete"
 msgstr "Löschen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:481
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:500
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:518
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:536
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:486
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:505
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:523
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:541
 msgid "NOT PRESENT"
 msgstr "NICHT VORHANDEN"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:486
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:491
 #, fuzzy
 msgid "WordPress Fields table"
 msgstr "Tabelle mit Zusatzfeldern"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:494
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:513
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:530
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:499
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:518
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:535
 msgid "Empty"
 msgstr "Leeren"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:506
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:511
 msgid "Extra Fields table"
 msgstr "Tabelle mit Zusatzfeldern"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:523
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:528
 msgid "Users Data table"
 msgstr "Tabelle der Userdaten"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:533
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:538
 msgid "all data inserted by users in all and only extra fields"
 msgstr "alle von den Usern in die Cimy-Zusatzfelder eingetragenen Daten"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:541
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:546
 msgid "Force tables creation"
 msgstr "Lege Tabellen an"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:546
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:549
+msgid "equivalent to de-activate and activate the plug-in; no other operation will be performed"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:555
 msgid "User Profile"
 msgstr "User Profil"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:549
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:558
+#, fuzzy
+msgid "Extra Fields section title"
+msgstr "Tabelle mit Zusatzfeldern"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:562
 msgid "Items per fieldset"
 msgstr "Zusatzfelder pro Abschnitt"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:553
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:566
 msgid "Fieldset's titles, separates with comma"
 msgstr "Titel der Zusatzfelder, abgetrennt durch Kommata"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:553
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:566
 msgid "example: title1,title2,title3"
 msgstr "Beispiel: Titel1, Titel2, Titel3"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:563
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:576
 msgid "Hide username field"
 msgstr "Username nicht anzeigen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:569
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:582
 msgid "Hide name field"
 msgstr "Echtname nicht anzeigen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:574
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:587
 msgid "Hide email field"
 msgstr "E-mail Adresse nicht anzeigen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:578
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:591
 msgid "Hide role field"
 msgstr "Rolle der User  nicht anzeigen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:582
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:595
 msgid "Hide website field"
 msgstr "Webseite nicht anzeigen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:586
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:599
 msgid "Hide n. posts field"
 msgstr "Anzahl der Userbeiträge nicht anzeigen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:591
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:604
 msgid "WordPress hidden fields"
 msgstr "Wordpress verborgene Felder"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:594
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:607
 msgid "Show password"
 msgstr ""
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:598
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:611
 msgid "Show first name"
 msgstr "Zeige den Vornamen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:602
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:615
 msgid "Show last name"
 msgstr "Zeige den Nachnamen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:606
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:619
 msgid "Show nickname"
 msgstr "Zeige den Nicknamen"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:610
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:623
 msgid "Show website"
 msgstr "Zeige die Webseite"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:614
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:627
 msgid "Show AIM"
 msgstr "Zeige AIM"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:618
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:631
 msgid "Show Yahoo IM"
 msgstr "Zeige Yahoo IM"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:622
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:635
 msgid "Show Jabber / Google Talk"
 msgstr "Zeige Jabber / Google Talk"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:626
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:639
 msgid "Show Biographical Info"
 msgstr ""
 

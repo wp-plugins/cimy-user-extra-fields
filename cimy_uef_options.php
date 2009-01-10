@@ -1,16 +1,18 @@
 <?php
 
 function cimy_save_options() {
-	global $wpdb, $cimy_uef_version, $cimy_uef_options, $wpdb_wp_fields_table, $max_length_fieldset_value, $cimy_uef_domain, $is_mu, $wp_hidden_fields;
+	global $wpdb, $cimy_uef_version, $cimy_uef_options, $wpdb_wp_fields_table, $max_length_fieldset_value, $cimy_uef_domain, $is_mu, $wp_hidden_fields, $max_length_extra_fields_title;
 
 	if (!cimy_check_admin('manage_options'))
 		return;
 		
-	if (isset($_POST['force_activation']))
+	if (isset($_POST['force_activation'])) {
 		cimy_plugin_install();
+		return;
+	}
 	
 	$results = array();
-	$do_not_update_options = false;
+	$do_not_save_options = false;
 	
 	if ($is_mu)
 		$options = get_site_option($cimy_uef_options);
@@ -28,10 +30,13 @@ function cimy_save_options() {
 		$options['items_per_fieldset'] = $items_per_fieldset;
 	else
 		$options['items_per_fieldset'] = 1;
-	
+
+	$options['extra_fields_title'] = stripslashes($_POST['extra_fields_title']);
+	$options['extra_fields_title'] = substr($options['extra_fields_title'], 0, $max_length_extra_fields_title);
+
 	$options['fieldset_title'] = stripslashes($_POST['fieldset_title']);
 	$options['fieldset_title'] = substr($options['fieldset_title'], 0, $max_length_fieldset_value);
-	
+
 	if (isset($_POST['db_wp_fields_check'])) {
 		switch ($_POST['db_wp_fields']) {
 			case 'empty':
@@ -322,7 +327,7 @@ function cimy_show_options_notembedded() {
 }
 
 function cimy_show_options($results, $embedded) {
-	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $cimy_uef_options, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_uef_version, $cimy_uef_domain, $is_mu, $cimy_top_menu;
+	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $cimy_uef_options, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_uef_version, $cimy_uef_domain, $is_mu, $cimy_top_menu, $max_length_extra_fields_title;
 
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -539,15 +544,23 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row"><input type="checkbox" name="force_activation" value="1" /> <?php _e("Force tables creation", $cimy_uef_domain); ?></th>
-			<td></td>
+			<td>
+			<?php
+				_e("equivalent to de-activate and activate the plug-in; no other operation will be performed", $cimy_uef_domain);
+			?>
+			</td>
 		</tr>
 	</table>
 	<br />
 	<h3><?php _e("User Profile", $cimy_uef_domain); ?></h3>
 	<table class="form-table">
 		<tr>
-			<th scope="row" width="40%"><?php _e("Items per fieldset", $cimy_uef_domain); ?></th>
-			<td width="60%"><input type="text" name="items_per_fieldset" value="<?php echo $options['items_per_fieldset']; ?>" size="3" maxlength="3" /></td>
+			<th scope="row" width="40%"><?php _e("Extra Fields section title", $cimy_uef_domain); ?></th>
+			<td width="60%"><input type="text" name="extra_fields_title" value="<?php echo $options['extra_fields_title']; ?>" size="35" maxlength="<?php echo $max_length_extra_fields_title; ?>" /></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php _e("Items per fieldset", $cimy_uef_domain); ?></th>
+			<td><input type="text" name="items_per_fieldset" value="<?php echo $options['items_per_fieldset']; ?>" size="3" maxlength="3" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e("Fieldset's titles, separates with comma", $cimy_uef_domain); ?><br /><?php _e("example: title1,title2,title3", $cimy_uef_domain); ?></th>

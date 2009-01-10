@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cimy User Extra Fields\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-02 17:44+0100\n"
-"PO-Revision-Date: 2009-01-02 17:44+0100\n"
+"POT-Creation-Date: 2009-01-10 19:30+0300\n"
+"PO-Revision-Date: 2009-01-10 19:30+0300\n"
 "Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
 "Language-Team:  <cimmino.marco@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -30,28 +30,22 @@ msgstr ""
 msgid "File '%s' is not an image."
 msgstr ""
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:35
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:708
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:421
-msgid "Extra Fields"
-msgstr "Допълнителни полета"
-
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:266
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:267
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_register.php:493
 msgid "Please upload an image with one of the following extensions"
 msgstr "Моля качете снимка с някое от тези разширения"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:368
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:369
 #, fuzzy
 msgid "Delete the picture"
 msgstr "Изтрий поле"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:370
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:371
 #, fuzzy
 msgid "Update the picture"
 msgstr "Поднови поле"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:389
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_profile.php:390
 msgid "Picture URL:"
 msgstr ""
 
@@ -168,25 +162,25 @@ msgstr "Покажи Jabber / Google Talk"
 msgid "Biographical Info"
 msgstr ""
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:497
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:418
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:469
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:498
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:423
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:474
 msgid "Options"
 msgstr "Настройки"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:498
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:499
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:111
 msgid "Fields"
 msgstr "Полета"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:499
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:503
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:559
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:500
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:504
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:572
 msgid "Authors &amp; Users Extended"
 msgstr "Автори &amp; Потребители с разширения"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:499
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:503
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:500
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_user_extra_fields.php:504
 msgid "A&amp;U Extended"
 msgstr "А&amp;П с разширения"
 
@@ -337,12 +331,12 @@ msgid "Name inserted is just in the database, change to another one"
 msgstr "Въведеното име е в базата данни, променето го"
 
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:395
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:421
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:426
 msgid "Add a new Field"
 msgstr "Добави друго поле"
 
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:422
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:429
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:434
 msgid "SUCCESSFUL"
 msgstr "УСПЕХ"
 
@@ -490,6 +484,13 @@ msgstr "Изчисти"
 msgid "WordPress Fields"
 msgstr "WordPress полета"
 
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:708
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_db.php:122
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_db.php:172
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:426
+msgid "Extra Fields"
+msgstr "Допълнителни полета"
+
 #: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_admin.php:719
 msgid "None!"
 msgstr "Няма!"
@@ -569,195 +570,204 @@ msgstr "Виж постовете на този автор"
 msgid "e-mail: %s"
 msgstr "e-mail: %s"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:39
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:44
 msgid "WordPress Fields table emptied"
 msgstr "Таблицата с WordPress полета е изпразнена"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:44
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:49
 msgid "WordPress Fields table deleted"
 msgstr "Таблицата с WordPress полета е изтрита"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:53
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:58
 msgid "Extra Fields table emptied"
 msgstr "Таблицата с допълнителни полета е изпразнена"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:58
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:63
 msgid "Extra Fields table deleted"
 msgstr "Таблицата с допълнителни полета е изтрита"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:67
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:72
 msgid "Users Data table emptied"
 msgstr "Таблицата с потребителски данни е изпразнена"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:72
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:77
 msgid "Users Data table deleted"
 msgstr "Таблицата с потребителски данни е изтрита"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:83
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:88
 msgid "Options set to default values"
 msgstr "Вариантите са сменени по подразбиране"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:89
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:94
 msgid "Options deleted"
 msgstr "Вариантите са изтрити"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:312
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:317
 msgid "Options changed"
 msgstr "Вариантите са променени"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:442
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:631
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:447
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:644
 msgid "Save Changes"
 msgstr "Запази промените"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:443
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:448
 msgid "General"
 msgstr "Общи"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:451
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:456
 msgid "installed is"
 msgstr "инсталирано е"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:455
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:460
 msgid "OPTIONS DELETED!"
 msgstr "ВАРИАНТИТЕ СА ИЗТРИТИ!"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:459
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:464
 msgid "VERSIONS MISMATCH! This because you haven't de-activated and re-activated the plug-in after the update! This could give problems..."
 msgstr "ВЕРСИТЕ НЕ ПАСВАТ! Това е защото ти не си дезактивирал и активирал добавката след подновяване! Това може да създаде проблеми..."
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:466
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:471
 msgid "Database"
 msgstr "База данни"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:475
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:493
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:512
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:529
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:480
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:498
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:517
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:534
 msgid "select action"
 msgstr "избери действие"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:476
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:481
 msgid "Default values"
 msgstr "Стойност по подразбиране"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:477
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:495
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:514
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:531
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:482
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:500
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:519
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:536
 msgid "Delete"
 msgstr "Изтрий"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:481
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:500
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:518
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:536
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:486
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:505
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:523
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:541
 msgid "NOT PRESENT"
 msgstr "НЕ СЪЩЕСТВУВА"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:486
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:491
 msgid "WordPress Fields table"
 msgstr "Таблица с WordPress полета"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:494
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:513
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:530
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:499
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:518
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:535
 msgid "Empty"
 msgstr "Празно"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:506
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:511
 msgid "Extra Fields table"
 msgstr "Таблица с допълнителни полета"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:523
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:528
 msgid "Users Data table"
 msgstr "Таблица с потребителски данни"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:533
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:538
 msgid "all data inserted by users in all and only extra fields"
 msgstr "всички данни въведени от потребителите във всички и само допълнители полета"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:541
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:546
 msgid "Force tables creation"
 msgstr "Задължително създаване на таблица"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:546
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:549
+msgid "equivalent to de-activate and activate the plug-in; no other operation will be performed"
+msgstr ""
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:555
 msgid "User Profile"
 msgstr "Потребителски профил"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:549
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:558
+#, fuzzy
+msgid "Extra Fields section title"
+msgstr "Таблица с допълнителни полета"
+
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:562
 msgid "Items per fieldset"
 msgstr "Опции по колекция"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:553
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:566
 msgid "Fieldset's titles, separates with comma"
 msgstr "Заглавията на колекция разделени със запетайка"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:553
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:566
 msgid "example: title1,title2,title3"
 msgstr "пример: заглавие1,заглавие2,заглавие3"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:563
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:576
 msgid "Hide username field"
 msgstr "Скрий полето за потребителско име"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:569
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:582
 msgid "Hide name field"
 msgstr "Скрий полето за име"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:574
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:587
 msgid "Hide email field"
 msgstr "Скрий полето за email"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:578
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:591
 msgid "Hide role field"
 msgstr "Скрий полето за роля"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:582
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:595
 msgid "Hide website field"
 msgstr "Скрий полето за интернет сайт"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:586
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:599
 msgid "Hide n. posts field"
 msgstr "Скрий полето за брой постове"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:591
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:604
 msgid "WordPress hidden fields"
 msgstr "Скрити полета на WordPress"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:594
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:607
 msgid "Show password"
 msgstr ""
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:598
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:611
 msgid "Show first name"
 msgstr "Покажи първото име"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:602
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:615
 msgid "Show last name"
 msgstr "Покажи второто име"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:606
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:619
 msgid "Show nickname"
 msgstr "Покажи потребителското име"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:610
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:623
 msgid "Show website"
 msgstr "Покажи интернет сайта"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:614
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:627
 msgid "Show AIM"
 msgstr "Покажи AIM"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:618
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:631
 msgid "Show Yahoo IM"
 msgstr "Покажи Yahoo IM"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:622
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:635
 msgid "Show Jabber / Google Talk"
 msgstr "Покажи Jabber / Google Talk"
 
-#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:626
+#: /var/www/wp-content/plugins/Cimy_User_Extra_Fields/cimy_uef_options.php:639
 msgid "Show Biographical Info"
 msgstr ""
 

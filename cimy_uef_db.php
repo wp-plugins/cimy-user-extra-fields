@@ -1,7 +1,8 @@
 <?php
 
 function cimy_plugin_install () {
-	global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path;
+	// for WP >= 2.5 when adding a global here need to be added also to main global
+	global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path, $cimy_uef_domain;
 
 	if (!cimy_check_admin('activate_plugins'))
 		return;
@@ -30,93 +31,106 @@ function cimy_plugin_install () {
 		if ( ! empty($wpdb->collate) )
 			$charset_collate .= " COLLATE $wpdb->collate";
 	}
-				
+
 	if ($force_update) {
-		// switch without breaks so every earlier versions receive all updates
-		switch ($options['version']) {
-			case "0.9.1":
-				unset($options['show_buggy_ie_warning']);
+		if (version_compare($options['version'], "0.9.1", "<=") === true) {
+			unset($options['show_buggy_ie_warning']);
+		}
 
-			case "1.0.0-beta1":
-				$sql = "RENAME TABLE ".$old_wpdb_fields_table." TO ".$wpdb_fields_table;
+		if (version_compare($options['version'], "1.0.0-beta1", "<=") === true) {
+			$sql = "RENAME TABLE ".$old_wpdb_fields_table." TO ".$wpdb_fields_table;
+			$wpdb->query($sql);
+			
+			$sql = "RENAME TABLE ".$old_wpdb_data_table." TO ".$wpdb_data_table;
+			$wpdb->query($sql);
+
+			$options['wp_hidden_fields'] = array();
+			
+			// convert all html entity to normal chars
+			$sql = "SELECT * FROM ".$wpdb_fields_table;
+			$fields = $wpdb->get_results($sql, ARRAY_A);
+			
+			foreach ($fields as $field) {
+				$id = $field['ID'];
+				$name = $wpdb->escape(html_entity_decode($field['NAME'], ENT_QUOTES, "UTF-8"));
+				$label = $wpdb->escape(html_entity_decode($field['LABEL'], ENT_QUOTES, "UTF-8"));
+				$desc = $wpdb->escape(html_entity_decode($field['DESCRIPTION'], ENT_QUOTES, "UTF-8"));
+				$value = $wpdb->escape(html_entity_decode($field['VALUE'], ENT_QUOTES, "UTF-8"));
+				
+				$rules = unserialize($field['RULES']);
+				$rules['equal_to'] = html_entity_decode($rules['equal_to'], ENT_QUOTES, "UTF-8");
+				$rules = $wpdb->escape(serialize($rules));
+				
+				$sql = "UPDATE ".$wpdb_fields_table." SET name='".$name."', value='".$value."', description='".$desc."', label='".$label."', rules='".$rules."' WHERE ID=".$id;
+				
 				$wpdb->query($sql);
-				
-				$sql = "RENAME TABLE ".$old_wpdb_data_table." TO ".$wpdb_data_table;
-				$wpdb->query($sql);
+			}
+		}
 
-				$options['wp_hidden_fields'] = array();
-				
-				// convert all html entity to normal chars
-				$sql = "SELECT * FROM ".$wpdb_fields_table;
-				$fields = $wpdb->get_results($sql, ARRAY_A);
-				
-				foreach ($fields as $field) {
-					$id = $field['ID'];
-					$name = $wpdb->escape(html_entity_decode($field['NAME'], ENT_QUOTES, "UTF-8"));
-					$label = $wpdb->escape(html_entity_decode($field['LABEL'], ENT_QUOTES, "UTF-8"));
-					$desc = $wpdb->escape(html_entity_decode($field['DESCRIPTION'], ENT_QUOTES, "UTF-8"));
-					$value = $wpdb->escape(html_entity_decode($field['VALUE'], ENT_QUOTES, "UTF-8"));
-					
-					$rules = unserialize($field['RULES']);
-					$rules['equal_to'] = html_entity_decode($rules['equal_to'], ENT_QUOTES, "UTF-8");
-					$rules = $wpdb->escape(serialize($rules));
-					
-					$sql = "UPDATE ".$wpdb_fields_table." SET name='".$name."', value='".$value."', description='".$desc."', label='".$label."', rules='".$rules."' WHERE ID=".$id;
-					
-					$wpdb->query($sql);
-				}
+		if (version_compare($options['version'], "1.1.0-rc1", "<=") === true) {
+			$sql = "SELECT ID FROM ".$wpdb_fields_table." WHERE TYPE='picture'";
+			$f_pictures = $wpdb->get_results($sql, ARRAY_A);
+			
+			if (isset($f_pictures)) {
+				if ($f_pictures != NULL) {
+					foreach ($f_pictures as $f_picture) {
+						$sql = "SELECT VALUE FROM ".$wpdb_data_table." WHERE FIELD_ID=".$f_picture['ID'];
+						$p_filenames = $wpdb->get_results($sql, ARRAY_A);
 
-			case "1.1.0-rc1":
-				$sql = "SELECT ID FROM ".$wpdb_fields_table." WHERE TYPE='picture'";
-				$f_pictures = $wpdb->get_results($sql, ARRAY_A);
-				
-				if (isset($f_pictures)) {
-					if ($f_pictures != NULL) {
-						foreach ($f_pictures as $f_picture) {
-							$sql = "SELECT VALUE FROM ".$wpdb_data_table." WHERE FIELD_ID=".$f_picture['ID'];
-							$p_filenames = $wpdb->get_results($sql, ARRAY_A);
-
-							if (isset($p_filenames)) {
-								if ($p_filenames != NULL) {
-									foreach ($p_filenames as $p_filename) {
-										$path_pieces = explode("/", $p_filename['VALUE']);
-										$p_filename = basename($p_filename['VALUE']);
-										$user_login = array_slice($path_pieces, -2, 1);
-										
-										$p_oldfilename_t = $cuef_upload_path.$user_login[0]."/".cimy_get_thumb_path($p_filename, true);
-										$p_newfilename_t = $cuef_upload_path.$user_login[0]."/".cimy_get_thumb_path($p_filename, false);
-										
-										if (is_file($p_oldfilename_t))
-											rename($p_oldfilename_t, $p_newfilename_t);
-									}
+						if (isset($p_filenames)) {
+							if ($p_filenames != NULL) {
+								foreach ($p_filenames as $p_filename) {
+									$path_pieces = explode("/", $p_filename['VALUE']);
+									$p_filename = basename($p_filename['VALUE']);
+									$user_login = array_slice($path_pieces, -2, 1);
+									
+									$p_oldfilename_t = $cuef_upload_path.$user_login[0]."/".cimy_get_thumb_path($p_filename, true);
+									$p_newfilename_t = $cuef_upload_path.$user_login[0]."/".cimy_get_thumb_path($p_filename, false);
+									
+									if (is_file($p_oldfilename_t))
+										rename($p_oldfilename_t, $p_newfilename_t);
 								}
 							}
 						}
 					}
 				}
+			}
+		}
+
+		if (version_compare($options['version'], "1.1.0", "<=") === true) {
+			if ($charset_collate != "") {
+				$sql = "ALTER TABLE ".$wpdb_fields_table.$charset_collate;
+				$wpdb->query($sql);
 				
-			case "1.1.0":
-				if ($charset_collate != "") {
-					$sql = "ALTER TABLE ".$wpdb_fields_table.$charset_collate;
-					$wpdb->query($sql);
-					
-					$sql = "ALTER TABLE ".$wpdb_wp_fields_table.$charset_collate;
-					$wpdb->query($sql);
-					
-					$sql = "ALTER TABLE ".$wpdb_data_table.$charset_collate;
-					$wpdb->query($sql);
-				}
+				$sql = "ALTER TABLE ".$wpdb_wp_fields_table.$charset_collate;
+				$wpdb->query($sql);
+				
+				$sql = "ALTER TABLE ".$wpdb_data_table.$charset_collate;
+				$wpdb->query($sql);
+			}
+		}
 
-			case "1.3.0-beta1":
-				$options["users_per_page"] = 50;
+		if (version_compare($options['version'], "1.3.0-beta1", "<=") === true) {
+			$options["users_per_page"] = 50;
+		}
 
-			case "1.3.0-beta2":
+		if (version_compare($options['version'], "1.3.0-beta2", "<=") === true) {
+			unset($options["disable_cimy_fieldvalue"]);
+		}
+
+		if (version_compare($options['version'], "1.3.1", "<=") === true) {
+			$options["extra_fields_title"] = __("Extra Fields", $cimy_uef_domain);
+
+			// Added again since after cleanup DB migration code in v1.3.0-beta2 was buggy!
+			if (isset($options["disable_cimy_fieldvalue"]))
 				unset($options["disable_cimy_fieldvalue"]);
 
-			default:
-				$options['version'] = $cimy_uef_version;
+			if (!isset($options["users_per_page"]))
+				$options["users_per_page"] = 50;
 		}
-		
+
+		$options['version'] = $cimy_uef_version;
+
 		if ($is_mu)
 			update_site_option($cimy_uef_options, $options);
 		else
@@ -149,12 +163,13 @@ function cimy_plugin_install () {
 }
 
 function cimy_manage_db($command) {
-	global $wpdb, $wpdb_data_table, $wpdb_wp_fields_table, $wpdb_fields_table, $cimy_uef_options_descr, $cimy_uef_options, $cimy_uef_version, $is_mu;
+	global $wpdb, $wpdb_data_table, $wpdb_wp_fields_table, $wpdb_fields_table, $cimy_uef_options_descr, $cimy_uef_options, $cimy_uef_version, $is_mu, $cimy_uef_domain;
 	
 	if (!cimy_check_admin('activate_plugins'))
 		return;
-	
+
 	$options = array(
+		'extra_fields_title' => __("Extra Fields", $cimy_uef_domain),
 		'users_per_page' => 50,
 		'items_per_fieldset' => 5,
 		'aue_hidden_fields' => array('website', 'posts', 'email'),

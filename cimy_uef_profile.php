@@ -30,9 +30,10 @@ function cimy_extract_ExtraFields() {
 
 		echo $start_cimy_uef_comment;
 
-		echo '<br clear="all" />';
-		echo "\n";
-		echo "<h2>".__("Extra Fields", $cimy_uef_domain)."</h2>\n";
+		if ($options['extra_fields_title'] != "") {
+			echo "<br clear=\"all\" />\n";
+			echo "<h2>".$options['extra_fields_title']."</h2>\n";
+		}
 		
 		foreach ($extra_fields as $thisField) {
 	

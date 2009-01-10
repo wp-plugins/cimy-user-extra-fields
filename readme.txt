@@ -1,11 +1,11 @@
 === Cimy User Extra Fields ===
 Contributors: Marco Cimmino
-Donate link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
+Donate link: http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/
 Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
-Tags: admin, registration, profile, extra fields
+Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 
 Add some useful fields to registration and user's info
 

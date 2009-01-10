@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 1.3.1
+Version: 1.3.2
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -35,7 +35,7 @@ The full copy of the GNU General Public License is available here: http://www.gn
 */
 
 // added for WordPress >=2.5 compatibility
-global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path;
+global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path, $cimy_uef_domain;
 
 if (!stristr($wp_version, "mu") === FALSE) {
 	$is_mu = true;
@@ -154,7 +154,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "1.3.1";
+$cimy_uef_version = "1.3.2";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 
 $start_cimy_uef_comment = "<!--\n";
@@ -371,6 +371,7 @@ $max_length_label = 5000;
 $max_length_desc = 5000;
 $max_length_value = 5000;
 $max_length_fieldset_value = 1024;
+$max_length_extra_fields_title = 100;
 
 // max size in KiloByte
 $max_size_file = 20000;
@@ -432,7 +433,7 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 		return $avatar;
 
 	// ok we have one avatar field, who is requesting?
-	$sql = sprintf("SELECT ID, user_login FROM wp_users WHERE user_email='%s' LIMIT 1", $wpdb->escape($id_or_email));
+	$sql = sprintf("SELECT ID, user_login FROM %s WHERE user_email='%s' LIMIT 1", $wpdb->users, $wpdb->escape($id_or_email));
 	$res = $wpdb->get_results($sql);
 
 	$id = $res[0]->ID;

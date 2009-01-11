@@ -491,7 +491,7 @@ function cimy_uef_i18n_setup() {
 function cimy_admin_menu_custom() {
 	global $cimy_uef_name, $cimy_uef_domain, $is_mu, $cimy_top_menu;
 	
-	if (!cimy_check_admin('level_10'))
+	if (!cimy_check_admin('manage_options'))
 		return;
 	
 	if (isset($cimy_top_menu)) {

@@ -408,13 +408,14 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v1.3.2 - 10/01/2009
+v1.3.2 - 11/01/2009
 - Added possibility to change/remove Extra Fields section title under user profile
 - Fixed bug where options were not correctly migrated for certain versions (introduced with v1.3.0 beta2)
 - Fixed bug where A&U Extended page where showing 0 users due to previous bug (thanx to Alessandra)
 - Fixed avatar support for installations with different table prefix (thanx to Sergey for pointing it)
 - Fixed Table Creation option to not perform anything else when selected
 - Fixed unitialized variable under options code
+- Fixed last use of "level_10" role check (missed in the previous fix)
 - Updated Italian translation
 - Readme file updated and renamed to README_OFFICIAL.txt due to WordPress Plugin Directory rules
 

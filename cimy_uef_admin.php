@@ -1,7 +1,7 @@
 <?php
 
 function cimy_admin_define_extra_fields() {
-	global $wpdb, $wpdb_fields_table, $wpdb_wp_fields_table, $rule_canbeempty, $rule_email, $rule_maxlen, $rule_maxlen_needed, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $rule_equalto, $rule_equalto_case_sensitive, $cimy_uef_domain, $is_mu, $cuef_plugin_path, $cimy_uef_file_types;
+	global $wpdb, $wpdb_fields_table, $wpdb_wp_fields_table, $rule_canbeempty, $rule_email, $rule_maxlen, $rule_maxlen_needed, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $rule_equalto, $rule_equalto_case_sensitive, $cimy_uef_domain, $is_mu, $cuef_plugin_path, $cimy_uef_file_types, $rule_equalto_regex;
 	
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -202,6 +202,7 @@ function cimy_admin_define_extra_fields() {
 		$name = strtoupper($name);
 		$oldname = strtoupper(stripslashes($_POST['oldname'.$field_order]));
 		$type = $_POST['type'.$field_order];
+		$fieldset = $_POST['fieldset'.$field_order];
 
 		$minlen = $_POST['minlen'.$field_order];
 		$exactlen = $_POST['exactlen'.$field_order];
@@ -247,6 +248,8 @@ function cimy_admin_define_extra_fields() {
 			$store_rule['equal_to'] = stripslashes($_POST['equalto'.$field_order]);
 			
 			$equalto_casesens = $_POST['equalto_casesens'.$field_order];
+
+			$equalto_regex = $_POST['equalto_regex'.$field_order];
 		}
 		
 		$show_in_reg = $_POST['show_in_reg'.$field_order];
@@ -316,6 +319,11 @@ function cimy_admin_define_extra_fields() {
 				$store_rule['equal_to_case_sensitive'] = true;
 			else
 				$store_rule['equal_to_case_sensitive'] = false;
+
+			if (($equalto_regex != "") && (in_array($type, $rule_equalto_regex)))
+				$store_rule['equal_to_regex'] = true;
+			else
+				$store_rule['equal_to_regex'] = false;
 		}
 
 		if (($value != "") && (strtoupper($value) != "YES") && (strtoupper($value) != "NO")) {
@@ -324,6 +332,13 @@ function cimy_admin_define_extra_fields() {
 
 			if ($type == "radio")
 				$errors['value'] = __("With radio type Value can only be", $cimy_uef_domain).": [Yes, No]";
+		}
+
+		if ($is_mu) {
+			// uploading files not supported with WordPress MU
+			if (in_array($type, $cimy_uef_file_types)) {
+				$store_rule["show_in_reg"] = false;
+			}
 		}
 
 		// IF THERE ARE NO ERRORS THEN GO ON
@@ -368,6 +383,7 @@ function cimy_admin_define_extra_fields() {
 				$data['store_rule'] = $store_rule;
 				$data['field_order'] = $field_order;
 				$data['num_fields'] = $num_fields;
+				$data['fieldset'] = $fieldset;
 				
 				cimy_save_field($action, $fields_table, $data);
 
@@ -523,6 +539,11 @@ function cimy_admin_define_extra_fields() {
 		else
 			$selected_input["equal_to_case_sensitive"] = '';
 
+		if (isset($equalto_regex))
+			$selected_input["equal_to_regex"] = ' checked="checked"';
+		else
+			$selected_input["equal_to_regex"] = '';
+
 		// CHECK EMAIL SYNTAX
 		if ($store_rule['email'] == true)
 			$selected_input["email"] = ' checked="checked"';
@@ -607,6 +628,10 @@ function cimy_admin_define_extra_fields() {
 			?>
 			</select>
 			</label>
+			<br /><br />
+			<label><strong><?php _e("Fieldset", $cimy_uef_domain); ?></strong><br />
+			<?php echo cimy_fieldsetOptions($fieldset); ?>
+			</label>
 		</td>
 		<td style="vertical-align: middle;">
 			<label><strong><?php _e("Label", $cimy_uef_domain); ?></strong><br /><textarea name="label" rows="2" cols="18"><?php echo $selected_input["label"]; ?></textarea></label><br /><br />
@@ -638,9 +663,12 @@ function cimy_admin_define_extra_fields() {
 			</select>
 			<br />
 			<!-- EQUAL TO -->
-			<input type="checkbox" name="equal" value="1"<?php echo $selected_input["equal"]; ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto" maxlength="50" value="<?php echo $selected_input["equal_to"]; ?>"/><br />
+			<input type="checkbox" name="equal" value="1"<?php echo $selected_input["equal"]; ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto" maxlength="100" value="<?php echo $selected_input["equal_to"]; ?>"/><br />
 			<!-- CASE SENSITIVE -->
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens" value="1"<?php echo $selected_input["equal_to_case_sensitive"]; ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
+
+			<!-- REGEX -->
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_regex" value="1"<?php echo $selected_input["equal_to_regex"]; ?> /> <?php _e("Regular Expression", $cimy_uef_domain); ?><br />
 			
 			<!-- SHOW IN REGISTRATION -->
 			<input type="checkbox" name="show_in_reg" value="1"<?php echo $selected_input["show_in_reg"]; ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />
@@ -674,7 +702,7 @@ function cimy_admin_define_extra_fields() {
 }
 
 function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
-	global $cimy_uef_domain, $rule_maxlen, $rule_email, $rule_canbeempty, $rule_equalto, $rule_equalto_case_sensitive, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $cimy_uef_file_types;
+	global $cimy_uef_domain, $rule_maxlen, $rule_email, $rule_canbeempty, $rule_equalto, $rule_equalto_case_sensitive, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $cimy_uef_file_types, $is_mu, $rule_equalto_regex;
 	
 	if (!cimy_check_admin("manage_options"))
 		return;
@@ -683,11 +711,13 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 		return;
 	
 	if ($wp_fields) {
+		$field_anchor = "field_wp_";
 		$disable_it = ' disabled="disabled"';
 		$div_id = "wp_extrafields";
 		$form_id = "form_wp_fields";
 	}
 	else {
+		$field_anchor = "field_";
 		$div_id = "extrafields";
 		$form_id = "form_extra_fields";
 		$disable_it = '';
@@ -759,6 +789,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 			$label = attribute_escape($field['LABEL']);
 			$type = $field['TYPE'];
 			$rules = $field['RULES'];
+			$fieldset = $field["FIELDSET"];
 			
 			$text = "";
 			$checkbox = "";
@@ -769,6 +800,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 			$dis_checkemail = "";
 			$dis_equalto = "";
 			$dis_equalto_casesens = "";
+			$dis_equalto_regex = "";
 			$dis_value = "";
 
 			// disable rules for certain fields
@@ -786,6 +818,9 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 
 			if (!in_array($type, $rule_equalto_case_sensitive))
 				$dis_equalto_casesens = ' disabled="disabled"';
+
+			if (!in_array($type, $rule_equalto_regex))
+				$dis_equalto_regex = ' disabled="disabled"';
 
 			// set selected type for every field
 			$selected_type[$type] = ' selected="selected"';
@@ -861,11 +896,15 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 				
 				if ($rules['equal_to_case_sensitive'])
 					$equalto_casesens = ' checked="checked"';
+
+				if ($rules['equal_to_regex'])
+					$equalto_regex = ' checked="checked"';
 			}
 			else {
 				$equal = "";
 				$equalTo = "";
 				$equalto_casesens = "";
+				$equalto_regex = "";
 			}
 			
 			$equalTo = attribute_escape($equalTo);
@@ -874,6 +913,13 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 				$show_in_reg = ' checked="checked"';
 			else
 				$show_in_reg = "";
+
+			if ($is_mu) {
+				// uploading files not supported with WordPress MU
+				if (in_array($type, $cimy_uef_file_types)) {
+					$show_in_reg = ' disabled="disabled"';
+				}
+			}
 
 			if ($rules['show_in_profile'])
 				$show_in_profile = ' checked="checked"';
@@ -904,7 +950,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 			$style = ('class="alternate"' == $style) ? '' : 'class="alternate"';
 			?>
 			
-			<tr <?php echo $style; ?>>
+			<tr <?php echo "id=\"".$field_anchor.$order."\" ".$style; ?>>
 			<td align="center" style="vertical-align: middle;">
 				<input name="check<?php echo $order ?>" type="checkbox" value="1" /><br /><br />
 				<label><strong><?php _e("Order", $cimy_uef_domain); ?></strong><br />
@@ -938,6 +984,13 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 				?>
 				</select>
 				</label>
+
+				<?php if (!$wp_fields) { ?>
+				<br /><br />
+				<label><strong><?php _e("Fieldset", $cimy_uef_domain); ?></strong><br />
+				<?php echo cimy_fieldsetOptions($fieldset, $order); ?>
+				</label>
+				<?php } ?>
 			</td>
 			<td style="vertical-align: middle;">
 				<label><strong><?php _e("Label", $cimy_uef_domain); ?></strong><br />
@@ -970,9 +1023,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 				<br />
 				
 				<!-- EQUAL TO -->
-				<input type="checkbox" name="equal<?php echo $order ?>" value="1"<?php echo $equal.$dis_equalto ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto<?php echo $order ?>" maxlength="50" value="<?php echo $equalTo ?>"<?php echo $dis_equalto ?> /><br />
+				<input type="checkbox" name="equal<?php echo $order ?>" value="1"<?php echo $equal.$dis_equalto ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto<?php echo $order ?>" maxlength="100" value="<?php echo $equalTo ?>"<?php echo $dis_equalto ?> /><br />
 				<!-- CASE SENSITIVE -->
 				&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens<?php echo $order ?>" value="1"<?php echo $equalto_casesens.$dis_equalto_casesens; ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
+				<!-- REGEX -->
+				&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_regex<?php echo $order ?>" value="1"<?php echo $equalto_regex.$dis_equalto_regex; ?> /> <?php _e("Regular Expression", $cimy_uef_domain); ?><br />
 
 				
 				<!-- SHOW IN REGISTRATION -->
@@ -1129,12 +1184,17 @@ function cimy_admin_users_list_page() {
 	
 	<?php
 		if (function_exists(screen_icon))
-			screen_icon();
+			screen_icon("users");
 	?>
 	<?php if ( $wp_user_search->is_search() ) : ?>
 	<h2><?php printf(__('Users Matching "%s"'), wp_specialchars($wp_user_search->search_term)); ?></h2>
 	<?php else : ?>
-	<h2><?php _e("Authors &amp; Users Extended List", $cimy_uef_domain); ?></h2>
+	<h2><?php
+		if ($is_mu)
+			_e("Users Extended List", $cimy_uef_domain);
+		else
+			_e("Authors &amp; Users Extended List", $cimy_uef_domain);
+	?></h2>
 	<?php endif; ?>
 	<form id="posts-filter" action="" method="post">
 	<ul class="subsubsub">
@@ -1333,7 +1393,7 @@ function cimy_admin_users_list_page() {
 					}
 					
 					$thead_str.= "$label<br />$search_input</th>";
-					$tfoot_str.= "$label<br />$search_input</th>";
+					$tfoot_str.= "$label</th>";
 				}
 			}
 
@@ -1418,21 +1478,20 @@ function cimy_admin_users_list_page() {
 			if (!in_array("posts", $options['aue_hidden_fields'])) {
 				echo "<td class=\"posts column-posts num\">$numposts</td>";
 			}
-	
-			// if user has not yet fields in the data table then create them
-			if (count($extra_fields) > 0)
+
+			// print all the content of extra fields if there are some
+			if (count($extra_fields) > 0) {
 				foreach ($extra_fields as $thisField) {
 	
 					$field_id = $thisField['ID'];
-	
+
+					// if user has not yet fields in the data table then create them
 					cimy_insert_ExtraFields_if_not_exist($user_object->ID, $field_id);
 				}
-	
-			$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$user_object->ID, ARRAY_A);
-	
-			$i = 0;
-			// print all the content of extra fields if there are some
-			if (count($extra_fields) > 0)
+
+				// retrieve extra fields data from DB
+				$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$user_object->ID, ARRAY_A);
+
 				foreach ($extra_fields as $thisField) {
 					
 					$rules = $thisField['RULES'];
@@ -1510,8 +1569,9 @@ function cimy_admin_users_list_page() {
 							
 						echo "&nbsp;"."</td>";
 					}
-				$i++;
 				}
+			}
+
 			echo '</tr>';
 		}
 	
@@ -1542,8 +1602,14 @@ function cimy_save_field($action, $table, $data) {
 	if (!cimy_check_admin("manage_options"))
 		return;
 	
-	if ($table == $wpdb_wp_fields_table)
+	if ($table == $wpdb_wp_fields_table) {
 		$wp_fields = true;
+		$fieldset_sql = "";
+	}
+	else {
+		$fieldset = intval($data['fieldset']);
+		$fieldset_sql = ", fieldset=".$fieldset;
+	}
 	
 	$name = $wpdb->escape($data['name']);
 	$value = $wpdb->escape($data['value']);
@@ -1564,7 +1630,7 @@ function cimy_save_field($action, $table, $data) {
 	else if ($action == "edit")
 		$sql = "UPDATE ".$table." ";
 
-	$sql.= "SET name='".$name."', value='".$value."', description='".$desc."', label='".$label."', type='".$type."', rules='".$store_rule."'";
+	$sql.= "SET name='".$name."', value='".$value."', description='".$desc."', label='".$label."', type='".$type."', rules='".$store_rule."'".$fieldset_sql;
 
 	if ($action == "add")
 		$sql.= ", F_ORDER=".($num_fields + 1);

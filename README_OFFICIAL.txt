@@ -11,8 +11,13 @@ The plug-in adds two new menu voices in the admin for the administrator and two 
 
 Two new menus are:
 
-    * "Users-> A&U Extended" lets you show users lists with the new fields that are created
-    * "Options-> Cimy User Extra Fields" lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+WordPress:
+    1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
+    2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+
+Wordpress MU:
+    1. "Site Admin -> Users Extended" - lets you show users lists with the new fields that are created
+    2. "Site Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Rules are:
 
@@ -76,22 +81,22 @@ Bugs or suggestions can be mailed at: cimmino.marco@gmail.com
 
 REQUIREMENTS:
 PHP >= 5.0.0
-WORDPRESS >= 2.5.x
-WORDPRESS MU - NOT SUPPORTED
+WORDPRESS >= 2.6.x
+WORDPRESS MU >= 2.6.x
 MYSQL >= 4.0
 
 INSTALLATION:
-- just copy whole Cimy_User_Extra_Fields subdir into your plug-in directory and activate it
+- WordPress: just copy whole cimy-user-extra-fields subdir into your plug-in directory and activate it
+- WordPress MU: unpack the package under 'mu-plugins' directory, be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary), then go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm
 
 UPDATE FROM A PREVIOUS VERSION:
-- always deactivate the plug-in and reactivate after the update
+- go to Cimy User Extra Fields admin options, press "Fix the problem" button and confirm
 
 
 FUNCTIONS USEFUL FOR YOUR THEMES OR TEMPLATES:
 
 [Function get_cimyFieldValue]
-NOTE 1: to use this function first you have to enable it via options page.
-NOTE 2: password fields values will not be returned for security reasons
+NOTE: password fields values will not be returned for security reasons
 
 USAGE:
 $value = get_cimyFieldValue($user_id, $field_name, [$field_value]);
@@ -145,6 +150,7 @@ EXAMPLE:
 	$values = get_cimyFieldValue(false, 'MY_FIELD');
 
 	foreach ($values as $value) {
+		$user_id = $value['user_id'];
 		echo $value['user_login'];
 		echo cimy_uef_sanitize_content($value['VALUE']);
 	}
@@ -162,6 +168,7 @@ EXAMPLE:
 	$values = get_cimyFieldValue(false, 'COLOR', 'red');
 
 	foreach ($values as $value) {
+		$user_id = $value['user_id'];
 		echo $value['user_login'];
 	}
 
@@ -182,6 +189,7 @@ EXAMPLE:
 	$values = get_cimyFieldValue(false, 'WEBSITE', $field_value);
 
 	foreach ($values as $value) {
+		$user_id = $value['user_id'];
 		echo $value['user_login'];
 	}
 
@@ -199,6 +207,7 @@ EXAMPLE:
 	$old_name = "";
 
 	foreach ($values as $value) {
+		$user_id = $value['user_id'];
 		$new_name = $value['user_login'];
 
 		if ($old_name != $new_name)
@@ -258,6 +267,7 @@ if (have_posts()) {
 	}
 }
 
+
 PICTURE AND get_cimyFieldValue FUNCTION:
 
 If you want to display the image in an HTML page just use IMG object like this:
@@ -281,11 +291,42 @@ where $format is the date and time format, more tags details here:
 http://www.php.net/manual/en/function.strftime.php
 
 
-[Function get_cimyFields]
-This function returns an array containing all extra fields defined by the admin ordered by the order defined in the option page, if there are no fields an empty array is returned.
+[Function cimy_uef_sanitize_content]
+This function protects your blog from users trying to add JavaScript or alter your blog doing HTML injection in extra fields. It is very important that you do not remove that function.
+This function filters only some html tags and let other be used, the list of tags that are allowed is present under /wp-includes/kses.php search for $allowedtags array definition.
+
+It can accepts two parameters:
+$content: the content to be protected against HTML injections
+$override_allowed_tags [array|null, default null]: if you want to override allowed tags you should pass a proper array where all your favourite tags are listed.
 
 USAGE:
-$allFields = get_cimyFields();
+echo cimy_uef_sanitize_content([$content], [$override_allowed_tags]);
+
+EXAMPLE:
+global $allowedtags;
+
+// copy the array to not modify the original one
+$my_tags = $allowedtags;
+
+// add img tag to allowed tags list
+$my_tags["img"] = array(
+	"src" => array(),
+	"alt => array(),
+);
+
+// $content is what I want to show, see previous examples for more details
+echo cimy_uef_sanitize_content($content, $my_tags);
+
+
+[Function get_cimyFields]
+This function returns an array containing all extra fields defined by the admin ordered by the order defined in the admin page, if there are no fields an empty array is returned.
+
+It can accepts two parameters:
+$wp_fields [true|false, default false]: if true will return hidden WordPress fields enabled
+$order_by_section [true|false, default false]: if true array returned will be ordered as first key by fieldset and as second key by order; this parameter can be applied only if the first one is set to false.
+
+USAGE:
+$allFields = get_cimyFields([$wp_fields], [$order_by_section]);
 
 EXAMPLE:
 $allFields = get_cimyFields();
@@ -336,6 +377,15 @@ KNOWN ISSUES:
 - if you add too many fields in the "A&U Extended" menu they will go out of frame
 - some rules are applied only during registration (apart editable and visibility rules and max length for text and password fields only)
 - registration date cannot be modified
+- using WordPress password to let user customize its password works, but has one issue:
+  - on WordPress email received will contain wrong password (generated by WordPress), this due to WordPress limitation
+  - on WordPress MU email received and activation page contain correct password, no issues!
+- picture and avatar upload is disabled during registration under WordPress MU, will be possible once user is activated
+- if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again
+- dropdown issues:
+  - multiple choices dropdown are not supported
+  - custom value is not supported
+  - comma is not allowed as it is the delimiter
 
 
 FAQ:
@@ -408,6 +458,53 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v1.4.0 - 18/03/2009
+- Added user_id in the array returned by get_cimyFieldValue function
+- Added regular expression to equalTo rule for text, textarea, textarea-rich, password, dropdown (thanks to Shane Hartman for the patch)
+- Fixed (again) textarea-rich under user registration page, hopefully now it works for everyone (thanx to Romain Bordessoul)
+- Fixed some error messages weren't displayed under WordPress MU registration page (thanx to Nicolene Heunis for the patch)
+- Readme file updated
+
+v1.4.0 release candidate 1 - 24/02/2009
+- Added picture/avatar directory check under options
+- Added second parameter to cimy_uef_sanitize_content to let override allowed tags
+- Fixed translation under WordPress MU (workaround)
+- Fixed wrong password shown on WordPress MU activation page when using password personalization (thanx to Leo Kimble and Andrew Billits)
+- Fixed dropdown not working if new lines were added to the list
+- Renamed plug-in directory due to WordPress Plugin Directory rules
+- Readme file updated
+
+v1.4.0 beta3 - 08/02/2009
+- Added possibility to set a custom fieldset per each extra fields
+- Added fieldset to registration page
+- Fixed data not saved into extra fields for some MYSQL configurations (thanx to Daniel Quinn)
+- Fixed PHP error on comments when using avatar extra field (thanx to Serge Hardmeier)
+- Fixed picture/avatar path were written even if upload failed
+- Fixed password always overwritten in the WordPress MU welcome email
+- Moved and renamed A&U Extended page under WordPress MU
+- Disabled picture and avatar fields under WordPress MU registration page
+- Removed deprecated "items per fieldset" option
+- Readme file updated
+- Updated Italian translation
+- Updated German translation (Franz Josef)
+- Code cleanup
+
+v1.4.0 beta2 - 21/01/2009
+- WordPress MU fixes:
+  - Fixed Extra Fields not saved under registration
+  - Fixed WordPress hidden fields not saved under registration
+  - Fixed PHP error when at least one WordPress hidden field is present under registration
+  - Fixed endless registration if there is at least one error due to rules in Extra Fields
+  - Fixed notification email is filtered in case password is chosen by the user
+
+v1.4.0 beta1 - 19/01/2009
+- Added WordPress MU 2.5.x & 2.6.x support
+- Added a button to fix missing/pending update of tables/options
+- Fixed PHP error when deleting an user on certain installations (thanx to jarred)
+- Fixed PHP error when options are not present
+- Fixed Extra Fields filter (introduced with v1.3.0 beta1)
+- Readme file updated
+
 v1.3.2 - 11/01/2009
 - Added possibility to change/remove Extra Fields section title under user profile
 - Fixed bug where options were not correctly migrated for certain versions (introduced with v1.3.0 beta2)

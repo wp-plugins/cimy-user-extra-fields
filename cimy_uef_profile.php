@@ -18,12 +18,9 @@ function cimy_extract_ExtraFields() {
 		$get_user_id = $user_ID;
 	}
 	
-	if ($is_mu)
-		$options = get_site_option($cimy_uef_options);
-	else
-		$options = get_option($cimy_uef_options);
+	$options = cimy_get_options();
 	
-	$extra_fields = get_cimyFields();
+	$extra_fields = get_cimyFields(false, true);
 
 	if (!empty($extra_fields)) {
 		$upload_image_function = false;
@@ -46,8 +43,7 @@ function cimy_extract_ExtraFields() {
 
 		$radio_checked = array();
 
-		$i = 0;
-		$num_fieldset = 0;
+		$current_fieldset = 0;
 		$tiny_mce_objects = "";
 		
 		if ($options['fieldset_title'] != "")
@@ -55,8 +51,8 @@ function cimy_extract_ExtraFields() {
 		else
 			$fieldset_titles = array();
 		
-		if (isset($fieldset_titles[$num_fieldset]))
-			echo "<h3>".$fieldset_titles[$num_fieldset]."</h3>\n";
+		if (isset($fieldset_titles[$current_fieldset]))
+			echo "\n\t<h3>".$fieldset_titles[$current_fieldset]."</h3>\n";
 		
 		echo '<table class="form-table">';
 		echo "\n";
@@ -70,6 +66,7 @@ function cimy_extract_ExtraFields() {
 			$type = $thisField['TYPE'];
 			$label = $thisField['LABEL'];
 			$description = $thisField['DESCRIPTION'];
+			$fieldset = $thisField['FIELDSET'];
 			$input_name = $fields_name_prefix.attribute_escape($name);
 			
 			if ($rules['show_in_profile']) {
@@ -87,21 +84,17 @@ function cimy_extract_ExtraFields() {
 						$value = $thisField['VALUE'];
 				}
 
-				if ($i == $options['items_per_fieldset']) {
-					echo "</table>\n";
-					
-					$num_fieldset++;
+				if (($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset]))) {
+					$current_fieldset = $fieldset;
 
-					if (isset($fieldset_titles[$num_fieldset]))
-						echo "<h3>".$fieldset_titles[$num_fieldset]."</h3>\n";
+					echo "</table>\n";
+
+					if (isset($fieldset_titles[$current_fieldset]))
+						echo "\n\t<h3>".$fieldset_titles[$current_fieldset]."</h3>\n";
 					
 					echo '<table class="form-table">';
 					echo "\n";
-					
-					$i = 0;
 				}
-				
-				$i++;
 
 				echo "\t";
 				echo "<tr>";
@@ -441,7 +434,7 @@ function cimy_update_ExtraFields() {
 	else
 		return;
 
-	$extra_fields = get_cimyFields();
+	$extra_fields = get_cimyFields(false, true);
 
 	$query = "UPDATE ".$wpdb_data_table." SET VALUE=CASE FIELD_ID";
 	$i = 0;

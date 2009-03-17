@@ -15,3 +15,17 @@
 	border: 1px solid #e5e5e5;
 	background: #fbfbfb;
 }
+
+.cimy_uef_input_mu {
+	width: 100%;
+	font-size: 24px;
+	margin: 5px 0;
+}
+
+.mu_register label.cimy_uef_label_checkbox {
+	display: inline;
+}
+
+.mu_register label.cimy_uef_label_radio {
+	display: inline;
+}

@@ -12,16 +12,18 @@ if ($cimy_uef_register_page) {
 	<script type='text/javascript'>
 		/* <![CDATA[ */
 			userSettings = {
-				url: <?php echo SITECOOKIEPATH; ?>,
-				uid: <?php echo $userid; ?>,
-				time: <?php echo time(); ?>,
+				url: "<?php echo SITECOOKIEPATH; ?>",
+				uid: "<?php echo $userid; ?>",
+				time: "<?php echo time(); ?>",
 			}
 		try{convertEntities(userSettings);}catch(e){};
 		/* ]]> */
 	</script>
 	<script type='text/javascript' src='http://localhost/wordpress27/wp-admin/js/common.js?ver=20081126'></script>
 <?php
-}
+} else
+	$userid = $get_user_id;
+
 	// Set up init variables
 	$mce_locale = ( '' == get_locale() ) ? 'en' : strtolower( substr(get_locale(), 0, 2) ); // only ISO 639-1
 	$theme = "advanced";
@@ -64,7 +66,12 @@ if ($cimy_uef_register_page) {
 	$mce_buttons_4 = apply_filters('mce_buttons_4', array());
 	$mce_buttons_4 = implode($mce_buttons_4, ',');
 	
-	$plugins = array( 'safari', 'inlinepopups', 'autosave', 'spellchecker', 'paste', 'wordpress', 'media', 'fullscreen' );
+	$plugins = array( 'safari', 'inlinepopups', 'autosave', 'spellchecker', 'paste', 'media', 'fullscreen' );
+
+	// add 'wordpress' plug-in only if there is an user logged in, otherwise will produce issues on registration page
+	if ($userid != 0)
+		$plugins[] = 'wordpress';
+
 	$plugins = implode($plugins, ',');
 	
 	echo "\n\t";

@@ -3,9 +3,9 @@ Contributors: Marco Cimmino
 Donate link: http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/
 Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar
-Requires at least: 2.5
+Requires at least: 2.6
 Tested up to: 2.7
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 
 Add some useful fields to registration and user's info
 
@@ -19,8 +19,13 @@ The plug-in adds two new menu voices in the admin for the administrator and two 
 
 = Two new menus are: =
 
-  * "Users-> A&U Extended" lets you show users lists with the new fields that are created
-  * "Options-> Cimy User Extra Fields" lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+WordPress:
+   1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
+   2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+
+Wordpress MU:
+   1. "Site Admin -> Users Extended" - lets you show users lists with the new fields that are created
+   2. "Site Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 = Rules are: =
 
@@ -88,7 +93,8 @@ http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 
 == Installation ==
 
-Just copy the plug-in in your plug-in directory and activate it
+ * WordPress: just copy whole cimy-user-extra-fields subdir into your plug-in directory and activate it
+ * WordPress MU: unpack the package under 'mu-plugins' directory, be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary), then go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm
 
 == Screenshots ==
 

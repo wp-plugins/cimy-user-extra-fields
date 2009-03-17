@@ -1,6 +1,6 @@
 <?php
 
-function get_cimyFields($wp_fields=false) {
+function get_cimyFields($wp_fields=false, $order_by_section=false) {
 	global $wpdb_fields_table, $wpdb_wp_fields_table, $wpdb;
 	
 	if ($wp_fields)
@@ -8,9 +8,15 @@ function get_cimyFields($wp_fields=false) {
 	else
 		$table = $wpdb_fields_table;
 
+	// only extra fields can be order by fieldset
+	if (($order_by_section) && (!$wp_fields))
+		$order = " ORDER BY FIELDSET, F_ORDER";
+	else
+		$order = " ORDER BY F_ORDER";
+
 	// if tables exist then read all fields else array empty, will be read after the creation
 	if($wpdb->get_var("SHOW TABLES LIKE '".$table."'") == $table) {
-		$sql = "SELECT * FROM ".$table." ORDER BY F_ORDER";
+		$sql = "SELECT * FROM ".$table.$order;
 		$extra_fields = $wpdb->get_results($sql, ARRAY_A);
 	
 		if (!isset($extra_fields))
@@ -124,6 +130,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 		
 			SELECT	efields.LABEL,
 				efields.TYPE,
+				users.ID as user_id,
 				users.user_login,
 				data.VALUE
 		
@@ -142,7 +149,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 		
 			ORDER BY users.user_login
 		*/
-		$sql = "SELECT efields.LABEL, efields.TYPE, users.user_login, data.VALUE FROM ".$wpdb->users." as users, ".$wpdb_data_table." as data JOIN ".$wpdb_fields_table." as efields ON efields.id=data.field_id WHERE efields.name='".$field_name."' AND users.ID=data.USER_ID AND efields.TYPE!='password' AND (efields.TYPE!='radio' OR data.VALUE!='')".$sql_field_value." ORDER BY users.user_login";
+		$sql = "SELECT efields.LABEL, efields.TYPE, users.ID as user_id, users.user_login, data.VALUE FROM ".$wpdb->users." as users, ".$wpdb_data_table." as data JOIN ".$wpdb_fields_table." as efields ON efields.id=data.field_id WHERE efields.name='".$field_name."' AND users.ID=data.USER_ID AND efields.TYPE!='password' AND (efields.TYPE!='radio' OR data.VALUE!='')".$sql_field_value." ORDER BY users.user_login";
 	}
 	
 	// nothing provided
@@ -150,7 +157,8 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 		/*
 			$sql will be:
 		
-			SELECT	users.user_login,
+			SELECT	users.ID as user_id,
+				users.user_login,
 				efields.NAME,
 				efields.LABEL,
 				efields.TYPE,
@@ -171,7 +179,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 			ORDER BY users.user_login,
 				efields.F_ORDER
 		*/
-		$sql = "SELECT users.user_login, efields.NAME, efields.LABEL, efields.TYPE, data.VALUE FROM ".$wpdb->users." as users, ".$wpdb_data_table." as data JOIN ".$wpdb_fields_table." as efields ON efields.id=data.field_id WHERE users.ID=data.USER_ID AND efields.TYPE!='password' AND (efields.TYPE!='radio' OR data.VALUE!='')".$sql_field_value." ORDER BY users.user_login, efields.F_ORDER";
+		$sql = "SELECT users.ID as user_id, users.user_login, efields.NAME, efields.LABEL, efields.TYPE, data.VALUE FROM ".$wpdb->users." as users, ".$wpdb_data_table." as data JOIN ".$wpdb_fields_table." as efields ON efields.id=data.field_id WHERE users.ID=data.USER_ID AND efields.TYPE!='password' AND (efields.TYPE!='radio' OR data.VALUE!='')".$sql_field_value." ORDER BY users.user_login, efields.F_ORDER";
 	}
 
 	$field_data = $wpdb->get_results($sql, ARRAY_A);
@@ -244,14 +252,16 @@ function cimy_dropDownOptions($values, $selected) {
 	$html_options = "";
 	
 	foreach ($items as $item) {
+		$item_clean = trim($item, "\t\n\r");
+
 		$html_options.= "\n\t\t\t";
-		$html_options.= '<option value="'.$item.'"';
+		$html_options.= '<option value="'.$item_clean.'"';
 	
 		if  (isset($selected))
-			if ($selected == $item)
+			if ($selected == $item_clean)
 				$html_options.= ' selected="selected"';
 
-		$html_options.= ">".$item."</option>";
+		$html_options.= ">".$item_clean."</option>";
 	}
 	
 	$ret = array();
@@ -273,10 +283,15 @@ function cimy_get_thumb_path($file_path, $oldname=false) {
 	return $file_thumb_path;
 }
 
-function cimy_uef_sanitize_content($content) {
+function cimy_uef_sanitize_content($content, $override_allowed_tags=null) {
 	global $allowedtags;
 
-	$content = wp_kses($content, $allowedtags);
+	if (is_array($override_allowed_tags))
+		$cimy_allowedtags = $override_allowed_tags;
+	else
+		$cimy_allowedtags = $allowedtags;
+
+	$content = wp_kses($content, $cimy_allowedtags);
 	$content = wptexturize($content);
 
 	return $content;
@@ -284,18 +299,46 @@ function cimy_uef_sanitize_content($content) {
 
 function cimy_check_admin($permission) {
 	global $is_mu;
+
+	if ($is_mu)
+		return is_site_admin();
+	else
+		return current_user_can($permission);
 	
-	if (!current_user_can($permission))
-		return false;
-	
-	if ($is_mu) {
-		global $blog_id;
-		
-		if ($blog_id != 1)
-			return false;
+	return false;
+}
+
+function cimy_fieldsetOptions($selected=0, $order="") {
+	global $cimy_uef_domain;
+
+	if (!cimy_check_admin('manage_options'))
+		return;
+
+	$options = cimy_get_options();
+
+	$i = 0;
+	$html = "<select name=\"fieldset".$order."\">\n";
+
+	if ($options['fieldset_title'] == "") {
+		$html.= "\t<option value=\"$i\" selected=\"selected\">".__("no fieldset", $cimy_uef_domain)."</option>\n";
 	}
+	else {
+		$fieldset_titles = explode(',', $options['fieldset_title']);
+
+		foreach ($fieldset_titles as $fieldset) {
+			if ($i == $selected)
+				$selected_txt = " selected=\"selected\"";
+			else
+				$selected_txt = "";
 	
-	return true;
+			$html.= "\t<option value=\"$i\"".$selected_txt.">".$fieldset."</option>\n";
+			$i++;
+		}
+	}
+
+	$html.= "</select>";
+
+	return $html;
 }
 
 ?>

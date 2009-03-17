@@ -2,26 +2,18 @@
 
 function cimy_plugin_install () {
 	// for WP >= 2.5 when adding a global here need to be added also to main global
-	global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path, $cimy_uef_domain;
+	global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $cuef_upload_path, $cimy_uef_domain;
 
 	if (!cimy_check_admin('activate_plugins'))
 		return;
 	
 	$force_update = false;
 	
-	if ($is_mu) {
-		if (!($options = get_site_option($cimy_uef_options)))
-			cimy_manage_db('new_options');
-		else
-			$force_update = true;
-	}
-	else {
-		if (!($options = get_option($cimy_uef_options)))
-			cimy_manage_db('new_options');
-		else
-			$force_update = true;
-	}
-	
+	if (!($options = cimy_get_options()))
+		cimy_manage_db('new_options');
+	else
+		$force_update = true;
+
 	$charset_collate = "";
 	
 	// try to get proper charset and collate
@@ -129,12 +121,16 @@ function cimy_plugin_install () {
 				$options["users_per_page"] = 50;
 		}
 
+		if (version_compare($options['version'], "1.4.0-beta2", "<=") === true) {
+			unset($options['items_per_fieldset']);
+
+			$sql = "ALTER TABLE ".$wpdb_fields_table." ADD COLUMN FIELDSET bigint(20) NOT NULL DEFAULT 0 AFTER F_ORDER";
+			$wpdb->query($sql);
+		}
+
 		$options['version'] = $cimy_uef_version;
 
-		if ($is_mu)
-			update_site_option($cimy_uef_options, $options);
-		else
-			update_option($cimy_uef_options, $options);
+		cimy_set_options($options);
 	}
 	
 	if ($wpdb->get_var("SHOW TABLES LIKE '$wpdb_wp_fields_table'") != $wpdb_wp_fields_table) {
@@ -155,7 +151,7 @@ function cimy_plugin_install () {
 
 	if ($wpdb->get_var("SHOW TABLES LIKE '$wpdb_fields_table'") != $wpdb_fields_table) {
 
-		$sql = "CREATE TABLE ".$wpdb_fields_table." (ID bigint(20) NOT NULL AUTO_INCREMENT, F_ORDER bigint(20) NOT NULL, NAME varchar(20), LABEL TEXT, DESCRIPTION TEXT, TYPE varchar(20), RULES TEXT, VALUE TEXT, PRIMARY KEY (ID), INDEX F_ORDER (F_ORDER), INDEX NAME (NAME))".$charset_collate.";";
+		$sql = "CREATE TABLE ".$wpdb_fields_table." (ID bigint(20) NOT NULL AUTO_INCREMENT, F_ORDER bigint(20) NOT NULL, FIELDSET bigint(20) NOT NULL DEFAULT 0, NAME varchar(20), LABEL TEXT, DESCRIPTION TEXT, TYPE varchar(20), RULES TEXT, VALUE TEXT, PRIMARY KEY (ID), INDEX F_ORDER (F_ORDER), INDEX NAME (NAME))".$charset_collate.";";
 
 		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
 		dbDelta($sql);
@@ -163,7 +159,7 @@ function cimy_plugin_install () {
 }
 
 function cimy_manage_db($command) {
-	global $wpdb, $wpdb_data_table, $wpdb_wp_fields_table, $wpdb_fields_table, $cimy_uef_options_descr, $cimy_uef_options, $cimy_uef_version, $is_mu, $cimy_uef_domain;
+	global $wpdb, $wpdb_data_table, $wpdb_wp_fields_table, $wpdb_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cimy_uef_domain;
 	
 	if (!cimy_check_admin('activate_plugins'))
 		return;
@@ -171,7 +167,6 @@ function cimy_manage_db($command) {
 	$options = array(
 		'extra_fields_title' => __("Extra Fields", $cimy_uef_domain),
 		'users_per_page' => 50,
-		'items_per_fieldset' => 5,
 		'aue_hidden_fields' => array('website', 'posts', 'email'),
 		'wp_hidden_fields' => array(),
 		'fieldset_title' => '',
@@ -181,27 +176,18 @@ function cimy_manage_db($command) {
 		case 'new_options':
 			$options['version'] = $cimy_uef_version;
 			
-			if ($is_mu)
-				update_site_option($cimy_uef_options, $options);
-			else
-				update_option($cimy_uef_options, $options, $cimy_uef_options_descr, "no");
+			cimy_set_options($options);
 			break;
 
 		case 'default_options':
-			if ($is_mu)
-				$old_options = get_site_option($cimy_uef_options);
-			else
-				$old_options = get_option($cimy_uef_options);
+			$old_options = cimy_get_options();
 			
 			if (isset($old_options['version']))
 				$options['version'] = $old_options['version'];
 			else
 				$options['version'] = $cimy_uef_version;
 			
-			if ($is_mu)
-				update_site_option($cimy_uef_options, $options);
-			else
-				update_option($cimy_uef_options, $options, $cimy_uef_options_descr, "no");
+			cimy_set_options($options);
 			
 			break;
 			
@@ -280,28 +266,34 @@ function cimy_delete_user_info($user_id) {
 	if (!function_exists(cimy_rfr)) {
 		function cimy_rfr($path, $match) {
 			static $deld = 0, $dsize = 0;
+
+			// remember that glob returns FALSE in case of error
 			$dirs = glob($path."*");
 			$files = glob($path.$match);
 
 			// call recursion before so we delete files in subdirs first!
-			foreach ($dirs as $dir) {
-				if (is_dir($dir)) {
-					$dir = basename($dir) . "/";
-					cimy_rfr($path.$dir, $match);
+			if (is_array($dirs)) {
+				foreach ($dirs as $dir) {
+					if (is_dir($dir)) {
+						$dir = basename($dir) . "/";
+						cimy_rfr($path.$dir, $match);
+					}
 				}
 			}
 
-			foreach ($files as $file) {
-				if (is_file($file)) {
-					$dsize += filesize($file);
-					unlink($file);
-					$deld++;
-				}
-				else if (is_dir($file)) {
-					rmdir($file);
+			if (is_array($files)) {
+				foreach ($files as $file) {
+					if (is_file($file)) {
+						$dsize += filesize($file);
+						unlink($file);
+						$deld++;
+					}
+					else if (is_dir($file)) {
+						rmdir($file);
+					}
 				}
 			}
-			
+
 			return "$deld files deleted with a total size of $dsize bytes";
 		}
 	}
@@ -329,9 +321,29 @@ function cimy_insert_ExtraFields_if_not_exist($user_id, $field_id) {
 	$exist = $wpdb->get_var($sql);
 
 	if ($exist == NULL) {
-		$sql = "INSERT INTO ".$wpdb_data_table." SET FIELD_ID=".$field_id.", USER_ID=".$user_id;
+		$sql = "INSERT INTO ".$wpdb_data_table." SET FIELD_ID=".$field_id.", USER_ID=".$user_id.", VALUE=''";
 		$wpdb->query($sql);
 	}
+}
+
+function cimy_get_options() {
+	global $is_mu, $cimy_uef_options;
+
+	if ($is_mu)
+		$options = get_site_option($cimy_uef_options);
+	else
+		$options = get_option($cimy_uef_options);
+
+	return $options;
+}
+
+function cimy_set_options($options) {
+	global $is_mu, $cimy_uef_options, $cimy_uef_options_descr;
+
+	if ($is_mu)
+		update_site_option($cimy_uef_options, $options);
+	else
+		update_option($cimy_uef_options, $options, $cimy_uef_options_descr, "no");
 }
 
 ?>

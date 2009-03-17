@@ -1,7 +1,7 @@
 <?php
 
 function cimy_save_options() {
-	global $wpdb, $cimy_uef_version, $cimy_uef_options, $wpdb_wp_fields_table, $max_length_fieldset_value, $cimy_uef_domain, $is_mu, $wp_hidden_fields, $max_length_extra_fields_title;
+	global $wpdb, $cimy_uef_version, $wpdb_wp_fields_table, $max_length_fieldset_value, $cimy_uef_domain, $wp_hidden_fields, $max_length_extra_fields_title;
 
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -14,22 +14,12 @@ function cimy_save_options() {
 	$results = array();
 	$do_not_save_options = false;
 	
-	if ($is_mu)
-		$options = get_site_option($cimy_uef_options);
-	else
-		$options = get_option($cimy_uef_options);
+	$options = cimy_get_options();
 	
 	$old_wp_hidden_fields = $options['wp_hidden_fields'];
 	
 	$options['aue_hidden_fields'] = array();
 	$options['wp_hidden_fields'] = array();
-	
-	$items_per_fieldset = intval($_POST['items_per_fieldset']);
-	
-	if ($items_per_fieldset > 0)
-		$options['items_per_fieldset'] = $items_per_fieldset;
-	else
-		$options['items_per_fieldset'] = 1;
 
 	$options['extra_fields_title'] = stripslashes($_POST['extra_fields_title']);
 	$options['extra_fields_title'] = substr($options['extra_fields_title'], 0, $max_length_extra_fields_title);
@@ -309,10 +299,7 @@ function cimy_save_options() {
 	}
 	
 	if (!$do_not_save_options) {
-		if ($is_mu)
-			update_site_option($cimy_uef_options, $options);
-		else
-			update_option($cimy_uef_options, $options);
+		cimy_set_options($options);
 		
 		$results['results'] = __("Options changed", $cimy_uef_domain);
 	}
@@ -327,7 +314,7 @@ function cimy_show_options_notembedded() {
 }
 
 function cimy_show_options($results, $embedded) {
-	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $cimy_uef_options, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_uef_version, $cimy_uef_domain, $is_mu, $cimy_top_menu, $max_length_extra_fields_title;
+	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_uef_version, $cimy_uef_domain, $cimy_top_menu, $max_length_extra_fields_title, $cuef_upload_path;
 
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -336,14 +323,11 @@ function cimy_show_options($results, $embedded) {
 	if ((isset($_POST['cimy_options'])) && (isset($cimy_top_menu)))
 		$results = cimy_save_options();
 	
-	if ($is_mu)
-		$options = get_site_option($cimy_uef_options);
-	else
-		$options = get_option($cimy_uef_options);
-	
-	$options['fieldset_title'] = attribute_escape($options['fieldset_title']);
-	
+	$options = cimy_get_options();
+
 	if ($options) {
+		$options['fieldset_title'] = attribute_escape($options['fieldset_title']);
+
 		in_array('username', $options['aue_hidden_fields']) ? $aue_hide_username = ' checked="checked"' : $aue_hide_username = '';
 		in_array('name', $options['aue_hidden_fields']) ? $aue_hide_name = ' checked="checked"' : $aue_hide_name = '';
 		in_array('email', $options['aue_hidden_fields']) ? $aue_hide_email = ' checked="checked"' : $aue_hide_email = '';
@@ -365,6 +349,7 @@ function cimy_show_options($results, $embedded) {
 	}
 	else {
 		$db_options = false;
+		$options['fieldset_title'] = "";
 		
 		$aue_hide_username = '';
 		$aue_hide_name = '';
@@ -418,7 +403,7 @@ function cimy_show_options($results, $embedded) {
 	<div class="wrap" id="options">
 	<?php
 		if (function_exists(screen_icon))
-			screen_icon();
+			screen_icon("options-general");
 	?>
 	<h2><?php _e("Options");
 	
@@ -458,12 +443,27 @@ function cimy_show_options($results, $embedded) {
 				
 				if (!$db_options) {
 					?><br /><h4><?php _e("OPTIONS DELETED!", $cimy_uef_domain); ?></h4>
-					<input type="hidden" name="do_not_save_options" value="1" /><?php
+					<input type="hidden" name="do_not_save_options" value="1" />
+
+					<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="force_activation" value="<?php _e("Fix the problem", $cimy_uef_domain); ?>" onclick="return confirm('<?php _e("This operation will create/update all missing tables/options, do you want to proceed?", $cimy_uef_domain); ?>');" /></p><?php
 				}
 				else if ($cimy_uef_version != $options['version']) {
-					?><br /><h4><?php _e("VERSIONS MISMATCH! This because you haven't de-activated and re-activated the plug-in after the update! This could give problems...", $cimy_uef_domain); ?></h4><?php
+					?><br /><h4><?php _e("VERSIONS MISMATCH! This because you haven't de-activated and re-activated the plug-in after the update! This could give problems...", $cimy_uef_domain); ?></h4>
+
+					<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="force_activation" value="<?php _e("Fix the problem", $cimy_uef_domain); ?>" onclick="return confirm('<?php _e("This operation will create/update all missing tables/options, do you want to proceed?", $cimy_uef_domain); ?>');" /></p><?php
 				}
 				?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php _e("Picture/Avatar upload", $cimy_uef_domain); ?></th>
+			<td>
+			<?php
+				if (is_writable($cuef_upload_path))
+					echo "<em>".$cuef_upload_path."</em><br />".__("is created and writable", $cimy_uef_domain);
+				else
+					echo "<em>".$cuef_upload_path."</em><br />".__("is NOT created or webserver does NOT have permission to write on it", $cimy_uef_domain);
+			?>
 			</td>
 		</tr>
 	</table>
@@ -559,12 +559,8 @@ function cimy_show_options($results, $embedded) {
 			<td width="60%"><input type="text" name="extra_fields_title" value="<?php echo $options['extra_fields_title']; ?>" size="35" maxlength="<?php echo $max_length_extra_fields_title; ?>" /></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php _e("Items per fieldset", $cimy_uef_domain); ?></th>
-			<td><input type="text" name="items_per_fieldset" value="<?php echo $options['items_per_fieldset']; ?>" size="3" maxlength="3" /></td>
-		</tr>
-		<tr>
 			<th scope="row"><?php _e("Fieldset's titles, separates with comma", $cimy_uef_domain); ?><br /><?php _e("example: title1,title2,title3", $cimy_uef_domain); ?></th>
-			<td><input type="text" name="fieldset_title" value="<?php echo $options['fieldset_title']; ?>" size="35" maxlength="<?php echo $max_length_fieldset_value; ?>" /></td>
+			<td><input type="text" name="fieldset_title" value="<?php echo $options['fieldset_title']; ?>" size="35" maxlength="<?php echo $max_length_fieldset_value; ?>" /> <?php _e("<strong>note:</strong> if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again", $cimy_uef_domain); ?></td>
 		</tr>
 
 	</table>

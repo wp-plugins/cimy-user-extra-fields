@@ -7,50 +7,6 @@ We have developed a WordPress plug-in to do this.
 
 There are some plug-ins that do something similar, but this one wants to focus on giving the administrator the possibility to add all fields needed, on the rules that can be defined for each field, and in giving the possibility to both administration and the user to change the data inserted.
 
-The plug-in adds two new menu voices in the admin for the administrator and two for users.
-
-Two new menus are:
-
-WordPress:
-    1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
-    2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
-
-Wordpress MU:
-    1. "Site Admin -> Users Extended" - lets you show users lists with the new fields that are created
-    2. "Site Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
-
-Rules are:
-
-    * min/exact/max length admitted
-	[only for text, textarea, textarea-rich, password, picture, picture-url, avatar]
-
-    * field can be empty
-	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, avatar]
-
-    * check for e-mail address syntax
-	[only for text, textarea, textarea-rich, password]
-
-    * field can be modified after the registration
-	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, avatar]
-	[for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
-
-    * field equal to some value (for example accept terms and conditions)
-	[all except avatar by default set to 512]
-
-      * equal to can be or not case sensitive
-	[only for text, textarea, textarea-rich, password, dropdown]
-
-    * field can be hidden during registration
-	[all]
-
-    * field can be hidden in user's profile
-	[all]
-
-    * field can be hidden in A&U Extended page
-	[all]
-
-New fields will be visible in the profile and in the registration.
-
 As for now the plug-in supports:
  * text
  * textarea
@@ -58,11 +14,13 @@ As for now the plug-in supports:
  * password
  * checkbox
  * radio
- * drop-down
+ * dropdown
+ * dropdown-multi
  * picture
  * picture-url
  * registration-date
  * avatar
+ * file
 
 future versions can have more.
 
@@ -77,6 +35,61 @@ Following WordPress hidden fields can be enabled during registration:
  * Jabber/Google Talk
  * biographical info
 
+The plug-in adds two new menu voices in the admin for the administrator and two for users.
+
+Two new menus are:
+
+WordPress and WordPress MU per-blog registration:
+    1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
+    2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+
+Wordpress MU unique registration:
+    1. "Site Admin -> Users Extended" - lets you show users lists with the new fields that are created
+    2. "Site Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+
+Rules are:
+
+    * min/exact/max length admitted
+	[only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
+
+    * field can be empty
+	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file]
+
+    * check for e-mail address syntax
+	[only for text, textarea, textarea-rich, password]
+
+    * field can be modified after the registration
+	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file]
+	[for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
+
+    * field equal to some value (for example accept terms and conditions)
+	[all except avatar by default set to 512]
+
+      * equal to can be or not case sensitive
+	[only for text, textarea, textarea-rich, password, dropdown, dropdown-multi]
+
+Visualization rules
+    * field can be hidden during registration
+	[all]
+
+    * field can be hidden in user's profile
+	[all]
+
+    * field can be hidden in A&U Extended page
+	[all]
+
+    * field can be hidden in Search Engine (only if you installed the template)
+	[all]
+
+    * field can be hidden in Blog's public page (only if you installed the template)
+	[all]
+
+    * all visualization rules can be overridden if an user has certain rights (default=no override)
+	[all]
+
+New fields will be visible everywhere by default, a part some WordPress fields.
+
+
 Bugs or suggestions can be mailed at: cimmino.marco@gmail.com
 
 REQUIREMENTS:
@@ -87,10 +100,35 @@ MYSQL >= 4.0
 
 INSTALLATION:
 - WordPress: just copy whole cimy-user-extra-fields subdir into your plug-in directory and activate it
-- WordPress MU: unpack the package under 'mu-plugins' directory, be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary), then go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm
+
+- WordPress MU:
+There are two supported ways of using this plug-in under WordPress MU:
+
+1) Unique registration
+If you want that ALL Blogs on your MU installation follow the same registration with the same fields this is the case for you.
+Every blog will have shared registration page and only the site administrators (of the whole MU installation) can change it.
+- unpack the package under 'mu-plugins' directory, be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary), then go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm
+
+2) Per-Blog registration
+If you want that every single Blog can define its own Extra Fields then you should choose this installation.
+Every registration will have Extra Fields defined by single blogs, every user will have anyway WordPress fields shared with ALL Blogs, this how it works
+WordPress MU.
+- unpack the package under 'plugins' directory; BE sure that cimy_uef_mu_activation.php is installed under 'mu-plugins' directory
+- then every single blog will have it under "Plugins" section
+
 
 UPDATE FROM A PREVIOUS VERSION:
 - go to Cimy User Extra Fields admin options, press "Fix the problem" button and confirm
+
+
+HOW TO ASSIGN A DEFAULT VALUE TO THE EXTRA FIELDS:
+1. You can assign a default value using the VALUE textarea in the admin panel.
+2. You can use URL (only for registration page), example:
+http://www.exampleofmywebsite.it/wordpress29/wp-login.php?action=register&FIELD_01=test1&FIELD_02=test2
+
+FIELD_01 and FIELD_02 are two existing fields that will get default assignment with string "test1" and "test2".
+Note 1: Field name should be upper case otherwise won't be recognized.
+Note 2: These two methods can be used together, but remember that URL has higher priority.
 
 
 FUNCTIONS USEFUL FOR YOUR THEMES OR TEMPLATES:
@@ -375,7 +413,8 @@ Create the same directory needed for PICTURE support, avatars will be stored in 
 
 KNOWN ISSUES:
 - if you add too many fields in the "A&U Extended" menu they will go out of frame
-- some rules are applied only during registration (apart editable and visibility rules and max length for text and password fields only)
+- some rules are applied only during registration (apart editable and visibility rules and max length for text and password fields only) - this has been fixed using Wordpress >= 2.8.x
+- some rules are never applied if you are using PHP 4.x please update to PHP 5.x as stated in the REQUIREMENTS
 - registration date cannot be modified
 - using WordPress password to let user customize its password works, but has one issue:
   - on WordPress email received will contain wrong password (generated by WordPress), this due to WordPress limitation
@@ -383,7 +422,6 @@ KNOWN ISSUES:
 - picture and avatar upload is disabled during registration under WordPress MU, will be possible once user is activated
 - if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again
 - dropdown issues:
-  - multiple choices dropdown are not supported
   - custom value is not supported
   - comma is not allowed as it is the delimiter
 
@@ -415,14 +453,20 @@ Q: Your plug-in is great, but when you will add support to add more than one cho
 A: This feature is here since ages, for radio field just use the same name, for dropdown field read instructions in the add field area (in the plug-in).
 
 
-Q: Indeed, but for multiple choices dropdown?
-
-A: This feature is not supported at the moment.
-
-
 Q: Uploaded images are not resized, why?
 
 A: You should add php-gd module (under Ubuntu install php5-gd package).
+
+
+Q: Why big files are not being uploaded?
+
+A: Please check this website, tells you how to change your PHP configurations to fix this issue: http://www.radinks.com/upload/config.php
+
+
+Q: Why admin user cannot see all fields even if I set to do it?
+
+A: Probably you installed the first time WordPress on PHP4 and you experienced this bug: http://core.trac.wordpress.org/ticket/8317
+To fix the problem you need to create another administrator user and change admin user to another role and then back to administrator.
 
 
 Q: When feature XYZ will be added?
@@ -458,6 +502,47 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v1.5.0 - 30/01/2010
+- Added registration fields pre-filed within URL support (thanks to Charlie Markwick for sponsoring)
+- Fixed WordPress MU unique registration mode was completely broken (introduced with v1.5.0 beta2) (thanks to Nicolene Heunis)
+- Fixed WordPress MU per-blog registration was not working if main site had the plug-in disabled
+- Fixed WordPress MU per-blog A&U Extended was not working
+- Readme file updated
+
+v1.5.0 beta2 - 22/11/2009
+- Added roles support to Extra Fields (thanx to Jakob Wallsten for sponsoring)
+- Added public search support (thanx to Jakob Wallsten and Nacho Arribas for sponsoring)
+- Added public profile support (thanx to Jakob Wallsten and Nacho Arribas for sponsoring)
+- Added WordPress MU per-blog support (thanx to Uwe Moosheimer for sponsoring)
+- Fixed picture fields visualization in profile (introduced with v1.5.0 beta1)
+- Fixed text fields visualization in profile
+- Fixed admin page was completely screwed for some translations like Swedish (thanks to Erik Billerby for pointing it)
+- Fixed some fields were ignored when adding new user from user-new.php in some circumstances (thanks to Erik Billerby for pointing it)
+- Fixed rules were applied anyway when adding new user from user-new.php (introduced with v1.5.0 beta1)
+- Fixed WordPress fields' rules were applied anyway when updating profile (introduced with v1.5.0 beta1)
+- Fixed rules were applied in some circumstances when updating profile even if the field was hidden (introduced with v1.5.0 beta1)
+- Fixed get_cimyFieldValue function was too slow when retrieving data using user_id and field_id (thanks to Erik Billerby for pointing it)
+- Fixed A&U Extended search was not properly working when dropdown or dropdown-multi fields were present
+- Fixed get_cimyFieldValue was returning an uncleaned label for dropdown-multi fields
+- Fixed Biographical Info sometimes were disappearing for no apparent reason (thanks to Edward)
+- Updated Swedish translation (Erik)
+- Updated Italian translation
+
+v1.5.0 beta1 - 16/08/2009
+- Added WordPress 2.8.x support
+- Added dropdown-multi support (thanks to Natural Building Network)
+- Added file upload support (thanks to Karl Sandoval)
+- Added rules check also during profile update (WP >= 2.8.x only)
+- Added possibility to see up to 5000 users per page on A&U Extended page
+- Added Spanish translation (David Gil)
+- Changed max length for: label, description and value up to 50000 chars
+- Fixed avatar and picture upload were not working for some languages like French (thanks to Miss K)
+- Fixed Extra Fields were displayed after other plugins in the registration page (thanks to Nicolene Heunis)
+- Fixed to not display 'picture' if the file does not exists in A&U Extended page
+- Fixed an untranslatable word in A&U Extended page
+- Readme file updated
+- Updated Italian translation
+
 v1.4.0 - 18/03/2009
 - Added user_id in the array returned by get_cimyFieldValue function
 - Added regular expression to equalTo rule for text, textarea, textarea-rich, password, dropdown (thanks to Shane Hartman for the patch)

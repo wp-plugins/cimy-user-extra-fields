@@ -8,6 +8,8 @@ function cimy_register_user_extra_hidden_fields_stage2() {
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".attribute_escape($value)."\" />\n";
+		} else if ($name == "blog_id") {
+			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".attribute_escape($value)."\" />\n";
 		}
 	}
 
@@ -15,8 +17,11 @@ function cimy_register_user_extra_hidden_fields_stage2() {
 }
 
 function cimy_register_user_extra_fields_signup_meta($meta) {
+
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
+			$meta[$name] = $value;
+		} else if ($name == "blog_id") {
 			$meta[$name] = $value;
 		}
 	}
@@ -59,14 +64,60 @@ function cimy_register_mu_overwrite_password($password) {
 	return $password;
 }
 
+function cimy_switch_to_blog($meta=array()) {
+	global $is_mu, $cimy_uef_plugins_dir;
+
+	if (($is_mu) && ($cimy_uef_plugins_dir == "plugins")) {
+		if (isset($meta["blog_id"]))
+			$mu_blog_id = intval($meta["blog_id"]);
+		else if (isset($_GET["blog_id"]))
+			$mu_blog_id = intval($_GET["blog_id"]);
+		else if (isset($_POST["blog_id"]))
+			$mu_blog_id = intval($_POST["blog_id"]);
+		else
+			$mu_blog_id = 1;
+
+		if (cimy_uef_mu_blog_exists($mu_blog_id)) {
+			if (switch_to_blog($mu_blog_id))
+				cimy_uef_set_tables();
+			else
+				$mu_blog_id = 1;
+		}
+		else
+			$mu_blog_id = 1;
+	}
+}
+
+function cimy_switch_current_blog($hidden_field=false) {
+	global $switched, $blog_id;
+
+	if (isset($switched)) {
+		if ($hidden_field)
+			echo "\t<input type=\"hidden\" name=\"blog_id\" value=\"".$blog_id."\" />\n";
+
+		//restore_current_blog();
+	}
+}
+
 function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) {
-	global $wpdb_data_table, $wpdb, $max_length_value, $fields_name_prefix, $wp_fields_name_prefix, $wp_hidden_fields;
-	
+	global $wpdb_data_table, $wpdb, $max_length_value, $fields_name_prefix, $wp_fields_name_prefix, $wp_hidden_fields, $cimy_uef_file_types, $user_level;
+
+	if (isset($meta["blog_id"]))
+		cimy_switch_to_blog($meta);
+
+	// avoid to save stuff if user is being added from: /wp-admin/user-new.php
+	if ($_POST["action"] == "adduser")
+		return;
+
+	// if not set, set to -1 == anonymous
+	if (!isset($user_level))
+		$user_level = -1;
+
 	$extra_fields = get_cimyFields(false, true);
 	$wp_fields = get_cimyFields(true);
-	
+
 	$i = 1;
-	
+
 	// do first for the WP fields then for EXTRA fields
 	while ($i <= 2) {
 		if ($i == 1) {
@@ -90,80 +141,96 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$label = $thisField["LABEL"];
 			$rules = $thisField["RULES"];
 			$input_name = $prefix.$wpdb->escape($name);
-	
-			// if flag to view also in the registration is activated
-			if ($rules['show_in_reg']) {
-				if (isset($meta[$input_name]))
-					$data = stripslashes($meta[$input_name]);
-				else if (isset($_POST[$input_name]))
-					$data = stripslashes($_POST[$input_name]);
-				else
-					$data = "";
-		
-				if ($type == "picture") {
-					$data = cimy_manage_upload($input_name, sanitize_user($_POST['user_login']), $rules, false, false, false);
-				}
-				else if ($type == "avatar") {
-					// since avatars are drawn max to 512px then we can save bandwith resizing, do it!
-					$rules['equal_to'] = 512;
 
-					$data = cimy_manage_upload($input_name, sanitize_user($_POST['user_login']), $rules, false, false, true);
-				}
-				else {
-					if ($type == "picture-url")
-						$data = str_replace('../', '', $data);
-						
-					if (isset($rules['max_length']))
-						$data = substr($data, 0, $rules['max_length']);
-					else
-						$data = substr($data, 0, $max_length_value);
-				}
-			
-				$data = $wpdb->escape($data);
-	
-				if (!$are_wp_fields) {
-					$sql = "INSERT INTO ".$wpdb_data_table." SET USER_ID = ".$user_id.", FIELD_ID=".$field_id.", ";
+			// if the current user LOGGED IN has not enough permissions to see the field, skip it
+			// apply only for EXTRA FIELDS
+			if ($user_level < $rules['show_level'])
+				continue;
+
+			// if show_level == anonymous then do NOT ovverride other show_xyz rules
+			if ($rules['show_level'] == -1) {
+				// if flag to show the field in the registration is NOT activated, skip it
+				if (!$rules['show_in_reg'])
+					continue;
+			}
+
+			if (isset($meta[$input_name]))
+				$data = stripslashes($meta[$input_name]);
+			else if (isset($_POST[$input_name])) {
+				if ($type == "dropdown-multi")
+					$data = stripslashes(implode(",", $_POST[$input_name]));
+				else
+					$data = stripslashes($_POST[$input_name]);
+			}
+			else
+				$data = "";
+
+			if ($type == "avatar") {
+				// since avatars are drawn max to 512px then we can save bandwith resizing, do it!
+				$rules['equal_to'] = 512;
+			}
+
+			if (in_array($type, $cimy_uef_file_types)) {
+				$data = cimy_manage_upload($input_name, sanitize_user($_POST['user_login']), $rules, false, false, $type);
+			}
+			else {
+				if ($type == "picture-url")
+					$data = str_replace('../', '', $data);
+					
+				if (isset($rules['max_length']))
+					$data = substr($data, 0, $rules['max_length']);
+				else
+					$data = substr($data, 0, $max_length_value);
+			}
 		
-					switch ($type) {
-						case 'avatar':
-						case 'picture-url':
-						case 'picture':
-						case 'textarea':
-						case 'textarea-rich':
-						case 'dropdown':
-						case 'password':
-						case 'text':
-							$field_value = $data;
-							break;
-			
-						case 'checkbox':
-							$field_value = $data == '1' ? "YES" : "NO";
-							break;
-			
-						case 'radio':
-							$field_value = $data == $field_id ? "selected" : "";
-							break;
-							
-						case 'registration-date':
-							$field_value = mktime();
-							break;
-					}
-			
-					$sql.= "VALUE='".$field_value."'";
-					$wpdb->query($sql);
+			$data = $wpdb->escape($data);
+
+			if (!$are_wp_fields) {
+				$sql = "INSERT INTO ".$wpdb_data_table." SET USER_ID = ".$user_id.", FIELD_ID=".$field_id.", ";
+	
+				switch ($type) {
+					case 'avatar':
+					case 'picture-url':
+					case 'picture':
+					case 'textarea':
+					case 'textarea-rich':
+					case 'dropdown':
+					case 'dropdown-multi':
+					case 'password':
+					case 'text':
+					case 'file':
+						$field_value = $data;
+						break;
+		
+					case 'checkbox':
+						$field_value = $data == '1' ? "YES" : "NO";
+						break;
+		
+					case 'radio':
+						$field_value = $data == $field_id ? "selected" : "";
+						break;
+						
+					case 'registration-date':
+						$field_value = mktime();
+						break;
 				}
-				else {
-					$f_name = strtolower($thisField['NAME']);
-					
-					$userdata = array();
-					$userdata['ID'] = $user_id;
-					$userdata[$wp_hidden_fields[$f_name]['post_name']] = $data;
-					
-					wp_update_user($userdata);
-				}
+		
+				$sql.= "VALUE='".$field_value."'";
+				$wpdb->query($sql);
+			}
+			else {
+				$f_name = strtolower($thisField['NAME']);
+				
+				$userdata = array();
+				$userdata['ID'] = $user_id;
+				$userdata[$wp_hidden_fields[$f_name]['post_name']] = $data;
+				
+				wp_update_user($userdata);
 			}
 		}
 	}
+
+	cimy_switch_current_blog(true);
 }
 
 function cimy_registration_check_mu_wrapper($data) {
@@ -176,13 +243,35 @@ function cimy_registration_check_mu_wrapper($data) {
 	return $data;
 }
 
+// added for profile rules check
+function cimy_profile_check_wrapper($errors, $update, $user) {
+	$errors = cimy_registration_check($user->user_login, $user->user_email, $errors);
+
+	if (!empty($errors))
+		$update = false;
+}
+
 function cimy_registration_check($user_login, $user_email, $errors) {
-	global $wpdb, $rule_canbeempty, $rule_email, $rule_maxlen, $fields_name_prefix, $wp_fields_name_prefix, $rule_equalto_case_sensitive, $apply_equalto_rule, $cimy_uef_domain, $cimy_uef_file_types, $rule_equalto_regex;
+	global $wpdb, $rule_canbeempty, $rule_email, $rule_maxlen, $fields_name_prefix, $wp_fields_name_prefix, $rule_equalto_case_sensitive, $apply_equalto_rule, $cimy_uef_domain, $cimy_uef_file_types, $rule_equalto_regex, $user_level;
+
+// 	cimy_switch_to_blog();
+
+	// avoid to save stuff if user is being added from: /wp-admin/user-new.php
+	if ($_POST["action"] == "adduser")
+		return $errors;
+
+	// if not set, set to -1 == anonymous
+	if (!isset($user_level))
+		$user_level = -1;
 
 	$extra_fields = get_cimyFields(false, true);
 	$wp_fields = get_cimyFields(true);
-	
-	$i = 1;
+
+	// if we are updating profile don't bother with WordPress fields' rules
+	if ($_POST["from"] == "profile")
+		$i = 2;
+	else
+		$i = 1;
 
 	// do first for the WP fields then for EXTRA fields
 	while ($i <= 2) {
@@ -207,9 +296,32 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$description = $thisField['DESCRIPTION'];
 			$input_name = $prefix.$wpdb->escape($name);
 			$unique_id = $prefix.$field_id;
+
+			// if the current user LOGGED IN has not enough permissions to see the field, skip it
+			// apply only for EXTRA FIELDS
+			if ($user_level < $rules['show_level'])
+				continue;
+
+			// if show_level == anonymous then do NOT ovverride other show_xyz rules
+			if ($rules['show_level'] == -1) {
+				// if we are updating the profile check correct rule
+				if ($_POST["from"] == "profile") {
+					// if flag to show the field in the profile is NOT activated, skip it
+					if (!$rules['show_in_profile'])
+						continue;
+				} else { // we are registering new user
+					// if flag to show the field in the registration is NOT activated, skip it
+					if (!$rules['show_in_reg'])
+						continue;
+				}
+			}
 			
-			if (isset($_POST[$input_name]))
-				$value = stripslashes($_POST[$input_name]);
+			if (isset($_POST[$input_name])) {
+				if ($type == "dropdown-multi")
+					$value = stripslashes(implode(",", $_POST[$input_name]));
+				else
+					$value = stripslashes($_POST[$input_name]);
+			}
 			else
 				$value = "";
 	
@@ -225,135 +337,139 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				$file_type = $_FILES[$input_name]['type'];
 				$value = $_FILES[$input_name]['name'];
 			}
-	
-			// if flag to view also in the registration is activated
-			if ($rules['show_in_reg']) {
-	
-				switch ($type) {
-					case 'checkbox':
-						$value == 1 ? $value = "YES" : $value = "NO";
-						break;
-					case 'radio':
-						intval($value) == intval($field_id) ? $value = "YES" : $value = "NO";
-						break;
-				}
-	
-				// if the flag can be empty is NOT set OR the field is not empty then other check can be useful, otherwise skip all
-				if ((!$rules['can_be_empty']) || ($value != "")) {
-					if (($rules['email']) && (in_array($type, $rule_email))) {
-						if (!is_email($value))
-							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('hasn&#8217;t a correct email syntax.', $cimy_uef_domain));
-					}
-			
-					if ((!$rules['can_be_empty']) && (in_array($type, $rule_canbeempty))) {
-						if ($value == '')
-							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t be empty.', $cimy_uef_domain));
-					}
-			
-					if ((isset($rules['equal_to'])) && (in_array($type, $apply_equalto_rule))) {
-						
-						$equalTo = $rules['equal_to'];
-						// 	if the type is not allowed to be case sensitive
-						// 	OR if case sensitive is not checked
-						// AND
-						// 	if the type is not allowed to be a regex
-						// 	OR if regex rule is not set
-						// THEN switch to uppercase
-						if (((!in_array($type, $rule_equalto_case_sensitive)) || (!$rules['equal_to_case_sensitive'])) && ((!in_array($type, $rule_equalto_regex)) || (!$rules['equal_to_regex']))) {
-							
-							$value = strtoupper($value);
-							$equalTo = strtoupper($equalTo);
-						}
 
-						if ($rules['equal_to_regex']) {
-							if (!preg_match($equalTo, $value)) {
-								$equalmsg = " ".__("isn&#8217;t correct", $cimy_uef_domain);
-								$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.$equalmsg.'.');
-							}
-						}
-						else if ($value != $equalTo) {
-							if (($type == "radio") || ($type == "checkbox"))
-								$equalTo == "YES" ? $equalTo = __("YES", $cimy_uef_domain) : __("NO", $cimy_uef_domain);
-							
-							if ($type == "password")
-								$equalmsg = " ".__("isn&#8217;t correct", $cimy_uef_domain);
-							else
-								$equalmsg = ' '.__("should be", $cimy_uef_domain).' '.$equalTo;
-							
+			switch ($type) {
+				case 'checkbox':
+					$value == 1 ? $value = "YES" : $value = "NO";
+					break;
+				case 'radio':
+					intval($value) == intval($field_id) ? $value = "YES" : $value = "NO";
+					break;
+			}
+
+			// if the flag can be empty is NOT set OR the field is not empty then other check can be useful, otherwise skip all
+			if ((!$rules['can_be_empty']) || ($value != "")) {
+				if (($rules['email']) && (in_array($type, $rule_email))) {
+					if (!is_email($value))
+						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('hasn&#8217;t a correct email syntax.', $cimy_uef_domain));
+				}
+
+				if ((!$rules['can_be_empty']) && (in_array($type, $rule_canbeempty))) {
+					if ($value == '')
+						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t be empty.', $cimy_uef_domain));
+				}
+
+				if ((isset($rules['equal_to'])) && (in_array($type, $apply_equalto_rule))) {
+
+					$equalTo = $rules['equal_to'];
+					// 	if the type is not allowed to be case sensitive
+					// 	OR if case sensitive is not checked
+					// AND
+					// 	if the type is not allowed to be a regex
+					// 	OR if regex rule is not set
+					// THEN switch to uppercase
+					if (((!in_array($type, $rule_equalto_case_sensitive)) || (!$rules['equal_to_case_sensitive'])) && ((!in_array($type, $rule_equalto_regex)) || (!$rules['equal_to_regex']))) {
+
+						$value = strtoupper($value);
+						$equalTo = strtoupper($equalTo);
+					}
+
+					if ($rules['equal_to_regex']) {
+						if (!preg_match($equalTo, $value)) {
+							$equalmsg = " ".__("isn&#8217;t correct", $cimy_uef_domain);
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.$equalmsg.'.');
 						}
 					}
-					
-					// CHECK IF IT IS A REAL PICTURE
-					if (($type == "picture") || ($type == "avatar")) {
-						if (stristr($file_type, "image/") === false) {
-							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('should be an image.', $cimy_uef_domain));
+					else if ($value != $equalTo) {
+						if (($type == "radio") || ($type == "checkbox"))
+							$equalTo == "YES" ? $equalTo = __("YES", $cimy_uef_domain) : __("NO", $cimy_uef_domain);
+
+						if ($type == "password")
+							$equalmsg = " ".__("isn&#8217;t correct", $cimy_uef_domain);
+						else
+							$equalmsg = ' '.__("should be", $cimy_uef_domain).' '.$equalTo;
+
+						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.$equalmsg.'.');
+					}
+				}
+
+				// CHECK IF IT IS A REAL PICTURE
+				if (($type == "picture") || ($type == "avatar")) {
+					if (stristr($file_type, "image/") === false) {
+						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('should be an image.', $cimy_uef_domain));
+					}
+				}
+
+				// MIN LEN
+				if (isset($rules['min_length'])) {
+					$minlen = intval($rules['min_length']);
+
+					if (in_array($type, $cimy_uef_file_types)) {
+						if ($file_size < $minlen) {
+
+							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size less than', $cimy_uef_domain).' '.$minlen.' KB.');
 						}
 					}
-					
-					// MIN LEN
-					if (isset($rules['min_length'])) {
-						$minlen = intval($rules['min_length']);
-	
-						if (in_array($type, $cimy_uef_file_types)) {
-							if ($file_size < $minlen) {
-								
-								$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size less than', $cimy_uef_domain).' '.$minlen.' KB.');
-							}
-						}
-						else {
-							if (strlen($value) < $minlen) {
-								
-								$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length less than', $cimy_uef_domain).' '.$minlen.'.');
-							}
+					else {
+						if (strlen($value) < $minlen) {
+
+							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length less than', $cimy_uef_domain).' '.$minlen.'.');
 						}
 					}
-					
-					// EXACT LEN
-					if (isset($rules['exact_length'])) {
-						$exactlen = intval($rules['exact_length']);
-						
-						if (in_array($type, $cimy_uef_file_types)) {
-							if ($file_size != $exactlen) {
-								
-								$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size different than', $cimy_uef_domain).' '.$exactlen.' KB.');
-							}
-						}
-						else {
-							if (strlen($value) != $exactlen) {
-								
-								$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length different than', $cimy_uef_domain).' '.$exactlen.'.');
-							}
+				}
+
+				// EXACT LEN
+				if (isset($rules['exact_length'])) {
+					$exactlen = intval($rules['exact_length']);
+
+					if (in_array($type, $cimy_uef_file_types)) {
+						if ($file_size != $exactlen) {
+
+							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size different than', $cimy_uef_domain).' '.$exactlen.' KB.');
 						}
 					}
-					
-					// MAX LEN
-					if (isset($rules['max_length'])) {
-						$maxlen = intval($rules['max_length']);
-						
-						if (in_array($type, $cimy_uef_file_types)) {
-							if ($file_size > $maxlen) {
-								
-								$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size more than', $cimy_uef_domain).' '.$maxlen.' KB.');
-							}
+					else {
+						if (strlen($value) != $exactlen) {
+
+							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length different than', $cimy_uef_domain).' '.$exactlen.'.');
 						}
-						else {
-							if (strlen($value) > $maxlen) {
-								
-								$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length more than', $cimy_uef_domain).' '.$maxlen.'.');
-							}
+					}
+				}
+
+				// MAX LEN
+				if (isset($rules['max_length'])) {
+					$maxlen = intval($rules['max_length']);
+
+					if (in_array($type, $cimy_uef_file_types)) {
+						if ($file_size > $maxlen) {
+
+							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size more than', $cimy_uef_domain).' '.$maxlen.' KB.');
+						}
+					}
+					else {
+						if (strlen($value) > $maxlen) {
+
+							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length more than', $cimy_uef_domain).' '.$maxlen.'.');
 						}
 					}
 				}
 			}
 		}
 	}
-	
+
+	cimy_switch_current_blog();
+
 	return $errors;
 }
 
-function cimy_registration_form($errors=null) {
-	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $is_mu, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $wp_27;
+function cimy_registration_form($errors=null, $show_type=0) {
+	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $is_mu, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $wp_27, $user_level;
+
+// 	cimy_switch_to_blog();
+
+	// if not set, set to -1 == anonymous
+	if (!isset($user_level))
+		$user_level = -1;
 
 	// needed by cimy_uef_init_mce.php
 	$cimy_uef_register_page = true;
@@ -387,7 +503,7 @@ function cimy_registration_form($errors=null) {
 	$i = 1;
 	$upload_image_function = false;
 
-	// do first for the WP fields then for EXTRA fields
+	// do first the WP fields then the EXTRA fields
 	while ($i <= 2) {
 		if ($i == 1) {
 			$fields = $wp_fields;
@@ -396,19 +512,14 @@ function cimy_registration_form($errors=null) {
 		else {
 			$fields = $extra_fields;
 			$prefix = $fields_name_prefix;
-			$current_fieldset = 0;
+			$current_fieldset = -1;
 
 			if ($options['fieldset_title'] != "")
 				$fieldset_titles = explode(',', $options['fieldset_title']);
 			else
 				$fieldset_titles = array();
-			
-			if (isset($fieldset_titles[$current_fieldset]))
-				echo "\n\t<h2>".$fieldset_titles[$current_fieldset]."</h2>\n";
 		}
-		
-		$i++;
-		
+
 		$tiny_mce_objects = "";
 	
 		foreach ($fields as $thisField) {
@@ -425,8 +536,45 @@ function cimy_registration_form($errors=null) {
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;
 
-			if (isset($_POST[$post_input_name]))
-				$value = stripslashes($_POST[$post_input_name]);
+			// showing the search then there is no need to upload buttons
+			if ($show_type == 1) {
+				if ($type == "password")
+					continue;
+
+				if (($type == "avatar") || ($type == "picture") || ($type == "file"))
+					$type = "text";
+			}
+
+			// if the current user LOGGED IN has not enough permissions to see the field, skip it
+			// apply only for EXTRA FIELDS
+			if (($user_level < $rules['show_level']) && ($i == 2))
+				continue;
+
+			// if show_level == anonymous then do NOT ovverride other show_xyz rules
+			if ($rules['show_level'] == -1) {
+				if ($show_type == 0) {
+					// if flag to show the field in the registration is NOT activated, skip it
+					if (!$rules['show_in_reg'])
+						continue;
+				} else if ($show_type == 1) {
+					// if flag to show the field in the blog is NOT activated, skip it
+					if (!$rules['show_in_search'])
+						continue;
+				}
+			}
+
+			if (isset($_POST[$post_input_name])) {
+				if ($type == "dropdown-multi")
+					$value = stripslashes(implode(",", $_POST[$post_input_name]));
+				else
+					$value = stripslashes($_POST[$post_input_name]);
+			}
+			else if (isset($_GET[$name])) {
+				if ($type == "dropdown-multi")
+					$value = stripslashes(implode(",", $_GET[$name]));
+				else
+					$value = stripslashes($_GET[$name]);
+			}
 			// if there is no value and not $_POST means is first visiting then put all default values
 			else if (!isset($_POST["cimy_post"])) {
 				$value = $thisField['VALUE'];
@@ -454,206 +602,230 @@ function cimy_registration_form($errors=null) {
 				$value = "";
 			
 			$value = attribute_escape($value);
-			
-			// if flag to view also in the registration is activated
-			if ($rules['show_in_reg']) {
-				if (($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset])) && ($i != 1)) {
-					$current_fieldset = $fieldset;
 
-					if (isset($fieldset_titles[$current_fieldset]))
-						echo "\n\t<h2>".$fieldset_titles[$current_fieldset]."</h2>\n";
-				}
+			if (($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset])) && ($i != 1)) {
+				$current_fieldset = $fieldset;
 
-				if (($description != "") && ($type != "registration-date")) {
-					echo "\t";
-					echo '<p id="'.$prefix.'p_desc_'.$field_id.'" class="desc"><br />'.$description.'</p>';
-					echo "\n";
-				}
-
-				echo "\t";
-				echo '<p id="'.$prefix.'p_field_'.$field_id.'">';
-				echo "\n\t";
-	
-				switch($type) {
-					case "picture-url":
-					case "password":
-					case "text":
-						$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
-						$obj_class = ' class="'.$input_class.'"';
-						$obj_name = ' name="'.$input_name.'"';
-						
-						if ($type == "picture-url")
-							$obj_type = ' type="text"';
-						else
-							$obj_type = ' type="'.$type.'"';
-						
-						$obj_value = ' value="'.$value.'"';
-						$obj_value2 = "";
-						$obj_checked = "";
-						$obj_tag = "input";
-						$obj_closing_tag = false;
-						break;
-						
-					case "dropdown":
-						$ret = cimy_dropDownOptions($label, $value);
-						$label = $ret['label'];
-						$html = $ret['html'];
-						
-						$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
-						$obj_class = ' class="'.$input_class.'"';
-						$obj_name = ' name="'.$input_name.'"';
-						$obj_type = '';
-						$obj_value = '';
-						$obj_value2 = $html;
-						$obj_checked = "";
-						$obj_tag = "select";
-						$obj_closing_tag = true;
-						break;
-						
-					case "textarea":
-						$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
-						$obj_class = ' class="'.$input_class.'"';
-						$obj_name = ' name="'.$input_name.'"';
-						$obj_type = "";
-						$obj_value = "";
-						$obj_value2 = $value;
-						$obj_checked = "";
-						$obj_tag = "textarea";
-						$obj_closing_tag = true;
-						break;
-						
-					case "textarea-rich":
-						if ($tiny_mce_objects == "")
-							$tiny_mce_objects = $fields_name_prefix.$field_id;
-						else
-							$tiny_mce_objects .= ",".$fields_name_prefix.$field_id;
-
-						$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
-						$obj_class = ' class="'.$input_class.'"';
-						$obj_name = ' name="'.$input_name.'"';
-						$obj_type = "";
-						$obj_value = "";
-						$obj_value2 = $value;
-						$obj_checked = "";
-						$obj_tag = "textarea";
-						$obj_closing_tag = true;
-						break;
-
-					case "checkbox":
-						$obj_label = '<label class="cimy_uef_label_checkbox" for="'.$unique_id.'"> '.$label.'</label><br />';
-						$obj_class = ' class="cimy_uef_checkbox"';
-						$obj_name = ' name="'.$input_name.'"';
-						$obj_type = ' type="'.$type.'"';
-						$obj_value = ' value="1"';
-						$obj_value2 = "";
-						$value == "1" ? $obj_checked = ' checked="checked"' : $obj_checked = '';
-						$obj_tag = "input";
-						$obj_closing_tag = false;
-						break;
-		
-					case "radio":
-						$obj_label = '<label class="cimy_uef_label_radio" for="'.$unique_id.'"> '.$label.'</label>';
-						$obj_class = ' class="cimy_uef_radio"';
-						$obj_name = ' name="'.$input_name.'"';
-						$obj_type = ' type="'.$type.'"';
-						$obj_value = ' value="'.$field_id.'"';
-						$obj_value2 = "";
-						$obj_tag = "input";
-						$obj_closing_tag = false;
-	
-						// do not check if another check was done
-						if ((intval($value) == intval($field_id)) && (!in_array($name, $radio_checked))) {
-							$obj_checked = ' checked="checked"';
-							$radio_checked += array($name => true);
-						}
-						else {
-							$obj_checked = '';
-						}
-						
-						break;
-
-					case "avatar":
-					case "picture":
-						// javascript will be added later
-						$upload_image_function = true;
-						$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
-						$obj_class = ' class="cimy_uef_picture"';
-						$obj_name = ' name="'.$input_name.'"';
-						$obj_type = ' type="file"';
-						$obj_value = ' value="'.$value.'"';
-						$obj_value2 = "";
-						$obj_checked = ' onchange="uploadPic(\'registerform\', \''.$unique_id.'\', \''.__("Please upload an image with one of the following extensions", $cimy_uef_domain).'\');"';
-						$obj_tag = "input";
-						$obj_closing_tag = false;
-						break;
-						
-					case "registration-date":
-						$obj_label = '';
-						$obj_class = '';
-						$obj_name = ' name="'.$input_name.'"';
-						$obj_type = ' type="hidden"';
-						$obj_value = ' value="'.$value.'"';
-						$obj_value2 = "";
-						$obj_checked = "";
-						$obj_tag = "input";
-						$obj_closing_tag = false;
-						break;
-				}
-	
-				$obj_id = ' id="'.$unique_id.'"';
-
-				// tabindex not used in MU, dropping...
-				if ($is_mu)
-					$obj_tabindex = "";
-				else {
-					$obj_tabindex = ' tabindex="'.strval($tabindex).'"';
-					$tabindex++;
-				}
-
-				$obj_maxlen = "";
-	
-				if ((in_array($type, $rule_maxlen_needed)) && (!in_array($type, $cimy_uef_file_types))) {
-					if (isset($rules['max_length'])) {
-						$obj_maxlen = ' maxlength="'.$rules['max_length'].'"';
-					} else if (isset($rules['exact_length'])) {
-						$obj_maxlen = ' maxlength="'.$rules['exact_length'].'"';
-					}
-				}
-				
-				if (in_array($type, $cimy_uef_textarea_types))
-					$obj_rowscols = ' rows="3" cols="25"';
-				else
-					$obj_rowscols = '';
-		
-				echo "\t";
-				$form_object = '<'.$obj_tag.$obj_type.$obj_name.$obj_id.$obj_class.$obj_value.$obj_checked.$obj_maxlen.$obj_rowscols.$obj_tabindex;
-				
-				if ($obj_closing_tag)
-					$form_object.= ">".$obj_value2."</".$obj_tag.">";
-				else
-					$form_object.= " />";
-	
-				if (($type != "radio") && ($type != "checkbox"))
-					echo $obj_label;
-
-				if ($is_mu) {
-					if ( $errmsg = $errors->get_error_message($unique_id) ) {
-						echo '<p class="error">'.$errmsg.'</p>';
-					}
-				}
-
-				// write to the html the form object built
-				echo $form_object;
-	
-				if (!(($type != "radio") && ($type != "checkbox")))
-					echo $obj_label;
-
-				echo "\n\t</p>\n";
-
-				if ((($type == "textarea-rich") || (in_array($type, $cimy_uef_file_types))) && ($wp_27))
-					echo "\t<br />\n";
+				if (isset($fieldset_titles[$current_fieldset]))
+					echo "\n\t<h2>".$fieldset_titles[$current_fieldset]."</h2>\n";
 			}
+
+			if (($description != "") && ($type != "registration-date")) {
+				echo "\t";
+				echo '<p id="'.$prefix.'p_desc_'.$field_id.'" class="desc"><br />'.$description.'</p>';
+				echo "\n";
+			}
+
+			echo "\t";
+			echo '<p id="'.$prefix.'p_field_'.$field_id.'">';
+			echo "\n\t";
+	
+			switch($type) {
+				case "picture-url":
+				case "password":
+				case "text":
+					$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
+					$obj_class = ' class="'.$input_class.'"';
+					$obj_name = ' name="'.$input_name.'"';
+
+					if ($type == "picture-url")
+						$obj_type = ' type="text"';
+					else
+						$obj_type = ' type="'.$type.'"';
+
+					$obj_value = ' value="'.$value.'"';
+					$obj_value2 = "";
+					$obj_checked = "";
+					$obj_tag = "input";
+					$obj_closing_tag = false;
+					break;
+
+				case "dropdown":
+				case "dropdown-multi":
+					$ret = cimy_dropDownOptions($label, $value);
+					$label = $ret['label'];
+					$html = $ret['html'];
+
+					if ($type == "dropdown-multi") {
+						$obj_name = ' name="'.$input_name.'[]" multiple="multiple" size="6"';
+					}
+					else {
+						$obj_name = ' name="'.$input_name.'"';
+					}
+
+					$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
+					$obj_class = ' class="'.$input_class.'"';
+					$obj_type = '';
+					$obj_value = '';
+					$obj_value2 = $html;
+					$obj_checked = "";
+					$obj_tag = "select";
+					$obj_closing_tag = true;
+					break;
+
+				case "textarea":
+					$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
+					$obj_class = ' class="'.$input_class.'"';
+					$obj_name = ' name="'.$input_name.'"';
+					$obj_type = "";
+					$obj_value = "";
+					$obj_value2 = $value;
+					$obj_checked = "";
+					$obj_tag = "textarea";
+					$obj_closing_tag = true;
+					break;
+
+				case "textarea-rich":
+					if ($tiny_mce_objects == "")
+						$tiny_mce_objects = $fields_name_prefix.$field_id;
+					else
+						$tiny_mce_objects .= ",".$fields_name_prefix.$field_id;
+
+					$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
+					$obj_class = ' class="'.$input_class.'"';
+					$obj_name = ' name="'.$input_name.'"';
+					$obj_type = "";
+					$obj_value = "";
+					$obj_value2 = $value;
+					$obj_checked = "";
+					$obj_tag = "textarea";
+					$obj_closing_tag = true;
+					break;
+
+				case "checkbox":
+					$obj_label = '<label class="cimy_uef_label_checkbox" for="'.$unique_id.'"> '.$label.'</label><br />';
+					$obj_class = ' class="cimy_uef_checkbox"';
+					$obj_name = ' name="'.$input_name.'"';
+					$obj_type = ' type="'.$type.'"';
+					$obj_value = ' value="1"';
+					$obj_value2 = "";
+					$value == "1" ? $obj_checked = ' checked="checked"' : $obj_checked = '';
+					$obj_tag = "input";
+					$obj_closing_tag = false;
+					break;
+		
+				case "radio":
+					$obj_label = '<label class="cimy_uef_label_radio" for="'.$unique_id.'"> '.$label.'</label>';
+					$obj_class = ' class="cimy_uef_radio"';
+					$obj_name = ' name="'.$input_name.'"';
+					$obj_type = ' type="'.$type.'"';
+					$obj_value = ' value="'.$field_id.'"';
+					$obj_value2 = "";
+					$obj_tag = "input";
+					$obj_closing_tag = false;
+	
+					// do not check if another check was done
+					if ((intval($value) == intval($field_id)) && (!in_array($name, $radio_checked))) {
+						$obj_checked = ' checked="checked"';
+						$radio_checked += array($name => true);
+					}
+					else {
+						$obj_checked = '';
+					}
+
+					break;
+
+				case "avatar":
+				case "picture":
+				case "file":
+					$allowed_exts = '';
+					if (isset($rules['equal_to']))
+						if ($rules['equal_to'] != "")
+							$allowed_exts = "'".implode("', '", explode(",", $rules['equal_to']))."'";
+
+					if ($type == "file") {
+						// if we do not escape then some translations can break
+						$warning_msg = $wpdb->escape(__("Please upload a file with one of the following extensions", $cimy_uef_domain));
+
+						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array('.$allowed_exts.'));"';
+					}
+					else {
+						// if we do not escape then some translations can break
+						$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
+
+						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array(\'gif\', \'png\', \'jpg\', \'jpeg\', \'tiff\'));"';
+					}
+
+					// javascript will be added later
+					$upload_file_function = true;
+					$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
+					$obj_class = ' class="cimy_uef_picture"';
+					$obj_name = ' name="'.$input_name.'"';
+					$obj_type = ' type="file"';
+					$obj_value = ' value="'.$value.'"';
+					$obj_value2 = "";
+					$obj_tag = "input";
+					$obj_closing_tag = false;
+					break;
+
+				case "registration-date":
+					$obj_label = '';
+					$obj_class = '';
+					$obj_name = ' name="'.$input_name.'"';
+					$obj_type = ' type="hidden"';
+					$obj_value = ' value="'.$value.'"';
+					$obj_value2 = "";
+					$obj_checked = "";
+					$obj_tag = "input";
+					$obj_closing_tag = false;
+					break;
+			}
+	
+			$obj_id = ' id="'.$unique_id.'"';
+
+			// tabindex not used in MU, dropping...
+			if ($is_mu)
+				$obj_tabindex = "";
+			else {
+				$obj_tabindex = ' tabindex="'.strval($tabindex).'"';
+				$tabindex++;
+			}
+
+			$obj_maxlen = "";
+	
+			if ((in_array($type, $rule_maxlen_needed)) && (!in_array($type, $cimy_uef_file_types))) {
+				if (isset($rules['max_length'])) {
+					$obj_maxlen = ' maxlength="'.$rules['max_length'].'"';
+				} else if (isset($rules['exact_length'])) {
+					$obj_maxlen = ' maxlength="'.$rules['exact_length'].'"';
+				}
+			}
+
+			if (in_array($type, $cimy_uef_textarea_types))
+				$obj_rowscols = ' rows="3" cols="25"';
+			else
+				$obj_rowscols = '';
+
+			echo "\t";
+			$form_object = '<'.$obj_tag.$obj_type.$obj_name.$obj_id.$obj_class.$obj_value.$obj_checked.$obj_maxlen.$obj_rowscols.$obj_tabindex;
+
+			if ($obj_closing_tag)
+				$form_object.= ">".$obj_value2."</".$obj_tag.">";
+			else
+				$form_object.= " />";
+
+			if (($type != "radio") && ($type != "checkbox"))
+				echo $obj_label;
+
+			if ($is_mu) {
+				if ( $errmsg = $errors->get_error_message($unique_id) ) {
+					echo '<p class="error">'.$errmsg.'</p>';
+				}
+			}
+
+			// write to the html the form object built
+			echo $form_object;
+
+			if (!(($type != "radio") && ($type != "checkbox")))
+				echo $obj_label;
+
+			echo "\n\t</p>\n";
+
+			if ((($type == "textarea-rich") || (in_array($type, $cimy_uef_file_types))) && ($wp_27))
+				echo "\t<br />\n";
 		}
+
+		$i++;
 	}
 	
 	if ($tiny_mce_objects != "") {
@@ -662,8 +834,10 @@ function cimy_registration_form($errors=null) {
 		require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 	}
 
-	if ($upload_image_function)
-		wp_print_scripts("cimy_uef_upload_pic");
+	if ($upload_file_function)
+		wp_print_scripts("cimy_uef_upload_file");
+
+	cimy_switch_current_blog(true);
 
 	echo $end_cimy_uef_comment;
 }

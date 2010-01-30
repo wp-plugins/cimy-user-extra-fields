@@ -2,7 +2,7 @@
 
 function get_cimyFields($wp_fields=false, $order_by_section=false) {
 	global $wpdb_fields_table, $wpdb_wp_fields_table, $wpdb;
-	
+
 	if ($wp_fields)
 		$table = $wpdb_wp_fields_table;
 	else
@@ -81,8 +81,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 				efields.TYPE,
 				data.VALUE
 		
-			FROM 	<wp users table> as users,
-				<uef data table> as data
+			FROM 	<uef data table> as data
 		
 			JOIN	<uef fields table> as efields
 		
@@ -94,7 +93,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 				AND (efields.TYPE!='radio' OR data.VALUE!='')
 				[AND data.VALUE=<field_value>]
 		*/
-		$sql = "SELECT efields.LABEL, efields.TYPE, data.VALUE FROM ".$wpdb->users." as users, ".$wpdb_data_table." as data JOIN ".$wpdb_fields_table." as efields ON efields.id=data.field_id WHERE efields.name='".$field_name."' AND data.USER_ID=".$user_id." AND efields.TYPE!='password' AND (efields.TYPE!='radio' OR data.VALUE!='')".$sql_field_value;
+		$sql = "SELECT efields.LABEL, efields.TYPE, data.VALUE FROM ".$wpdb_data_table." as data JOIN ".$wpdb_fields_table." as efields ON efields.id=data.field_id WHERE efields.name='".$field_name."' AND data.USER_ID=".$user_id." AND efields.TYPE!='password' AND (efields.TYPE!='radio' OR data.VALUE!='')".$sql_field_value;
 	}
 	
 	// only USER_ID provided
@@ -207,7 +206,7 @@ function cimy_change_radio_labels($field_data) {
 		if ($field_data[$i]['TYPE'] == "radio") {
 			$field_data[$i]['VALUE'] = $field_data[$i]['LABEL'];
 		}
-		else if ($field_data[$i]['TYPE'] == "dropdown") {
+		else if (($field_data[$i]['TYPE'] == "dropdown") || ($field_data[$i]['TYPE'] == "dropdown-multi")) {
 			$ret = cimy_dropDownOptions($field_data[$i]['LABEL'], false);
 			
 			$field_data[$i]['LABEL'] = $ret['label'];
@@ -248,8 +247,10 @@ function cimy_dropDownOptions($values, $selected) {
 	else
 		$label = "";
 	
-	$items = explode(",",$values);
+	$items = explode(",", $values);
+	$sel_items = explode(",", $selected);
 	$html_options = "";
+	$sel_i = 0;
 	
 	foreach ($items as $item) {
 		$item_clean = trim($item, "\t\n\r");
@@ -257,9 +258,12 @@ function cimy_dropDownOptions($values, $selected) {
 		$html_options.= "\n\t\t\t";
 		$html_options.= '<option value="'.$item_clean.'"';
 	
-		if  (isset($selected))
-			if ($selected == $item_clean)
+		if  (isset($sel_items[$sel_i])) {
+			if ($sel_items[$sel_i] == $item_clean) {
+				$sel_i++;
 				$html_options.= ' selected="selected"';
+			}
+		}
 
 		$html_options.= ">".$item_clean."</option>";
 	}
@@ -298,9 +302,9 @@ function cimy_uef_sanitize_content($content, $override_allowed_tags=null) {
 }
 
 function cimy_check_admin($permission) {
-	global $is_mu;
+	global $is_mu, $cimy_uef_plugins_dir;
 
-	if ($is_mu)
+	if (($is_mu) && ($cimy_uef_plugins_dir == "mu-plugins"))
 		return is_site_admin();
 	else
 		return current_user_can($permission);

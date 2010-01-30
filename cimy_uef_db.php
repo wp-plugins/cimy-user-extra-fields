@@ -128,6 +128,45 @@ function cimy_plugin_install () {
 			$wpdb->query($sql);
 		}
 
+		if (version_compare($options['version'], "1.4.0", "<=") === true) {
+			$sql = "ALTER TABLE ".$wpdb_data_table." MODIFY COLUMN VALUE LONGTEXT";
+			$wpdb->query($sql);
+		}
+
+
+		// add $rules[show_in_blog]=true and $rules[show_level]=-1
+		if (version_compare($options['version'], "1.5.0-beta1", "<=") === true) {
+			for ($i = 0; $i <= 1; $i++) {
+				if ($i == 0)
+					$the_table = $wpdb_wp_fields_table;
+				else
+					$the_table = $wpdb_fields_table;
+
+				$sql = "SELECT ID, RULES FROM ".$the_table;
+				$all_rules = $wpdb->get_results($sql, ARRAY_A);
+
+				if (isset($all_rules)) {
+					foreach ($all_rules as $rule) {
+						$rule_to_be_updated = unserialize($rule["RULES"]);
+						$rule_id = $rule["ID"];
+	
+						// do not add show_level to $wpdb_wp_fields_table
+						if ((!isset($rule_to_be_updated["show_level"]))  && ($i == 1))
+							$rule_to_be_updated["show_level"] = -1;
+		
+						if (!isset($rule_to_be_updated["show_in_blog"]))
+							$rule_to_be_updated["show_in_blog"] = true;
+	
+						if (!isset($rule_to_be_updated["show_in_search"]))
+							$rule_to_be_updated["show_in_search"] = true;
+		
+						$sql = "UPDATE ".$the_table." SET RULES='".$wpdb->escape(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
+						$wpdb->query($sql);
+					}
+				}
+			}
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);
@@ -244,6 +283,57 @@ function cimy_manage_db($command) {
 	}
 }
 
+// function to delete all files/subdirs in a path
+// taken from PHP unlink's documentation comment by torch - torchsdomain dot com @ 22-Nov-2006 09:27
+// modified by Marco Cimmino to delete correctly call recursion before so can also delete subdirs when empty
+if (!function_exists(cimy_rfr)) {
+	function cimy_rfr($path, $match) {
+		static $deld = 0, $dsize = 0;
+
+		// remember that glob returns FALSE in case of error
+		$dirs = glob($path."*");
+		$files = glob($path.$match);
+
+		// call recursion before so we delete files in subdirs first!
+		if (is_array($dirs)) {
+			foreach ($dirs as $dir) {
+				if (is_dir($dir)) {
+					$dir = basename($dir) . "/";
+					cimy_rfr($path.$dir, $match);
+				}
+			}
+		}
+
+		if (is_array($files)) {
+			foreach ($files as $file) {
+				if (is_file($file)) {
+					$dsize += filesize($file);
+					unlink($file);
+					$deld++;
+				}
+				else if (is_dir($file)) {
+					rmdir($file);
+				}
+			}
+		}
+
+		return "$deld files deleted with a total size of $dsize bytes";
+	}
+}
+
+function cimy_delete_blog_info($blog_id, $drop) {
+	global $cuef_upload_path;
+
+	$file_path = $cuef_upload_path.$blog_id."/";
+	
+	// delete all uploaded files for that users
+	cimy_rfr($file_path, "*");
+	
+	// delete also the subdir
+	if (is_dir($file_path))
+		rmdir($file_path);
+}
+
 function cimy_delete_users_info($fields_id) {
 	global $wpdb, $wpdb_data_table;
 	
@@ -259,44 +349,6 @@ function cimy_delete_user_info($user_id) {
 	
 	if (!current_user_can('edit_user', $user_id))
 		return;
-	
-	// function to delete all files/subdirs in a path
-	// taken from PHP unlink's documentation comment by torch - torchsdomain dot com @ 22-Nov-2006 09:27
-	// modified by Marco Cimmino to delete correctly call recursion before so can also delete subdirs when empty
-	if (!function_exists(cimy_rfr)) {
-		function cimy_rfr($path, $match) {
-			static $deld = 0, $dsize = 0;
-
-			// remember that glob returns FALSE in case of error
-			$dirs = glob($path."*");
-			$files = glob($path.$match);
-
-			// call recursion before so we delete files in subdirs first!
-			if (is_array($dirs)) {
-				foreach ($dirs as $dir) {
-					if (is_dir($dir)) {
-						$dir = basename($dir) . "/";
-						cimy_rfr($path.$dir, $match);
-					}
-				}
-			}
-
-			if (is_array($files)) {
-				foreach ($files as $file) {
-					if (is_file($file)) {
-						$dsize += filesize($file);
-						unlink($file);
-						$deld++;
-					}
-					else if (is_dir($file)) {
-						rmdir($file);
-					}
-				}
-			}
-
-			return "$deld files deleted with a total size of $dsize bytes";
-		}
-	}
 	
 	$sql = "DELETE FROM ".$wpdb_data_table." WHERE USER_ID=".$user_id;
 	$wpdb->query($sql);
@@ -327,9 +379,9 @@ function cimy_insert_ExtraFields_if_not_exist($user_id, $field_id) {
 }
 
 function cimy_get_options() {
-	global $is_mu, $cimy_uef_options;
+	global $is_mu, $cimy_uef_options, $cimy_uef_plugins_dir;
 
-	if ($is_mu)
+	if (($is_mu) && ($cimy_uef_plugins_dir == "mu-plugins"))
 		$options = get_site_option($cimy_uef_options);
 	else
 		$options = get_option($cimy_uef_options);
@@ -338,9 +390,9 @@ function cimy_get_options() {
 }
 
 function cimy_set_options($options) {
-	global $is_mu, $cimy_uef_options, $cimy_uef_options_descr;
+	global $is_mu, $cimy_uef_options, $cimy_uef_options_descr, $cimy_uef_plugins_dir;
 
-	if ($is_mu)
+	if (($is_mu) && ($cimy_uef_plugins_dir == "mu-plugins"))
 		update_site_option($cimy_uef_options, $options);
 	else
 		update_option($cimy_uef_options, $options, $cimy_uef_options_descr, "no");

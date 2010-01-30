@@ -228,7 +228,7 @@ function cimy_save_options() {
 			}
 		}
 
-		if (isset($_POST['show_wp_bio_info'])) {
+		if (isset($_POST['show_wp_bio-info'])) {
 			array_push($options['wp_hidden_fields'], 'bio-info');
 			
 			if (!in_array("bio-info", $old_wp_hidden_fields)) {
@@ -397,6 +397,8 @@ function cimy_show_options($results, $embedded) {
 
 	if ((isset($cimy_top_menu)) && ($embedded))
 		return $ret;
+
+	$update_db_label = $wpdb->escape(__("This operation will create/update all missing tables/options, do you want to proceed?", $cimy_uef_domain));
 	
 	?>
 	
@@ -445,12 +447,12 @@ function cimy_show_options($results, $embedded) {
 					?><br /><h4><?php _e("OPTIONS DELETED!", $cimy_uef_domain); ?></h4>
 					<input type="hidden" name="do_not_save_options" value="1" />
 
-					<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="force_activation" value="<?php _e("Fix the problem", $cimy_uef_domain); ?>" onclick="return confirm('<?php _e("This operation will create/update all missing tables/options, do you want to proceed?", $cimy_uef_domain); ?>');" /></p><?php
+					<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="force_activation" value="<?php _e("Fix the problem", $cimy_uef_domain); ?>" onclick="return confirm('<?php echo $update_db_label; ?>');" /></p><?php
 				}
 				else if ($cimy_uef_version != $options['version']) {
 					?><br /><h4><?php _e("VERSIONS MISMATCH! This because you haven't de-activated and re-activated the plug-in after the update! This could give problems...", $cimy_uef_domain); ?></h4>
 
-					<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="force_activation" value="<?php _e("Fix the problem", $cimy_uef_domain); ?>" onclick="return confirm('<?php _e("This operation will create/update all missing tables/options, do you want to proceed?", $cimy_uef_domain); ?>');" /></p><?php
+					<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="force_activation" value="<?php _e("Fix the problem", $cimy_uef_domain); ?>" onclick="return confirm('<?php echo $update_db_label; ?>');" /></p><?php
 				}
 				?>
 			</td>
@@ -632,7 +634,7 @@ function cimy_show_options($results, $embedded) {
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="show_wp_bio_info" value="1"<?php echo $show_wp_bio_info.$dis_wp_fields; ?> /> <?php _e("Show Biographical Info", $cimy_uef_domain); ?></th>
+			<th scope="row"><input type="checkbox" name="show_wp_bio-info" value="1"<?php echo $show_wp_bio_info.$dis_wp_fields; ?> /> <?php _e("Show Biographical Info", $cimy_uef_domain); ?></th>
 			<td></td>
 		</tr>
 	</table>

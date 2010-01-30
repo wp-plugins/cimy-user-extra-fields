@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 1.4.0
+Version: 1.5.0
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -11,7 +11,7 @@ Author URI: mailto:cimmino.marco@gmail.com
 /*
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
-Copyright (c) 2006-2009 Marco Cimmino
+Copyright (c) 2006-2010 Marco Cimmino
 
 Code for drop-down support is in part from Raymond Elferink raymond@raycom.com
 Code for regular expression under equalTo rule is in part from Shane Hartman shane@shanehartman.com
@@ -36,28 +36,45 @@ The full copy of the GNU General Public License is available here: http://www.gn
 */
 
 // added for WordPress >=2.5 compatibility
-global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path, $cimy_uef_domain, $wp_27;
+global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path, $cimy_uef_domain, $wp_27, $cimy_uef_plugins_dir;
 
-if (isset($wpmu_version)) {
-	$is_mu = true;
+function cimy_uef_set_tables() {
+	global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cuef_upload_path, $cimy_uef_domain, $cimy_uef_plugins_dir, $wpmu_version, $wpmuBaseTablePrefix;
 
-	$old_wpdb_data_table = $wpmuBaseTablePrefix."cimy_data";
-	$old_wpdb_fields_table = $wpmuBaseTablePrefix."cimy_fields";
-	
-	$wpdb_data_table = $wpmuBaseTablePrefix."cimy_uef_data";
-	$wpdb_fields_table = $wpmuBaseTablePrefix."cimy_uef_fields";
-	$wpdb_wp_fields_table = $wpmuBaseTablePrefix."cimy_uef_wp_fields";
+	if (isset($wpmu_version)) {
+		$is_mu = true;
+
+		$cimy_uef_plugins_dir = __FILE__;
+		if (!stristr($cimy_uef_plugins_dir, "mu-plugins") === false) {
+			$cimy_uef_plugins_dir = "mu-plugins";
+			$wpdb_data_table = $wpmuBaseTablePrefix."cimy_uef_data";
+			$wpdb_fields_table = $wpmuBaseTablePrefix."cimy_uef_fields";
+			$wpdb_wp_fields_table = $wpmuBaseTablePrefix."cimy_uef_wp_fields";
+		}
+		else {
+			$cimy_uef_plugins_dir = "plugins";
+			$wpdb_data_table = $wpdb->prefix."cimy_uef_data";
+			$wpdb_fields_table = $wpdb->prefix."cimy_uef_fields";
+			$wpdb_wp_fields_table = $wpdb->prefix."cimy_uef_wp_fields";
+		}
+
+		$old_wpdb_data_table = $wpmuBaseTablePrefix."cimy_data";
+		$old_wpdb_fields_table = $wpmuBaseTablePrefix."cimy_fields";
+	}
+	else {
+		$is_mu = false;
+		$cimy_uef_plugins_dir = "plugins";
+
+		$old_wpdb_data_table = $wpdb->prefix."cimy_data";
+		$old_wpdb_fields_table = $wpdb->prefix."cimy_fields";
+
+		$wpdb_data_table = $wpdb->prefix."cimy_uef_data";
+		$wpdb_fields_table = $wpdb->prefix."cimy_uef_fields";
+		$wpdb_wp_fields_table = $wpdb->prefix."cimy_uef_wp_fields";
+	}
 }
-else {
-	$is_mu = false;
 
-	$old_wpdb_data_table = $wpdb->prefix."cimy_data";
-	$old_wpdb_fields_table = $wpdb->prefix."cimy_fields";
-
-	$wpdb_data_table = $wpdb->prefix."cimy_uef_data";
-	$wpdb_fields_table = $wpdb->prefix."cimy_uef_fields";
-	$wpdb_wp_fields_table = $wpdb->prefix."cimy_uef_wp_fields";
-}
+cimy_uef_set_tables();
 
 if (version_compare($wp_version, "2.6.9999", ">") === true) {
 	$wp_27 = true;
@@ -74,19 +91,19 @@ $cimy_uef_options_descr = "Cimy User Extra Fields options are stored here and mo
 RULES (stored into an associative array and serialized):
 
 - 'min_length':			[int]		=> specify min length
-[only for text, textarea, textarea-rich, password, picture, picture-url, avatar]
+[only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
 
 - 'exact_length':		[int]		=> specify exact length
-[only for text, textarea, textarea-rich, password, picture, picture-url, avatar]
+[only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
 
 - 'max_length':			[int]		=> specify max length
-[only for text, textarea, textarea-rich, password, picture, picture-url, avatar]
+[only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
 
 - 'email':			[true | false]	=> check or not for email syntax
 [only for text, textarea, textarea-rich, password]
 
 - 'can_be_empty':		[true | false]	=> field can or cannot be empty
-[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, avatar]
+[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file]
 
 - 'edit':
 	'ok_edit' 				=> field can be modified
@@ -94,17 +111,17 @@ RULES (stored into an associative array and serialized):
 	'edit_only_by_admin' 			=> field can be modified only by administrator
 	'edit_only_by_admin_or_if_empty' 	=> field can be modified only by administrator or if it's still empty
 	'no_edit' 				=> field cannot be modified
-[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, avatar]
+[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file]
 [for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
 
 - 'equal_to':			[string] => field should be equal to a specify string
 [all except avatar]
 
 - 'equal_to_case_sensitive':	[true | false] => equal_to if selected can be case sensitive or not
-[only for text, textarea, textarea-rich, password, dropdown]
+[only for text, textarea, textarea-rich, password, dropdown, dropdown-multi]
 
 - 'equal_to_regex':             [true | false] => equal_to if selected must match regular expression specified in value
-[only for text, textarea, textarea-rich, password, dropdown]
+[only for text, textarea, textarea-rich, password, dropdown, dropdown-multi]
 
 - 'show_in_reg':		[true | false]	=> field is visible or not in the registration
 [all]
@@ -123,10 +140,12 @@ TYPE can be:
 - 'checkbox'
 - 'radio'
 - 'dropdown'
+- 'dropdown-multi'
 - 'picture'
 - 'picture-url'
 - 'registration-date'
 - 'avatar'
+- 'file'
 
 */
 
@@ -144,15 +163,15 @@ $cuef_upload_webpath = WP_CONTENT_URL."/Cimy_User_Extra_Fields/";
 
 if ($is_mu) {
 	$cuef_plugin_path = "Cimy_User_Extra_Fields/";
-	$cuef_plugin_dir = WP_CONTENT_DIR."/mu-plugins/";
+	$cuef_plugin_dir = WP_CONTENT_DIR."/".$cimy_uef_plugins_dir."/";
 
 	if (!is_dir($cuef_plugin_dir.$cuef_plugin_path))
 		$cuef_plugin_path = "cimy-user-extra-fields/";
 
 	$cuef_plugin_dir.= $cuef_plugin_path;
 	$cuef_langs_setup_dir = MUPLUGINDIR.'/'.$cuef_plugin_path.'langs';
-	$cuef_css_webpath = WP_CONTENT_URL."/mu-plugins/".$cuef_plugin_path."css/";
-	$cuef_js_webpath = WP_CONTENT_URL."/mu-plugins/".$cuef_plugin_path."js/";
+	$cuef_css_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."css/";
+	$cuef_js_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."js/";
 }
 else {
 	$cuef_plugin_dir = WP_CONTENT_DIR."/plugins/".$cuef_plugin_path;
@@ -161,7 +180,7 @@ else {
 	$cuef_js_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."js/";
 }
 
-wp_register_script("cimy_uef_upload_pic", $cuef_js_webpath."upload_pic.js", false, false);
+wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."upload_file.js", false, false);
 wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."invert_sel.js", false, false);
 wp_register_style("cimy_uef_register", $cuef_css_webpath."cimy_uef_register.css", false, false);
 
@@ -173,12 +192,12 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "1.4.0";
+$cimy_uef_version = "1.5.0";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 
 $start_cimy_uef_comment = "<!--\n";
 $start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version."\n";
-$start_cimy_uef_comment .= "\tCopyright (c) 2006-2009 Marco Cimmino\n";
+$start_cimy_uef_comment .= "\tCopyright (c) 2006-2010 Marco Cimmino\n";
 $start_cimy_uef_comment .= "\t".$cimy_uef_url."\n";
 $start_cimy_uef_comment .= "-->\n";
 
@@ -209,8 +228,11 @@ $wp_hidden_fields = array(
 								'edit' => 'ok_edit',
 								'email' => false,
 								'show_in_reg' => true,
-								'show_in_profile' => false,
+								'show_in_profile' => true,
 								'show_in_aeu' => false,
+								'show_in_search' => false,
+								'show_in_blog' => false,
+								'show_level' => -1,
 								),
 					),
 			'firstname' => array(
@@ -228,6 +250,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			'lastname' => array(
@@ -245,6 +270,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			'nickname' => array(
@@ -262,6 +290,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			'website' => array(
@@ -279,6 +310,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			'aim' => array(
@@ -296,6 +330,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			'yahoo' => array(
@@ -313,6 +350,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			'jgt' => array(
@@ -330,6 +370,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			'bio-info' => array(
@@ -347,6 +390,9 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
+								'show_in_search' => true,
+								'show_in_blog' => true,
+								'show_level' => -1,
 								),
 					),
 			);
@@ -358,45 +404,45 @@ $wp_hidden_fields = array(
 //$light_illegal_chars = "/(\%27)|(\/)|(\\\)|(\[)|(\])|(\-\-)|(\%23)|(\#)/ix";
 
 // all available types
-$available_types = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "picture", "picture-url", "registration-date", "avatar");
+$available_types = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "avatar", "file");
 
 // types that should be pass registration check for equal to rule
-$apply_equalto_rule = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown");
+$apply_equalto_rule = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi");
 
 // types that can have 'can be empty' rule
-$rule_canbeempty = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "dropdown", "avatar");
+$rule_canbeempty = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "dropdown", "dropdown-multi", "avatar", "file");
 
 // common for min, exact and max length
-$rule_maxlen = array("text", "password", "textarea", "textarea-rich", "picture", "picture-url", "avatar");
+$rule_maxlen = array("text", "password", "textarea", "textarea-rich", "picture", "picture-url", "avatar", "file");
 
 // common for min, exact and max length
-$rule_maxlen_needed = array("text", "password", "picture", "picture-url", "avatar");
+$rule_maxlen_needed = array("text", "password", "picture", "picture-url", "avatar", "file");
 
 // types that can have 'check for email syntax' rule
 $rule_email = array("text", "textarea", "textarea-rich", "password");
 
 // types that can admit a default value if empty
-$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar");
+$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file");
 
 // types that can have 'equal to' rule
-$rule_equalto = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "picture", "picture-url", "registration-date");
+$rule_equalto = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "file");
 
 // types that can have 'case (in)sensitive equal to' rule
-$rule_equalto_case_sensitive = array("text", "textarea", "textarea-rich", "password", "dropdown");
+$rule_equalto_case_sensitive = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi");
 
 // types that can have regex equal to rule
-$rule_equalto_regex  = array("text", "textarea", "textarea-rich", "password", "dropdown");
+$rule_equalto_regex  = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi");
 
 // types that are file to be uploaded
-$cimy_uef_file_types = array("picture", "avatar");
+$cimy_uef_file_types = array("picture", "avatar", "file");
 
 // type that are textarea and needs rows and cols attributes
 $cimy_uef_textarea_types = array("textarea", "textarea-rich");
 
 $max_length_name = 20;
-$max_length_label = 5000;
-$max_length_desc = 5000;
-$max_length_value = 5000;
+$max_length_label = 50000;
+$max_length_desc = 50000;
+$max_length_value = 50000;
 $max_length_fieldset_value = 1024;
 $max_length_extra_fields_title = 100;
 
@@ -408,10 +454,16 @@ $wp_fields_name_prefix = "cimy_uef_wp_";
 
 // added for WordPress MU support
 if ($is_mu) {
-	// add extra fields to registration form
-	add_action('signup_extra_fields', 'cimy_registration_form');
+	// add action to delete all files/images when deleting a blog
+	add_action('delete_blog', 'cimy_delete_blog_info', 10, 2);
+
+	// add filter to modify signup URL for WordPress MU where plug-in is installed per blog
+	add_filter('wp_signup_location', 'cimy_change_signup_location');
 
 	// add extra fields to registration form
+	add_action('signup_extra_fields', 'cimy_registration_form', 1);
+
+	// add checks for extra fields in the registration form
 	add_filter('wpmu_validate_user_signup', 'cimy_registration_check_mu_wrapper');
 
 	// add custom login/registration css
@@ -452,7 +504,7 @@ else {
 	add_action('register_post', 'cimy_registration_check', 10, 3);
 	
 	// add extra fields to registration form
-	add_action('register_form', 'cimy_registration_form');
+	add_action('register_form', 'cimy_registration_form', 1);
 
 	// add custom login/registration css
 	add_action('login_head', 'cimy_uef_register_css');
@@ -461,9 +513,19 @@ else {
 	add_action('user_register', 'cimy_register_user_extra_fields');
 }
 
-/*function cimy_register_user_extra_fields_stage2($errors) {
-	
-}*/
+function cimy_change_signup_location($url) {
+	global $blog_id, $current_site, $cimy_uef_plugins_dir;
+
+	if ($cimy_uef_plugins_dir == "plugins")
+		$attribute = "?blog_id=".$blog_id;
+	else
+		$attribute = "";
+
+	return "http://" . $current_site->domain . $current_site->path . "wp-signup.php".$attribute;
+}
+
+// add checks for extra fields in the profile form
+add_action('user_profile_update_errors', 'cimy_profile_check_wrapper', 10, 3);
 
 // add extra fields to user's profile
 add_action('show_user_profile', 'cimy_extract_ExtraFields');
@@ -602,7 +664,7 @@ function cimy_uef_i18n_setup() {
 }
 
 function cimy_admin_menu_custom() {
-	global $cimy_uef_name, $cimy_uef_domain, $is_mu, $cimy_top_menu;
+	global $cimy_uef_name, $cimy_uef_domain, $is_mu, $cimy_top_menu, $cimy_uef_plugins_dir;
 	
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -613,7 +675,7 @@ function cimy_admin_menu_custom() {
 		add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 10, "au_extended", 'cimy_admin_users_list_page');
 	}
 	else {
-		if ($is_mu) {
+		if (($is_mu) && ($cimy_uef_plugins_dir == "mu-plugins")) {
 			add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 10, "users_extended", 'cimy_admin_users_list_page');
 			add_submenu_page('wpmu-admin.php', $cimy_uef_name, $cimy_uef_name, 10, "user_extra_fields", 'cimy_admin_define_extra_fields');
 		}
@@ -624,16 +686,34 @@ function cimy_admin_menu_custom() {
 	}
 }
 
-function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $is_avatar=false) {
-	global $cuef_upload_path, $cuef_upload_webpath, $cuef_plugin_dir;
+function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="") {
+	global $cuef_upload_path, $cuef_upload_webpath, $cuef_plugin_dir, $cimy_uef_plugins_dir, $is_mu;
 
-	if ($is_avatar)
+	/*if ($is_avatar)
 		$avatar_path = "/avatar";
 	else
-		$avatar_path = "";
+		$avatar_path = "";*/
 
-	$user_path = $cuef_upload_path.$user_login."/";
-	$file_path = $cuef_upload_path.$user_login.$avatar_path."/";
+	if ($type == "picture")
+		$type = "";
+
+	$type_path = "/".$type;
+	$blog_path = $cuef_upload_path;
+
+	if (($cimy_uef_plugins_dir == "plugins") && ($is_mu)) {
+		global $blog_id;
+
+		$blog_path .= $blog_id."/";
+
+		// create blog subdir
+		if (!is_dir($blog_path)) {
+			mkdir($blog_path, 0777);
+			chmod($blog_path, 0777);
+		}
+	}
+
+	$user_path = $blog_path.$user_login."/";
+	$file_path = $blog_path.$user_login.$type_path."/";
 	$file_name = $_FILES[$input_name]['name'];
 
 	// protect from site traversing
@@ -665,7 +745,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	}
 
 	// create avatar subdir if needed
-	if (($is_avatar) && (!is_dir($file_path))) {
+	if (($type != "") && (!is_dir($file_path))) {
 		mkdir($file_path, 0777);
 		chmod($file_path, 0777);
 	}
@@ -674,7 +754,12 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	$file_full_path = $file_path.$file_name;
 	
 	// picture url to write in the DB
-	$data = $cuef_upload_webpath.$user_login.$avatar_path."/".$file_name;
+	$data = $cuef_upload_webpath;
+
+	if (($cimy_uef_plugins_dir == "plugins") && ($is_mu))
+		$data.= $blog_id."/";
+
+	$data .= $user_login.$type_path."/".$file_name;
 	
 	// filesize in Byte transformed in KiloByte
 	$file_size = $_FILES[$input_name]['size'] / 1024;
@@ -683,7 +768,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	$file_error = $_FILES[$input_name]['error'];
 
 	// CHECK IF IT IS A REAL PICTURE
-	if (stristr($file_type, "image/") === false)
+	if (($type != "file") && (stristr($file_type, "image/") === false))
 		$file_error = 1;
 	
 	// MIN LENGTH
@@ -700,7 +785,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	if (isset($rules['max_length']))
 		if ($file_size > (intval($rules['max_length'])))
 			$file_error = 1;
-	
+
 	// if there are no errors and filename is empty
 	if (($file_error == 0) && ($file_name != "")) {
 		if (move_uploaded_file($file_tmp_name, $file_full_path)) {
@@ -721,7 +806,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			}
 			
 			// should be stay AFTER DELETIONS
-			if (isset($rules['equal_to'])) {
+			if ((isset($rules['equal_to'])) && ($type != "file")) {
 				if ($maxside = intval($rules['equal_to'])) {
 					if (!function_exists(image_resize))
 						require_once(ABSPATH . 'wp-includes/media.php');

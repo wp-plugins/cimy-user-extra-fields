@@ -29,8 +29,8 @@ function cimy_admin_define_extra_fields() {
 	
 	$minLen = 1;
 	$maxLen = $max_length_value;
-	
-	$submit = $_POST['submit'];
+
+	$submit = "";
 
 	$action = "";
 	$field_order = "";
@@ -40,16 +40,26 @@ function cimy_admin_define_extra_fields() {
 		$action = "options";
 		$res = cimy_save_options();
 	}
-	else if (!stristr($submit, $add_caption) === false)
+	else if ((isset($_POST["submit_add"])) && ($_POST["submit_add"] != "")) {
 		$action = "add";
-	else if (!stristr($submit, $edit_caption) === false)
+		$submit = $_POST["submit_add"];
+	}
+	else if ((isset($_POST["submit_edit"])) && ($_POST["submit_edit"] != "")) {
 		$action = "edit";
-	else if (!stristr($submit, $del_caption) === false)
+		$submit = $_POST["submit_edit"];
+	}
+	else if ((isset($_POST["submit_del"])) && ($_POST["submit_del"] != "")) {
 		$action = "del";
-	else if (!stristr($submit, $delSel_caption) === false)
+		$submit = $_POST["submit_del"];
+	}
+	else if ((isset($_POST["submit_del_sel"])) && ($_POST["submit_del_sel"] != "")) {
 		$action = "delSel";
-	else if (!stristr($submit, $order_caption) === false)
+		$submit = $_POST["submit_del_sel"];
+	}
+	else if ((isset($_POST["submit_order"])) && ($_POST["submit_order"] != "")) {
 		$action = "order";
+		$submit = $_POST["submit_order"];
+	}
 
 	if (!isset($res))
 		$res = array();
@@ -261,6 +271,15 @@ function cimy_admin_define_extra_fields() {
 		$show_in_aeu = $_POST['show_in_aeu'.$field_order];
 		$show_in_aeu == "1" ? $store_rule['show_in_aeu'] = true : $store_rule['show_in_aeu'] = false;
 
+		$show_in_search = $_POST['show_in_search'.$field_order];
+		$show_in_search == "1" ? $store_rule['show_in_search'] = true : $store_rule['show_in_search'] = false;
+
+		$show_in_blog = $_POST['show_in_blog'.$field_order];
+		$show_in_blog == "1" ? $store_rule['show_in_blog'] = true : $store_rule['show_in_blog'] = false;
+
+		$show_level = $_POST['show_level'.$field_order];
+		$store_rule['show_level'] = $show_level;
+
 		// START CHECKING FOR ERRORS
 		if ($name == "")
 			$errors['name'] = __("Name not specified", $cimy_uef_domain);
@@ -455,6 +474,14 @@ function cimy_admin_define_extra_fields() {
 
 	if ($store_rule['max_length'] == 0)
 		unset($store_rule['max_length']);
+
+	// SHOW LEVEL
+	$show_anonymous = '';
+	$show_subscriber = '';
+	$show_contributor = '';
+	$show_author = '';
+	$show_editor = '';
+	$show_admin = '';
 	
 	if ($action == "add") {
 		// CAN BE MODIFIED OR NOT
@@ -549,10 +576,34 @@ function cimy_admin_define_extra_fields() {
 			$selected_input["email"] = ' checked="checked"';
 		else
 			$selected_input["email"] = '';
+
+		// SHOW LEVEL
+		switch ($store_rule['show_level']) {
+			case '-1':
+				$show_anonymous = ' selected="selected"';
+				break;
+			case '0':
+				$show_subscriber = ' selected="selected"';
+				break;
+			case '1':
+				$show_contributor = ' selected="selected"';
+				break;
+			case '2':
+				$show_author = ' selected="selected"';
+				break;
+			case '5':
+				$show_editor = ' selected="selected"';
+				break;
+			case '8':
+				$show_admin = ' selected="selected"';
+				break;
+		}
 	}
 	// action is not "add"
-	else
+	else {
 		$selected_input["ok_edit"] = ' selected="selected"';
+		$show_anonymous = ' selected="selected"';
+	}
 
 	// CAN BE EMPTY
 	if (($store_rule['can_be_empty'] == true) || ($action != "add"))
@@ -572,13 +623,24 @@ function cimy_admin_define_extra_fields() {
 	else
 		$selected_input["show_in_profile"] = '';
 
-
 	// SHOW IN AUTHORS AND USERS EXTENDED
 	if ((!isset($store_rule['show_in_aeu'])) || ($store_rule['show_in_aeu'] == true) || ($action != "add"))
 		$selected_input["show_in_aeu"] = ' checked="checked"';
 	else
 		$selected_input["show_in_aeu"] = '';
-	
+
+	// SHOW IN THE SEARCH
+	if ((!isset($store_rule['show_in_search'])) || ($store_rule['show_in_search'] == true) || ($action != "add"))
+		$selected_input["show_in_search"] = ' checked="checked"';
+	else
+		$selected_input["show_in_search"] = '';
+
+	// SHOW IN THE BLOG
+	if ((!isset($store_rule['show_in_blog'])) || ($store_rule['show_in_blog'] == true) || ($action != "add"))
+		$selected_input["show_in_blog"] = ' checked="checked"';
+	else
+		$selected_input["show_in_blog"] = '';
+
 	$selected_input["name"] = attribute_escape($selected_input["name"]);
 	$selected_input["value"] = attribute_escape($selected_input["value"]);
 	$selected_input["label"] = attribute_escape($selected_input["label"]);
@@ -595,6 +657,7 @@ function cimy_admin_define_extra_fields() {
 			<li><?php _e("With <strong>picture-url</strong>: you can preload a default image putting url in <em>Value</em>; <em>equal TO</em> means max width pixel size (height will be proportional)", $cimy_uef_domain); ?></li>
 			<li><?php _e("With <strong>registration-date</strong>: <em>equal TO</em> means date and time format", $cimy_uef_domain); ?></li>
 			<li><?php _e("With <strong>avatar</strong>: you can preload a default image putting url in <em>Value</em>; 'min,exact,max size' are in KB; <em>equal TO</em> is automatically set to 512 pixels", $cimy_uef_domain); ?></li>
+			<li><?php _e("With <strong>file</strong>: you can preload a default file putting url in <em>Value</em>; 'min,exact,max size' are in KB; under <em>equal TO</em> can be specified allowed extensions separated by comma, example: zip,pdf,doc", $cimy_uef_domain); ?></li>
 		</ul>
 		<br />
 
@@ -678,11 +741,29 @@ function cimy_admin_define_extra_fields() {
 			
 			<!-- SHOW IN A&U EXTENDED -->
 			<input type="checkbox" name="show_in_aeu" value="1"<?php echo $selected_input["show_in_aeu"]; ?> /> <?php _e("Show the field in A&amp;U Extended menu", $cimy_uef_domain); ?><br />
+
+			<!-- SHOW IN THE SEARCH ENGINE -->
+			<input type="checkbox" name="show_in_search" value="1"<?php echo $selected_input["show_in_search"]; ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
+
+			<!-- SHOW IN THE BLOG -->
+			<input type="checkbox" name="show_in_blog" value="1"<?php echo $selected_input["show_in_blog"]; ?> /> <?php _e("Show the field in the blog", $cimy_uef_domain); ?><br />
+
+			<!-- SHOW SECURITY LEVEL -->
+			<?php _e("Show the field if the role is at least:", $cimy_uef_domain)." "; ?>
+			<select name="show_level<?php echo $order ?>">
+			<option value="-1"<?php echo $show_anonymous ?>><?php _e("Anonymous"); ?></option>
+			<option value="0"<?php echo $show_subscriber ?>><?php echo translate_user_role("Subscriber"); ?></option>
+			<option value="1"<?php echo $show_contributor ?>><?php echo translate_user_role("Contributor"); ?></option>
+			<option value="2"<?php echo $show_author ?>><?php echo translate_user_role("Author"); ?></option>
+			<option value="5"<?php echo $show_editor ?>><?php echo translate_user_role("Editor"); ?></option>
+			<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
+			</select>
+			<br />
 		</td>
 		<td align="center" style="vertical-align: middle;">
 			<p class="submit" style="border-width: 0px;">
 			<input name="reset" type="reset" value="<?php _e("Clear", $cimy_uef_domain); ?>" /><br /><br />
-			<input class="button-primary" name="submit" type="submit" value="<?php echo $add_caption ?>" />
+			<input class="button-primary" name="submit_add" type="submit" value="<?php echo $add_caption ?>" />
 			</p>
 		</td>
 		</tr>
@@ -702,7 +783,7 @@ function cimy_admin_define_extra_fields() {
 }
 
 function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
-	global $cimy_uef_domain, $rule_maxlen, $rule_email, $rule_canbeempty, $rule_equalto, $rule_equalto_case_sensitive, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $cimy_uef_file_types, $is_mu, $rule_equalto_regex;
+	global $wpdb, $cimy_uef_domain, $rule_maxlen, $rule_email, $rule_canbeempty, $rule_equalto, $rule_equalto_case_sensitive, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $cimy_uef_file_types, $is_mu, $rule_equalto_regex;
 	
 	if (!cimy_check_admin("manage_options"))
 		return;
@@ -728,6 +809,9 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 	$del_caption = $submit_msgs['del_caption'];
 	$delSel_caption = $submit_msgs['delSel_caption'];
 	$order_caption = $submit_msgs['order_caption'];
+
+	$invert_selection_label = $wpdb->escape(__("Invert selection", $cimy_uef_domain));
+	$delete_fields_label = $wpdb->escape(__("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain));
 	
 ?>
 	<div class="wrap" id="<?php echo $div_id; ?>">
@@ -750,11 +834,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 	else {
 		?>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
-		<input type="button" value="<?php _e("Invert selection", $cimy_uef_domain); ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php _e("Invert selection", $cimy_uef_domain); ?>')" />
-		<input name="submit" type="submit" value="<?php echo $order_caption ?>" />
+		<input type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
+		<input name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
-			<input name="submit" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php _e("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain); ?>');" />
+			<input name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 		<?php } ?>
 		</p>
 
@@ -930,7 +1014,46 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 				$show_in_aeu = ' checked="checked"';
 			else
 				$show_in_aeu = "";
-			
+
+			if ($rules['show_in_search'])
+				$show_in_search = ' checked="checked"';
+			else
+				$show_in_search = "";
+
+			if ($rules['show_in_blog'])
+				$show_in_blog = ' checked="checked"';
+			else
+				$show_in_blog = "";
+
+			// SHOW LEVEL
+			$show_anonymous = '';
+			$show_subscriber = '';
+			$show_contributor = '';
+			$show_author = '';
+			$show_editor = '';
+			$show_admin = '';
+
+			switch ($rules['show_level']) {
+				case '-1':
+					$show_anonymous = ' selected="selected"';
+					break;
+				case '0':
+					$show_subscriber = ' selected="selected"';
+					break;
+				case '1':
+					$show_contributor = ' selected="selected"';
+					break;
+				case '2':
+					$show_author = ' selected="selected"';
+					break;
+				case '5':
+					$show_editor = ' selected="selected"';
+					break;
+				case '8':
+					$show_admin = ' selected="selected"';
+					break;
+			}
+
 			if (in_array($type, $cimy_uef_file_types)) {
 				$min_length_caption = __("Min size", $cimy_uef_domain)." (KB)";
 				$exact_length_caption = __("Exact size", $cimy_uef_domain)." (KB)";
@@ -1034,18 +1157,42 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 				<input type="checkbox" name="show_in_reg<?php echo $order ?>" value="1"<?php echo $show_in_reg ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />
 				
 				<!-- SHOW IN PROFILE -->
-				<input type="checkbox" name="show_in_profile<?php echo $order ?>" value="1"<?php echo $show_in_profile ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
-				
+				<input type="checkbox" name="show_in_profile<?php echo $order ?>" value="1"<?php echo $show_in_profile ?><?php echo $disable_it; ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
+				<?php
+				if ($wp_fields) {
+				?>
+					<input name="show_in_profile<?php echo $order ?>" type="hidden" value="1" />
+				<?php
+				}
+				?>
 				<!-- SHOW IN A&U EXTENDED -->
 				<input type="checkbox" name="show_in_aeu<?php echo $order ?>" value="1"<?php echo $show_in_aeu ?> /> <?php _e("Show the field in A&amp;U Extended menu", $cimy_uef_domain); ?><br />
+
+				<!-- SHOW IN THE SEARCH -->
+				<input type="checkbox" name="show_in_search<?php echo $order ?>" value="1"<?php echo $show_in_search ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
+
+				<!-- SHOW IN THE BLOG -->
+				<input type="checkbox" name="show_in_blog<?php echo $order ?>" value="1"<?php echo $show_in_blog ?> /> <?php _e("Show the field in the blog", $cimy_uef_domain); ?><br />
+
+				<!-- SHOW SECURITY LEVEL -->
+				<?php _e("Show the field if the role is at least:", $cimy_uef_domain)." "; ?>
+				<select name="show_level<?php echo $order ?>">
+				<option value="-1"<?php echo $show_anonymous ?>><?php _e("Anonymous"); ?></option>
+				<option value="0"<?php echo $show_subscriber ?>><?php echo translate_user_role("Subscriber"); ?></option>
+				<option value="1"<?php echo $show_contributor ?>><?php echo translate_user_role("Contributor"); ?></option>
+				<option value="2"<?php echo $show_author ?>><?php echo translate_user_role("Author"); ?></option>
+				<option value="5"<?php echo $show_editor ?>><?php echo translate_user_role("Editor"); ?></option>
+				<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
+				</select>
+				<br />
 			</td>
 			<td align="center" style="vertical-align: middle;">
 				<p class="submit" style="border-width: 0px;">
 				<input name="reset" type="reset" value="<?php _e("Reset", $cimy_uef_domain); ?>" /><br /><br />
-				<input class="button-primary" name="submit" type="submit" value="<?php echo $edit_caption." #".$order ?>" /><br /><br />
+				<input class="button-primary" name="submit_edit" type="submit" value="<?php echo $edit_caption." #".$order ?>" /><br /><br />
 				
 				<?php if (!$wp_fields) { ?>
-					<input name="submit" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php _e("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain); ?>');" />
+					<input name="submit_del" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 				<?php } ?>
 				</p>
 			</td>
@@ -1056,11 +1203,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 		</tbody>
 		</table>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
-		<input type="button" value="<?php _e("Invert selection", $cimy_uef_domain); ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php _e("Invert selection", $cimy_uef_domain); ?>')" />
-		<input name="submit" type="submit" value="<?php echo $order_caption ?>" />
+		<input type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
+		<input name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
-			<input name="submit" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php _e("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain); ?>');" />
+			<input name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 		<?php } ?>
 		</p>
 		<br />
@@ -1081,23 +1228,19 @@ function cimy_admin_users_list_page() {
 	if (!cimy_check_admin('edit_users'))
 		return;
 	
-	if ($is_mu)
-		$options = get_site_option($cimy_uef_options);
-	else
-		$options = get_option($cimy_uef_options);
+	$options = cimy_get_options();
 
 	if (isset($_POST["cimy_uef_users_per_page"])) {
 		$users_per_page = $_POST["cimy_uef_users_per_page"];
 		$options["users_per_page"] = $users_per_page;
 
-		if ($is_mu)
-			update_site_option($cimy_uef_options, $options);
-		else
-			update_option($cimy_uef_options, $options);
+		cimy_set_options($options);
 	}
 	else
 		$users_per_page = $options["users_per_page"];
-	
+
+	$dropdown_first_item = '--- '.__("select", $cimy_uef_domain).' ---';
+
 	$extra_fields = get_cimyFields();
 
 	// yes stupid WP_User_Search doesn't support custom $users_per_page support, lets add it!
@@ -1108,7 +1251,7 @@ function cimy_admin_users_list_page() {
 			$this->page = (int) ( '' == $page ) ? 1 : $page;
 			$this->role = $role;
 			$this->users_per_page = intval($users_per_page);
-	
+
 			$this->prepare_query();
 			$this->query();
 			$this->prepare_vars_for_template_usage();
@@ -1126,27 +1269,28 @@ function cimy_admin_users_list_page() {
 	$wp_user_search = new Cimy_User_Search($_POST['usersearch'], $_GET['userspage'], $_GET['role'], $users_per_page);
 	
 	$search_result = $wp_user_search->get_results();
-	
+
 	// search into extra field engine
 	$i = 0;
+
 	foreach ($search_result as $userid) {
 		foreach ($extra_fields as $ef) {
 			$ef_id = $ef["ID"];
 			$ef_type = $ef["TYPE"];
 			$ef_name = $ef["NAME"];
-			
+
 			$ef_search = "";
 			
 			if (isset($_POST["ef_search"][$ef_name])) {
 				$ef_search = $_POST["ef_search"][$ef_name];
 			}
-			
+
 			if ($ef_search != "") {
 				$remove = false;
 				
 				$ef_value = $wpdb->get_var("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$userid." AND FIELD_ID=".$ef_id);
-				
-				if (($ef_type == "text") || ($ef_type == "textarea") || ($ef_type == "textarea-rich") || ($ef_type == "picture") || ($ef_type == "picture-url")) {
+
+				if (($ef_type == "text") || ($ef_type == "textarea") || ($ef_type == "textarea-rich") || ($ef_type == "picture") || ($ef_type == "picture-url") || ($ef_type == "file")) {
 					if (stristr($ef_value, $ef_search) === FALSE) {
 						$remove = true;
 					}
@@ -1159,9 +1303,20 @@ function cimy_admin_users_list_page() {
 						$remove = true;
 					}
 				} else if ($ef_type == "dropdown") {
+					// if it is selected the "--- select ---" item then skip this check
+					if ($ef_search == $dropdown_first_item)
+						continue;
+
 					if ($ef_search != $ef_value) {
 						$remove = true;
 					}
+				} else if ($ef_type == "dropdown-multi") {
+					// if it is selected the "--- select ---" item then remove it
+					if ($ef_search[0] == $dropdown_first_item)
+						unset($ef_search[0]);
+
+					if (count(array_diff($ef_search, explode(",", $ef_value))) != 0)
+						$remove = true;
 				}
 				
 				if ($remove) {
@@ -1174,7 +1329,7 @@ function cimy_admin_users_list_page() {
 		
 		$i++;
 	}
-	
+
 	$wp_user_search->paging_text = "";
 	// oh yeah baby, now it's time for paging!
 	$wp_user_search->do_paging();
@@ -1281,7 +1436,7 @@ function cimy_admin_users_list_page() {
 			<?php _e("Users per page", $cimy_uef_domain); ?> 
 			<select name="cimy_uef_users_per_page">
 			<?php
-				$users_per_page_list = array(10, 50, 100, 500);
+				$users_per_page_list = array(10, 50, 100, 500, 1000, 5000);
 		
 				foreach ($users_per_page_list as $item) {
 					echo "<option";
@@ -1354,8 +1509,14 @@ function cimy_admin_users_list_page() {
 					
 					$search_input = "";
 					$search_value = "";
-					$search_value = attribute_escape(stripslashes($_POST["ef_search"][$name]));
-					
+
+					if (!empty($_POST["ef_search"][$name])) {
+						if ($type == "dropdown-multi")
+							$search_value = attribute_escape(stripslashes(implode(",", $_POST["ef_search"][$name])));
+						else
+							$search_value = attribute_escape(stripslashes($_POST["ef_search"][$name]));
+					}
+
 					$thead_str.= "<th scope=\"col\" class=\"manage-column\" style=\"\">";
 					$tfoot_str.= "<th scope=\"col\" class=\"manage-column\" style=\"\">";
 					
@@ -1364,13 +1525,20 @@ function cimy_admin_users_list_page() {
 							$ret = cimy_dropDownOptions($label, $search_value);
 							$label = $ret['label'];
 							
-							$search_input = '<select name="ef_search['.$name.']"><option>--- select ---</option>'.$ret['html'].'</select>';
+							$search_input = '<select name="ef_search['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
+							break;
+						case "dropdown-multi":
+							$ret = cimy_dropDownOptions($label, $search_value);
+							$label = $ret['label'];
+							
+							$search_input = '<select name="ef_search['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
 							break;
 						case "text":
 						case "textarea":
 						case "textarea-rich":
 						case "picture":
 						case "picture-url":
+						case "file":
 							$search_input = '<input type="text" name="ef_search['.$name.']" value="'.$search_value.'" size="6" />';
 							break;
 						case "checkbox":
@@ -1519,7 +1687,7 @@ function cimy_admin_users_list_page() {
 								
 							if ($field != "") {
 								if (intval($rules['equal_to'])) {
-									echo '<a href="'.$field.'">';
+									echo '<a target="_blank" href="'.$field.'">';
 									echo '<img src="'.$field.'" alt="picture"'.$size.' width="'.intval($rules['equal_to']).'" height="*" />';
 									echo "</a>";
 								}
@@ -1543,18 +1711,24 @@ function cimy_admin_users_list_page() {
 							
 								$value_thumb = cimy_get_thumb_path($field);
 								$file_thumb = $cuef_upload_path.$user_login."/".cimy_get_thumb_path(basename($field));
-							
+								$file_on_server = $cuef_upload_path.$user_login."/".basename($field);
+
 								echo "\n\t\t";
 							
 								if (is_file($file_thumb)) {
-									echo '<a href="'.$field.'"><img src="'.$value_thumb.'" alt="picture" /></a><br />';
+									echo '<a target="_blank" href="'.$field.'"><img src="'.$value_thumb.'" alt="picture" /></a><br />';
 									echo "\n\t\t";
 								}
-								else {
+								else if (is_file($file_on_server)) {
 									echo '<img src="'.$field.'" alt="picture" /><br />';
-										echo "\n\t\t";
+									echo "\n\t\t";
 								}
 							}
+						}
+						else if ($type == "file") {
+							echo '<a target="_blank" href="'.$field.'">';
+							echo basename($field);
+							echo '</a>';
 						}
 						else if ($type == "registration-date") {
 							if (isset($rules['equal_to']))

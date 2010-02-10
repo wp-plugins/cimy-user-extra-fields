@@ -2,11 +2,17 @@
 
 function cimy_extract_ExtraFields() {
 	global $wpdb, $user_ID, $wpdb_data_table, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_profile_value, $cimy_uef_options, $rule_maxlen_needed, $fields_name_prefix, $cuef_upload_path, $is_mu, $cimy_uef_domain, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level;
-	
+
 	// if editing a different user (only admin)
 	if (isset($_GET['user_id'])) {
 		$get_user_id = $_GET['user_id'];
-		
+
+		if (!current_user_can('edit_user', $get_user_id))
+			return;
+	}
+	else if (isset($_POST['user_id'])) {
+		$get_user_id = $_POST['user_id'];
+
 		if (!current_user_can('edit_user', $get_user_id))
 			return;
 	}
@@ -18,6 +24,7 @@ function cimy_extract_ExtraFields() {
 		$get_user_id = $user_ID;
 	}
 
+	$get_user_id = intval($get_user_id);
 	$options = cimy_get_options();
 	
 	$extra_fields = get_cimyFields(false, true);
@@ -497,6 +504,7 @@ function cimy_update_ExtraFields() {
 	else
 		return;
 
+	$get_user_id = intval($get_user_id);
 	$extra_fields = get_cimyFields(false, true);
 
 	$query = "UPDATE ".$wpdb_data_table." SET VALUE=CASE FIELD_ID";

@@ -502,6 +502,11 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v1.5.1 - 10/02/2010
+- Fixed PHP error when using dirty user_id in the profile's URL
+- Worked around a bug introduced by WordPress 2.9.x when admin is editing another's user profile sometimes get wrong data into Extra Fields (thanks to Serge Meier)
+- Added Polish translation (PiK)
+
 v1.5.0 - 30/01/2010
 - Added registration fields pre-filed within URL support (thanks to Charlie Markwick for sponsoring)
 - Fixed WordPress MU unique registration mode was completely broken (introduced with v1.5.0 beta2) (thanks to Nicolene Heunis)

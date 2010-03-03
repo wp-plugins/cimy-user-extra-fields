@@ -90,6 +90,7 @@ Visualization rules
 New fields will be visible everywhere by default, a part some WordPress fields.
 
 
+BEFORE writing to me read carefully ALL the documentation AND the FAQ. Missing this step means you are wasting my time!
 Bugs or suggestions can be mailed at: cimmino.marco@gmail.com
 
 REQUIREMENTS:
@@ -474,6 +475,12 @@ Q: When feature XYZ will be added?
 A: I don't know, remember that this is a 100% free project so answer is "When I have time and/or when someone help me with a donation".
 
 
+Q: I'm using your plug-in on WordPress MU per-blog installation, I'm registering users on one blog but they appear on the main blog too, why?
+
+A: Because WordPress MU is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
+Since I had already a long discussion with an user that didn't believe this, don't bother me to insist on this topic until you prove I'm wrong.
+
+
 Q: Can I help with a donation?
 
 A: Sure, visit the donation page or contact me via e-mail.
@@ -502,6 +509,16 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v1.5.2 - 03/03/2010
+- Fixed profile page was not updating when setting 'Could not be empty' rule for picture, avatar or file fields (thanks to Erum Munir)
+- Fixed WordPress MU per-blog installation and wp-content in a custom location was giving PHP error after installing cimy_uef_mu_activation.php
+- Fixed WordPress MU per-blog installation can't edit posts anymore after installing cimy_uef_mu_activation.php (thanks to Ekaterina Kurasheva)
+
+v1.5.1 - 10/02/2010
+- Fixed PHP error when using dirty user_id in the profile's URL
+- Worked around a bug introduced by WordPress 2.9.x when admin is editing another's user profile sometimes get wrong data into Extra Fields (thanks to Serge Meier)
+- Added Polish translation (PiK)
+
 v1.5.0 - 30/01/2010
 - Added registration fields pre-filed within URL support (thanks to Charlie Markwick for sponsoring)
 - Fixed WordPress MU unique registration mode was completely broken (introduced with v1.5.0 beta2) (thanks to Nicolene Heunis)

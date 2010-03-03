@@ -5,7 +5,7 @@ Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar
 Requires at least: 2.6
 Tested up to: 2.9
-Stable tag: 1.5.0
+Stable tag: 1.5.2
 
 Add some useful fields to registration and user's info
 
@@ -98,25 +98,24 @@ Wordpress MU unique registration:
 
 = I have a lot of questions and I want support where can I go? =
 
-http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
+http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/faq-and-comments/
 
 == Installation ==
 
 = WordPress: =
- * just copy whole cimy-user-extra-fields subdir into your plug-in directory and activate it
+Just copy whole cimy-user-extra-fields subdir into your plug-in directory and activate it
 
 = WordPress MU: =
- * There are two supported ways of using this plug-in under WordPress MU:
+There are two supported ways of using this plug-in under WordPress MU:
 
-  1. Unique registration
-If you want that ALL Blogs on your MU installation follow the same registration with the same fields this is the case for you.
-Every blog will have shared registration page and only the site administrators (of the whole MU installation) can change it.
+ 1. Unique registration
+  If you want that ALL Blogs on your MU installation follow the same registration with the same fields this is the case for you.
+  Every blog will have shared registration page and only the site administrators (of the whole MU installation) can change it.
    * unpack the package under 'mu-plugins' directory, be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary), then go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm
 
-  2. Per-Blog registration
-If you want that every single Blog can define its own Extra Fields then you should choose this installation.
-Every registration will have Extra Fields defined by single blogs, every user will have anyway WordPress fields shared with ALL Blogs, this how it works
-WordPress MU.
+ 2. Per-Blog registration
+  If you want that every single Blog can define its own Extra Fields then you should choose this installation.
+  Every registration will have Extra Fields defined by single blogs, every user will have anyway WordPress fields shared with ALL Blogs, this how it works WordPress MU.
    * unpack the package under 'plugins' directory; BE sure that cimy_uef_mu_activation.php is installed under 'mu-plugins' directory
    * then every single blog will have it under "Plugins" section
 

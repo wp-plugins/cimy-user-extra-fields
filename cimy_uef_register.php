@@ -287,7 +287,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		$i++;
 
 		foreach ($fields as $thisField) {
-	
 			$field_id = $thisField['ID'];
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
@@ -336,6 +335,8 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				$file_size = $_FILES[$input_name]['size'] / 1024;
 				$file_type = $_FILES[$input_name]['type'];
 				$value = $_FILES[$input_name]['name'];
+				$old_file = $_POST[$input_name."_oldfile"];
+				$del_old_file = $_POST[$input_name."_del"];
 			}
 
 			switch ($type) {
@@ -354,8 +355,17 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('hasn&#8217;t a correct email syntax.', $cimy_uef_domain));
 				}
 
-				if ((!$rules['can_be_empty']) && (in_array($type, $rule_canbeempty))) {
-					if ($value == '')
+				if ((!$rules['can_be_empty']) && (in_array($type, $rule_canbeempty)) && ($value == "")) {
+					$empty_error = true;
+
+					// IF   1. it's a file type
+					// AND  2. there is an old one uploaded
+					// AND  3. this old one is not gonna be deleted
+					// THEN   do not throw the empty error.
+					if ((in_array($type, $cimy_uef_file_types)) && ($old_file != "") && ($del_old_file == ""))
+						$empty_error = false;
+
+					if ($empty_error)
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t be empty.', $cimy_uef_domain));
 				}
 
@@ -395,7 +405,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 				// CHECK IF IT IS A REAL PICTURE
 				if (($type == "picture") || ($type == "avatar")) {
-					if (stristr($file_type, "image/") === false) {
+					if ((stristr($file_type, "image/") === false) && ($value != "")) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('should be an image.', $cimy_uef_domain));
 					}
 				}

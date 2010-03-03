@@ -11,9 +11,9 @@
 */
 // need to know if registering with VHOST set to 'yes', as seems filters are not added in time, grr!
 if (constant( "VHOST" ) == 'yes')
-	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
+	$cimy_uef_mu_register_action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
 else
-	$action = "";
+	$cimy_uef_mu_register_action = "";
 
 if (isset($_REQUEST["blog_id"])) {
 	$mu_blog_id = intval($_REQUEST["blog_id"]);
@@ -23,9 +23,12 @@ if (isset($_REQUEST["blog_id"])) {
 	}
 }
 
+if (!defined("WP_CONTENT_DIR"))
+	define("WP_CONTENT_DIR", ABSPATH."/wp_content");
+
 // Leave this after all!
-if ((defined('WP_INSTALLING')) || ($action == "register"))
-	require_once(ABSPATH.PLUGINDIR."/cimy-user-extra-fields/cimy_user_extra_fields.php");
+if ((defined('WP_INSTALLING')) || ($cimy_uef_mu_register_action == "register"))
+	require_once(WP_CONTENT_DIR."/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php");
 
 function cimy_uef_mu_blog_exists($blog_id, $c_site_id=-1) {
 	global $wpdb, $site_id;

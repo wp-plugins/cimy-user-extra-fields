@@ -286,7 +286,7 @@ function cimy_manage_db($command) {
 // function to delete all files/subdirs in a path
 // taken from PHP unlink's documentation comment by torch - torchsdomain dot com @ 22-Nov-2006 09:27
 // modified by Marco Cimmino to delete correctly call recursion before so can also delete subdirs when empty
-if (!function_exists(cimy_rfr)) {
+if (!function_exists("cimy_rfr")) {
 	function cimy_rfr($path, $match) {
 		static $deld = 0, $dsize = 0;
 

@@ -90,6 +90,7 @@ Visualization rules
 New fields will be visible everywhere by default, a part some WordPress fields.
 
 
+BEFORE writing to me read carefully ALL the documentation AND the FAQ. Missing this step means you are wasting my time!
 Bugs or suggestions can be mailed at: cimmino.marco@gmail.com
 
 REQUIREMENTS:
@@ -329,6 +330,44 @@ where $format is the date and time format, more tags details here:
 http://www.php.net/manual/en/function.strftime.php
 
 
+[Function set_cimyFieldValue]
+NOTE 1: the user should have permission to write the value: this mean if the function is used when no user is logged in will always fail.
+NOTE 2: for checkbox fields use field_value=true/false to check/uncheck
+NOTE 3: for radio fields use field_value equal to the label you want to select
+NOTE 4: for dropdown fields use field_value equal to the item in the label you want to select
+NOTE 5: for dropdown-multi fields use field_value equal to the items in the label you want to select separated by a comma: ','
+
+USAGE:
+$result = set_cimyFieldValue($user_id, $field_name, $field_value);
+
+RETURNED VALUE:
+An array is returned with all user ids where the change has been successful; empty array in case of error or the value is already in the DB.
+
+
+CASE 1:
+set an extra field value for a specific user
+
+PARAMETERS: pass user_id as first parameter, field_name as second and field_value as third
+RETURNED VALUE: the function will return an array containing USER_ID=1 if 'NEW_VALUE' has been written into 'MY_FIELD'
+
+GENERIC:
+	$result = set_cimyFieldValue(<user_id>, <field_name>, <field_value>);
+EXAMPLE:
+	$result = set_cimyFieldValue(1, 'MY_FIELD', 'NEW_VALUE');
+
+
+CASE 2:
+set an extra field value for all users
+
+PARAMETERS: pass false as first parameter, field_name as second and field_value as third
+RETURNED VALUE: the function will return an array containing all USER_IDs where 'NEW_VALUE' has been written into 'MY_FIELD'
+
+GENERIC:
+	$result = set_cimyFieldValue(false, <field_name>, <field_value>);
+EXAMPLE:
+	$result = set_cimyFieldValue(false, 'MY_FIELD', 'NEW_VALUE');
+
+
 [Function cimy_uef_sanitize_content]
 This function protects your blog from users trying to add JavaScript or alter your blog doing HTML injection in extra fields. It is very important that you do not remove that function.
 This function filters only some html tags and let other be used, the list of tags that are allowed is present under /wp-includes/kses.php search for $allowedtags array definition.
@@ -469,6 +508,24 @@ A: Probably you installed the first time WordPress on PHP4 and you experienced t
 To fix the problem you need to create another administrator user and change admin user to another role and then back to administrator.
 
 
+Q: I'm using your plug-in on WordPress MU per-blog installation, I'm registering users on one blog but they appear on the main blog too, why?
+
+A: Because WordPress MU is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
+Since I had already a long discussion with an user that didn't believe this, don't bother me to insist on this topic until you prove I'm wrong.
+
+
+Q: I’m trying to use a regular expression in the rules, but the check does not work as expected, why?
+
+A: Usually means your regex is wrong, please study how to properly build it: http://php.net/manual/en/function.preg-match.php
+
+
+Q1: I do not see Extra Fields under the page user-new.php can you add there too?
+Q2: How can I import new users with Extra Fields data into?
+
+A: Unluckily due to a WordPress limitation I can’t add Extra Fields into user-new.php but you can quickly add all the users you want using my plugin:
+Cimy User Manager – http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-manager/
+
+
 Q: When feature XYZ will be added?
 
 A: I don't know, remember that this is a 100% free project so answer is "When I have time and/or when someone help me with a donation".
@@ -502,6 +559,21 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v1.5.3 - 09/04/2010
+- Added set_cimyFieldValue function (thanks to Knark Planta for sponsoring)
+- Fixed some PHP warnings
+- Readme file updated
+
+v1.5.2 - 03/03/2010
+- Fixed profile page was not updating when setting 'Could not be empty' rule for picture, avatar or file fields (thanks to Erum Munir)
+- Fixed WordPress MU per-blog installation and wp-content in a custom location was giving PHP error after installing cimy_uef_mu_activation.php
+- Fixed WordPress MU per-blog installation can't edit posts anymore after installing cimy_uef_mu_activation.php (thanks to Ekaterina Kurasheva)
+
+v1.5.1 - 10/02/2010
+- Fixed PHP error when using dirty user_id in the profile's URL
+- Worked around a bug introduced by WordPress 2.9.x when admin is editing another's user profile sometimes get wrong data into Extra Fields (thanks to Serge Meier)
+- Added Polish translation (PiK)
+
 v1.5.0 - 30/01/2010
 - Added registration fields pre-filed within URL support (thanks to Charlie Markwick for sponsoring)
 - Fixed WordPress MU unique registration mode was completely broken (introduced with v1.5.0 beta2) (thanks to Nicolene Heunis)

@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 1.5.0
+Version: 1.5.2
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -192,7 +192,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "1.5.0";
+$cimy_uef_version = "1.5.2";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 
 $start_cimy_uef_comment = "<!--\n";
@@ -808,7 +808,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			// should be stay AFTER DELETIONS
 			if ((isset($rules['equal_to'])) && ($type != "file")) {
 				if ($maxside = intval($rules['equal_to'])) {
-					if (!function_exists(image_resize))
+					if (!function_exists("image_resize"))
 						require_once(ABSPATH . 'wp-includes/media.php');
 
 					if (!function_exists(wp_load_image))

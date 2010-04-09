@@ -404,7 +404,7 @@ function cimy_show_options($results, $embedded) {
 	
 	<div class="wrap" id="options">
 	<?php
-		if (function_exists(screen_icon))
+		if (function_exists("screen_icon"))
 			screen_icon("options-general");
 	?>
 	<h2><?php _e("Options");

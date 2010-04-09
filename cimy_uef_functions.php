@@ -35,6 +35,98 @@ function get_cimyFields($wp_fields=false, $order_by_section=false) {
 	return $extra_fields;
 }
 
+function set_cimyFieldValue($user_id, $field_name, $field_value) {
+	global $wpdb, $wpdb_data_table, $wpdb_fields_table;
+
+	$users = array();
+	$results = array();
+	$radio_ids = array();
+
+	if (empty($field_name))
+		return $results;
+
+	$field_name = $wpdb->escape(strtoupper($field_name));
+
+	$sql = "SELECT ID, TYPE, LABEL FROM $wpdb_fields_table WHERE NAME='$field_name'";
+	$efields = $wpdb->get_results($sql, ARRAY_A);
+
+	if ($efields == NULL)
+		return $results;
+
+	$type = $efields[0]['TYPE'];
+
+	if ($type == "radio") {
+		foreach ($efields as $ef) {
+			if ($ef['LABEL'] == $field_value) {
+				$field_value = "selected";
+				$field_id = $ef['ID'];
+			}
+			else
+				$radio_ids[] = $ef['ID'];
+		}
+
+		// if there are no radio fields with that label abort
+		if ($field_value != "selected")
+			return $results;
+	}
+	else if ($type == "checkbox") {
+		if (($field_value) || ($field_value == "YES"))
+			$field_value = "YES";
+		else
+			$field_value = "NO";
+
+		$field_id = $efields[0]['ID'];
+	}
+	else
+		$field_id = $efields[0]['ID'];
+
+	if ($user_id) {
+		$user_id = intval($user_id);
+		$user_info = get_userdata($user_id);
+		if (!$user_info)
+			return $results;
+	}
+	else {
+		$sql = "SELECT ID FROM $wpdb->users";
+		$users = $wpdb->get_results($sql, ARRAY_A);
+	}
+
+	if (empty($users))
+		$users[]["ID"] = $user_id;
+
+	$field_value = $wpdb->escape($field_value);
+
+	foreach ($users as $user) {
+		if (!current_user_can('edit_user', $user["ID"]))
+			continue;
+
+		$sql = "SELECT ID FROM $wpdb_data_table WHERE FIELD_ID=$field_id AND USER_ID=".$user["ID"];
+		$exist = $wpdb->get_var($sql);
+
+		if ($exist == NULL)
+			$sql = "INSERT INTO $wpdb_data_table SET USER_ID=".$user["ID"].", VALUE='$field_value', FIELD_ID=$field_id";
+		else
+			$sql = "UPDATE $wpdb_data_table SET VALUE='$field_value' WHERE FIELD_ID=$field_id AND USER_ID=".$user["ID"];
+
+
+		$add_field_result = $wpdb->query($sql);
+
+		if ($add_field_result > 0)
+			$results[]["USER_ID"] = $user["ID"];
+
+		if ($type == "radio") {
+			if (!empty($radio_ids)) {
+				foreach ($radio_ids as $r_id) {
+					$sql2 = "UPDATE $wpdb_data_table SET VALUE='' WHERE FIELD_ID=$r_id AND USER_ID=".$user["ID"];
+					$result_sql2 = $wpdb->query($sql2);
+				}
+			}
+		}
+	}
+
+	return $results;
+}
+
 function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 	global $wpdb, $wpdb_data_table, $wpdb_fields_table;
 	
@@ -189,12 +281,11 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 	}
 	else
 		return NULL;
-	
+
 	$field_data = cimy_change_radio_labels($field_data);
-			
+
 	if (($field_name) && ($user_id))
 		$field_data = $field_data[0]['VALUE'];
-	
 
 	return $field_data;
 }

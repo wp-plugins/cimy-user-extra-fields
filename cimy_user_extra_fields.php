@@ -808,7 +808,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			// should be stay AFTER DELETIONS
 			if ((isset($rules['equal_to'])) && ($type != "file")) {
 				if ($maxside = intval($rules['equal_to'])) {
-					if (!function_exists(image_resize))
+					if (!function_exists("image_resize"))
 						require_once(ABSPATH . 'wp-includes/media.php');
 
 					if (!function_exists(wp_load_image))

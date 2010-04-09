@@ -1338,7 +1338,7 @@ function cimy_admin_users_list_page() {
 	<div class="wrap">
 	
 	<?php
-		if (function_exists(screen_icon))
+		if (function_exists("screen_icon"))
 			screen_icon("users");
 	?>
 	<?php if ( $wp_user_search->is_search() ) : ?>

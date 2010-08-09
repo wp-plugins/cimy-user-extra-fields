@@ -19,7 +19,7 @@ if ($cimy_uef_register_page) {
 		try{convertEntities(userSettings);}catch(e){};
 		/* ]]> */
 	</script>
-	<script type='text/javascript' src='http://localhost/wordpress27/wp-admin/js/common.js?ver=20081126'></script>
+<!-- 	<script type='text/javascript' src='http://localhost/wordpress27/wp-admin/js/common.js?ver=20081126'></script> -->
 <?php
 } else
 	$userid = $get_user_id;
@@ -79,7 +79,7 @@ if ($cimy_uef_register_page) {
 		tinyMCE.init({
 		mode : "exact",
 		theme : "'.$theme.'",
-		elements : "'.attribute_escape($tiny_mce_objects).'",
+		elements : "'.esc_attr($tiny_mce_objects).'",
 		theme_advanced_toolbar_location : "top",
 		theme_advanced_toolbar_align : "left",
 		theme_advanced_statusbar_location : "bottom",

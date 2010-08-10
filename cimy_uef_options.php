@@ -27,6 +27,12 @@ function cimy_save_options() {
 	$options['fieldset_title'] = stripslashes($_POST['fieldset_title']);
 	$options['fieldset_title'] = substr($options['fieldset_title'], 0, $max_length_fieldset_value);
 
+	$old_reg_log = $options['registration-logo'];
+	$registration_logo = cimy_manage_upload("registration_logo", "", array(), empty($old_reg_log) ? false : basename($old_reg_log), isset($_POST['registration_logo_del']), "registration-logo");
+	if ((!empty($registration_logo)) || (isset($_POST['registration_logo_del']))) {
+		$options['registration-logo'] = $registration_logo;
+	}
+
 	if (isset($_POST['db_wp_fields_check'])) {
 		switch ($_POST['db_wp_fields']) {
 			case 'empty':
@@ -109,7 +115,19 @@ function cimy_save_options() {
 	
 	$tot_wp_hidden_fields = count($old_wp_hidden_fields);
 	$action = "add";
-	
+
+	(isset($_POST['confirm_email'])) ? $options['confirm_email'] = true : $options['confirm_email'] = false;
+	(isset($_POST['mail_include_fields'])) ? $options['mail_include_fields'] = true : $options['mail_include_fields'] = false;
+	(isset($_POST['recaptcha'])) ? $options['recaptcha'] = true : $options['recaptcha'] = false;
+
+	if (isset($_POST['recaptcha_public_key'])) {
+		$options['recaptcha_public_key'] = trim($_POST['recaptcha_public_key']);
+	}
+
+	if (isset($_POST['recaptcha_private_key'])) {
+		$options['recaptcha_private_key'] = trim($_POST['recaptcha_private_key']);
+	}
+
 	if (!isset($results['empty_wp_fields'])) {
 		if (isset($_POST['show_wp_password'])) {
 			array_push($options['wp_hidden_fields'], 'password');
@@ -122,7 +140,24 @@ function cimy_save_options() {
 				
 				cimy_save_field($action, $wpdb_wp_fields_table, $data);
 			}
+
+			if (isset($_POST['show_wp_password2'])) {
+				array_push($options['wp_hidden_fields'], 'password2');
+				
+				if (!in_array("password2", $old_wp_hidden_fields)) {
+					$data = $wp_hidden_fields['password2'];
+					
+					$data['num_fields'] = $tot_wp_hidden_fields;
+					$tot_wp_hidden_fields++;
+					
+					cimy_save_field($action, $wpdb_wp_fields_table, $data);
+				}
+			}
+
+			(isset($_POST['show_wp_password_meter'])) ? $options['password_meter'] = true : $options['password_meter'] = false;
 		}
+		else
+			$options['password_meter'] = false;
 
 		if (isset($_POST['show_wp_firstname'])) {
 			array_push($options['wp_hidden_fields'], 'firstname');
@@ -254,8 +289,8 @@ function cimy_save_options() {
 	foreach ($all_wp_fields as $wp_field) {
 		$f_name = strtolower($wp_field['NAME']);
 		$f_order = intval($wp_field['F_ORDER']);
-		
-		if (!isset($_POST['show_wp_'.$f_name])) {
+
+		if (!in_array($f_name, $options['wp_hidden_fields'])) {
 			if (in_array($f_name, $old_wp_hidden_fields)) {
 				if ($k > (-1)) {
 					$sql.= " OR ";
@@ -314,7 +349,7 @@ function cimy_show_options_notembedded() {
 }
 
 function cimy_show_options($results, $embedded) {
-	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_uef_version, $cimy_uef_domain, $cimy_top_menu, $max_length_extra_fields_title, $cuef_upload_path;
+	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_project_url, $cimy_uef_version, $cimy_uef_domain, $cimy_top_menu, $max_length_extra_fields_title, $cuef_upload_path;
 
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -324,9 +359,16 @@ function cimy_show_options($results, $embedded) {
 		$results = cimy_save_options();
 	
 	$options = cimy_get_options();
+	wp_print_scripts("cimy_uef_upload_file");
+	$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
 
 	if ($options) {
-		$options['fieldset_title'] = attribute_escape($options['fieldset_title']);
+		$options['fieldset_title'] = esc_attr($options['fieldset_title']);
+		$options['mail_include_fields'] ? $mail_include_fields = ' checked="checked"' : $mail_include_fields = '';
+		$options['confirm_email'] ? $confirm_email = ' checked="checked"' : $confirm_email = '';
+		$options['recaptcha'] ? $recaptcha = ' checked="checked"' : $recaptcha = '';
+		isset($options['recaptcha_public_key']) ? $recaptcha_public_key = $options['recaptcha_public_key'] : $recaptcha_public_key = '';
+		isset($options['recaptcha_private_key']) ? $recaptcha_private_key = $options['recaptcha_private_key'] : $recaptcha_private_key = '';
 
 		in_array('username', $options['aue_hidden_fields']) ? $aue_hide_username = ' checked="checked"' : $aue_hide_username = '';
 		in_array('name', $options['aue_hidden_fields']) ? $aue_hide_name = ' checked="checked"' : $aue_hide_name = '';
@@ -336,6 +378,9 @@ function cimy_show_options($results, $embedded) {
 		in_array('role', $options['aue_hidden_fields']) ? $aue_hide_role = ' checked="checked"' : $aue_hide_role = '';
 		
 		in_array('password', $options['wp_hidden_fields']) ? $show_wp_password = ' checked="checked"' : $show_wp_password = '';
+		in_array('password2', $options['wp_hidden_fields']) ? $show_wp_password2 = ' checked="checked"' : $show_wp_password2 = '';
+		$options['password_meter'] ? $show_wp_password_meter = ' checked="checked"' : $show_wp_password_meter = '';
+
 		in_array('firstname', $options['wp_hidden_fields']) ? $show_wp_firstname = ' checked="checked"' : $show_wp_firstname = '';
 		in_array('lastname', $options['wp_hidden_fields']) ? $show_wp_lastname = ' checked="checked"' : $show_wp_lastname = '';
 		in_array('nickname', $options['wp_hidden_fields']) ? $show_wp_nickname = ' checked="checked"' : $show_wp_nickname = '';
@@ -350,7 +395,12 @@ function cimy_show_options($results, $embedded) {
 	else {
 		$db_options = false;
 		$options['fieldset_title'] = "";
-		
+		$mail_include_fields= '';
+		$confirm_email = '';
+		$recaptcha = '';
+		$recaptcha_public_key = '';
+		$recaptcha_private_key = '';
+
 		$aue_hide_username = '';
 		$aue_hide_name = '';
 		$aue_hide_email = '';
@@ -359,6 +409,8 @@ function cimy_show_options($results, $embedded) {
 		$aue_hide_role = '';
 		
 		$show_wp_password = '';
+		$show_wp_password2 = '';
+		$show_wp_password_meter = '';
 		$show_wp_firstname = '';
 		$show_wp_secondname = '';
 		$show_wp_nickname = '';
@@ -412,7 +464,23 @@ function cimy_show_options($results, $embedded) {
 	if (!isset($cimy_top_menu)) {
 		?> - <a href="#addfield"><?php _e("Add a new Field", $cimy_uef_domain); ?></a> - <a href="#extrafields"><?php _e("Extra Fields", $cimy_uef_domain); ?></a><?php
 	}
-	?></h2><?php
+	?></h2>
+	<table class="form-table">
+		<tr>
+			<th scope="row" width="40%">
+				<strong><a href="<?php echo $cimy_project_url; ?>"><?php _e("Support the Cimy Project", $cimy_uef_domain); ?></a></strong>
+			</th>
+			<td width="60%">
+				<form style="text-align: left;" action="https://www.paypal.com/cgi-bin/webscr" method="post"> <input name="cmd" type="hidden" value="_s-xclick" />
+				<input name="hosted_button_id" type="hidden" value="8774924" />
+				<input alt="PayPal - The safer, easier way to pay online." name="submit" src="https://www.paypal.com/en_US/GB/i/btn/btn_donateCC_LG.gif" type="image" />
+				<img src="https://www.paypal.com/it_IT/i/scr/pixel.gif" border="0" alt="" width="1" height="1" />
+				</form>
+				<?php _e("This plug-in is the results of hours of development to add new features, support new WordPress versions and fix bugs, please donate money if saved you from spending all these hours!", $cimy_uef_domain); ?>
+			</td>
+		</tr>
+	</table>
+<?php
 
 	// print successes if there are some
 	if (count($results) > 0) {
@@ -430,7 +498,7 @@ function cimy_show_options($results, $embedded) {
 	<?php
 	}
 
-	?><form method="post" action="#options">
+	?><form method="post" action="#options" id="cimy_uef_options">
 	<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="Submit" value="<?php _e('Save Changes') ?>" /></p>
 	<h3><?php _e("General"); ?></h3>
 	<table class="form-table">
@@ -468,6 +536,60 @@ function cimy_show_options($results, $embedded) {
 			?>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row">
+				<input type="checkbox" name="mail_include_fields" value="1"<?php echo $mail_include_fields; ?> />
+				<?php _e("Show all fields in the welcome email", $cimy_uef_domain); ?>
+			</th>
+			<td>
+			<?php
+				_e("the email sent to the admin and to the user upon registration will have all fields", $cimy_uef_domain);
+			?>
+			</td>
+		</tr>
+<?php if (!is_multisite()) { ?>
+		<tr>
+			<th scope="row">
+				<input type="checkbox" name="confirm_email" value="1"<?php echo $confirm_email; ?> />
+				<?php _e("Enable email confirmation", $cimy_uef_domain); ?>
+			</th>
+			<td>
+			<?php
+				_e("user that registers should confirm its email address via a link click", $cimy_uef_domain);
+			?>
+			</td>
+		</tr>
+<?php } ?>
+		<tr>
+			<th scope="row">
+				<input type="checkbox" name="recaptcha" value="1"<?php echo $recaptcha; ?> />
+				<?php _e('Enable <a href="http://www.google.com/recaptcha" target="_blank">reCAPTCHA</a>', $cimy_uef_domain); ?></a>
+			</th>
+			<td>
+			<?php
+				_e("Public KEY", $cimy_uef_domain);
+			?>
+				<input type="text" name="recaptcha_public_key" value="<?php echo $recaptcha_public_key; ?>" size="40" /><br />
+			<?php
+				_e("Private KEY", $cimy_uef_domain);
+			?>
+				<input type="text" name="recaptcha_private_key" value="<?php echo $recaptcha_private_key; ?>" size="40" />
+			</td>
+		</tr>
+<?php if (!is_multisite()) { ?>
+		<tr>
+			<th scope="row"><?php _e("Change login/registration page logo", $cimy_uef_domain); ?></th>
+			<td>
+				<?php if (!empty($options["registration-logo"])) { ?><input type="hidden" name="registration_logo_oldfile" value="<?php echo basename($options["registration-logo"]); ?>" />
+				<?php echo basename($options["registration-logo"]).'<br />'; ?>
+				<input type="checkbox" name="registration_logo_del" value="1" />
+				<?php echo " ".__("Delete the picture", $cimy_uef_domain); ?><br /><br /><?php } ?>
+
+				<input type="file" id="registration_logo" name="registration_logo" onchange="uploadFile('cimy_uef_options', 'registration_logo', '<?php echo $warning_msg; ?>', Array('gif', 'png', 'jpg', 'jpeg', 'tiff'))" />
+				<?php _e("Maximum recommended logo width is 328px, but any height should work.", $cimy_uef_domain);?>
+			</td>
+		</tr>
+<?php } ?>
 	</table>
 	<br />
 	<h3><?php _e("Database", $cimy_uef_domain); ?></h3>
@@ -604,6 +726,14 @@ function cimy_show_options($results, $embedded) {
 		<tr>
 			<th scope="row" width="40%"><input type="checkbox" name="show_wp_password" value="1"<?php echo $show_wp_password.$dis_wp_fields; ?> /> <?php _e("Show password", $cimy_uef_domain); ?></th>
 			<td width="60%"></td>
+		</tr>
+		<tr>
+			<th>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password2" value="1"<?php echo $show_wp_password2.$dis_wp_fields; ?> /> <?php _e("Show confirmation password", $cimy_uef_domain); ?></th>
+			<td></td>
+		</tr>
+		<tr>
+			<th>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password_meter" value="1"<?php echo $show_wp_password_meter.$dis_wp_fields; ?> /> <?php _e("Show password strength meter", $cimy_uef_domain); ?></th>
+			<td></td>
 		</tr>
 		<tr>
 			<th><input type="checkbox" name="show_wp_firstname" value="1"<?php echo $show_wp_firstname.$dis_wp_fields; ?> /> <?php _e("Show first name", $cimy_uef_domain); ?></th>

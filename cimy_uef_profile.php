@@ -1,7 +1,7 @@
 <?php
 
 function cimy_extract_ExtraFields() {
-	global $wpdb, $user_ID, $wpdb_data_table, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_profile_value, $cimy_uef_options, $rule_maxlen_needed, $fields_name_prefix, $cuef_upload_path, $is_mu, $cimy_uef_domain, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level;
+	global $wpdb, $user_ID, $wpdb_data_table, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_profile_value, $cimy_uef_options, $rule_maxlen_needed, $fields_name_prefix, $cuef_upload_path, $cimy_uef_domain, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level;
 
 	// if editing a different user (only admin)
 	if (isset($_GET['user_id'])) {
@@ -16,7 +16,7 @@ function cimy_extract_ExtraFields() {
 		if (!current_user_can('edit_user', $get_user_id))
 			return;
 	}
-	//editin own profile
+	// editing own profile
 	else {
 		if (!isset($user_ID))
 			return;
@@ -46,7 +46,7 @@ function cimy_extract_ExtraFields() {
 			cimy_insert_ExtraFields_if_not_exist($get_user_id, $field_id);
 		}
 	
-		$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$get_user_id, ARRAY_A);
+// 		$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$get_user_id, ARRAY_A);
 
 		$radio_checked = array();
 
@@ -73,7 +73,7 @@ function cimy_extract_ExtraFields() {
 			$label = $thisField['LABEL'];
 			$description = $thisField['DESCRIPTION'];
 			$fieldset = $thisField['FIELDSET'];
-			$input_name = $fields_name_prefix.attribute_escape($name);
+			$input_name = $fields_name_prefix.esc_attr($name);
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
@@ -87,11 +87,11 @@ function cimy_extract_ExtraFields() {
 					continue;
 			}
 
-			foreach ($ef_db as $d_field) {
-				if ($d_field['FIELD_ID'] == $field_id)
-					$value = $d_field['VALUE'];
-			}
-
+// 			foreach ($ef_db as $d_field) {
+// 				if ($d_field['FIELD_ID'] == $field_id)
+// 					$value = $d_field['VALUE'];
+// 			}
+			$value = $wpdb->get_var("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id);
 			$old_value = $value;
 			
 			// if nothing is inserted and field admin default value then assign it
@@ -120,7 +120,7 @@ function cimy_extract_ExtraFields() {
 			echo "<tr>";
 			echo "\n\t";
 			
-			$value = attribute_escape($value);
+			$value = esc_attr($value);
 
 			switch($type) {
 				case "picture-url":
@@ -379,7 +379,7 @@ function cimy_extract_ExtraFields() {
 
 				$blog_path = $cuef_upload_path;
 
-				if (($cimy_uef_plugins_dir == "plugins") && ($is_mu)) {
+				if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
 					global $blog_id;
 
 					$blog_path .= $blog_id."/";

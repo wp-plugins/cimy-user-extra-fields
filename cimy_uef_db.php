@@ -197,8 +197,42 @@ function cimy_plugin_install () {
 	}
 }
 
+function cimy_force_signup_table_creation() {
+	global $wpdb;
+	$charset_collate = "";
+	
+	// try to get proper charset and collate
+	if ( $wpdb->supports_collation() ) {
+		if ( ! empty($wpdb->charset) )
+			$charset_collate = " DEFAULT CHARACTER SET $wpdb->charset";
+		if ( ! empty($wpdb->collate) )
+			$charset_collate .= " COLLATE $wpdb->collate";
+	}
+
+	if ($wpdb->get_var("SHOW TABLES LIKE '".$wpdb->prefix."signups'") != $wpdb->prefix."signups") {
+
+		$sql = "CREATE TABLE ".$wpdb->prefix."signups (
+			domain varchar(200) NOT NULL default '',
+			path varchar(100) NOT NULL default '',
+			title longtext NOT NULL,
+			user_login varchar(60) NOT NULL default '',
+			user_email varchar(100) NOT NULL default '',
+			registered datetime NOT NULL default '0000-00-00 00:00:00',
+			activated datetime NOT NULL default '0000-00-00 00:00:00',
+			active tinyint(1) NOT NULL default '0',
+			activation_key varchar(50) NOT NULL default '',
+			meta longtext,
+			KEY activation_key (activation_key),
+			KEY domain (domain)
+		)".$charset_collate.";";
+
+		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+		dbDelta($sql);
+	}
+}
+
 function cimy_manage_db($command) {
-	global $wpdb, $wpdb_data_table, $wpdb_wp_fields_table, $wpdb_fields_table, $cimy_uef_options, $cimy_uef_version, $is_mu, $cimy_uef_domain;
+	global $wpdb, $wpdb_data_table, $wpdb_wp_fields_table, $wpdb_fields_table, $cimy_uef_options, $cimy_uef_version, $cimy_uef_domain;
 	
 	if (!cimy_check_admin('activate_plugins'))
 		return;
@@ -231,7 +265,7 @@ function cimy_manage_db($command) {
 			break;
 			
 		case 'drop_options':
-			if ($is_mu)
+			if (is_multisite())
 				delete_site_option($cimy_uef_options);
 			else
 				delete_option($cimy_uef_options);
@@ -379,9 +413,9 @@ function cimy_insert_ExtraFields_if_not_exist($user_id, $field_id) {
 }
 
 function cimy_get_options() {
-	global $is_mu, $cimy_uef_options, $cimy_uef_plugins_dir;
+	global $cimy_uef_options, $cimy_uef_plugins_dir;
 
-	if (($is_mu) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
 		$options = get_site_option($cimy_uef_options);
 	else
 		$options = get_option($cimy_uef_options);
@@ -390,9 +424,9 @@ function cimy_get_options() {
 }
 
 function cimy_set_options($options) {
-	global $is_mu, $cimy_uef_options, $cimy_uef_options_descr, $cimy_uef_plugins_dir;
+	global $cimy_uef_options, $cimy_uef_options_descr, $cimy_uef_plugins_dir;
 
-	if (($is_mu) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
 		update_site_option($cimy_uef_options, $options);
 	else
 		update_option($cimy_uef_options, $options, $cimy_uef_options_descr, "no");

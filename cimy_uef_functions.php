@@ -393,10 +393,10 @@ function cimy_uef_sanitize_content($content, $override_allowed_tags=null) {
 }
 
 function cimy_check_admin($permission) {
-	global $is_mu, $cimy_uef_plugins_dir;
+	global $cimy_uef_plugins_dir;
 
-	if (($is_mu) && ($cimy_uef_plugins_dir == "mu-plugins"))
-		return is_site_admin();
+	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+		return is_super_admin();
 	else
 		return current_user_can($permission);
 	
@@ -412,7 +412,7 @@ function cimy_fieldsetOptions($selected=0, $order="") {
 	$options = cimy_get_options();
 
 	$i = 0;
-	$html = "<select name=\"fieldset".$order."\">\n";
+	$html = "<select name=\"fieldset[".$order."]\">\n";
 
 	if ($options['fieldset_title'] == "") {
 		$html.= "\t<option value=\"$i\" selected=\"selected\">".__("no fieldset", $cimy_uef_domain)."</option>\n";

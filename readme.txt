@@ -3,8 +3,8 @@ Contributors: Marco Cimmino
 Donate link: http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/
 Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar
-Requires at least: 2.6
-Tested up to: 2.9
+Requires at least: 3.0
+Tested up to: 3.0
 Stable tag: 1.5.3
 
 Add some useful fields to registration and user's info
@@ -46,11 +46,11 @@ The plug-in adds two new menu voices in the admin for the administrator and two 
 
 = Two new menus are: =
 
-WordPress and WordPress MU per-blog registration:
+WordPress and WordPress MultiSite per-blog registration:
     1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
     2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
-Wordpress MU unique registration:
+Wordpress MultiSite unique registration:
     1. "Site Admin -> Users Extended" - lets you show users lists with the new fields that are created
     2. "Site Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
@@ -105,19 +105,22 @@ http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/faq-an
 = WordPress: =
 Just copy whole cimy-user-extra-fields subdir into your plug-in directory and activate it
 
-= WordPress MU: =
-There are two supported ways of using this plug-in under WordPress MU:
+= WordPress MultiSite: =
+There are two supported ways of using this plug-in under WordPress MultiSite:
 
  1. Unique registration
-  If you want that ALL Blogs on your MU installation follow the same registration with the same fields this is the case for you.
-  Every blog will have shared registration page and only the site administrators (of the whole MU installation) can change it.
-   * unpack the package under 'mu-plugins' directory, be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary), then go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm
+  If you want that ALL Blogs on your MultiSite installation follow the same registration with the same fields this is the case for you.
+  Every blog will have shared registration page and only the Super Admin can change it.
+   * unpack the package under 'wp-content/mu-plugins' directory (if this directory does not exist, create it);
+   * be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary);
+   * go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm.
 
  2. Per-Blog registration
   If you want that every single Blog can define its own Extra Fields then you should choose this installation.
-  Every registration will have Extra Fields defined by single blogs, every user will have anyway WordPress fields shared with ALL Blogs, this how it works WordPress MU.
-   * unpack the package under 'plugins' directory; BE sure that cimy_uef_mu_activation.php is installed under 'mu-plugins' directory
-   * then every single blog will have it under "Plugins" section
+  Every registration will have Extra Fields defined by single blogs, every user will have anyway WordPress fields shared with ALL Blogs, this how it works WordPress MultiSite.
+   * unpack the package under 'wp-content/plugins' directory;
+   * be sure that cimy_uef_mu_activation.php is installed under 'wp-content/mu-plugins' directory (if this directory does not exist, create it);
+   * then every single blog will have it under "Plugins" section.
 
 == Screenshots ==
 

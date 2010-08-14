@@ -436,4 +436,39 @@ function cimy_fieldsetOptions($selected=0, $order="") {
 	return $html;
 }
 
+function cimy_switch_to_blog($meta=array()) {
+	global $cimy_uef_plugins_dir;
+
+	if ((is_multisite()) && ($cimy_uef_plugins_dir == "plugins")) {
+		if (isset($meta["blog_id"]))
+			$mu_blog_id = intval($meta["blog_id"]);
+		else if (isset($_GET["blog_id"]))
+			$mu_blog_id = intval($_GET["blog_id"]);
+		else if (isset($_POST["blog_id"]))
+			$mu_blog_id = intval($_POST["blog_id"]);
+		else
+			$mu_blog_id = 1;
+
+		if (cimy_uef_mu_blog_exists($mu_blog_id)) {
+			if (switch_to_blog($mu_blog_id))
+				cimy_uef_set_tables();
+			else
+				$mu_blog_id = 1;
+		}
+		else
+			$mu_blog_id = 1;
+	}
+}
+
+function cimy_switch_current_blog($hidden_field=false) {
+	global $switched, $blog_id;
+
+	if (isset($switched)) {
+		if ($hidden_field)
+			echo "\t<input type=\"hidden\" name=\"blog_id\" value=\"".$blog_id."\" />\n";
+
+		//restore_current_blog();
+	}
+}
+
 ?>

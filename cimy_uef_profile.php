@@ -91,7 +91,7 @@ function cimy_extract_ExtraFields() {
 // 				if ($d_field['FIELD_ID'] == $field_id)
 // 					$value = $d_field['VALUE'];
 // 			}
-			$value = $wpdb->get_var("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id);
+			$value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id));
 			$old_value = $value;
 			
 			// if nothing is inserted and field admin default value then assign it

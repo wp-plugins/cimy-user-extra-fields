@@ -363,6 +363,13 @@ function cimy_show_options($results, $embedded) {
 	$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
 
 	if ($options) {
+		if ((!is_dir($cuef_upload_path)) && (is_writable(WP_CONTENT_DIR))) {
+			if (defined("FS_CHMOD_DIR"))
+				@mkdir($cuef_upload_path, FS_CHMOD_DIR);
+			else
+				@mkdir($cuef_upload_path, 0777);
+		}
+
 		$options['fieldset_title'] = esc_attr($options['fieldset_title']);
 		$options['mail_include_fields'] ? $mail_include_fields = ' checked="checked"' : $mail_include_fields = '';
 		$options['confirm_email'] ? $confirm_email = ' checked="checked"' : $confirm_email = '';

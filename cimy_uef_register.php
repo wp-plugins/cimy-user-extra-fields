@@ -920,6 +920,15 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	if (($options['recaptcha']) && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
 		require_once($cuef_plugin_dir.'/recaptcha/recaptchalib.php');
 
+	?>
+			<script type='text/javascript'>
+				var RecaptchaOptions = {
+					lang: '<?php echo substr(get_locale(), 0, 2); ?>',
+					tabindex : <?php echo strval($tabindex); ?>,
+				};
+			</script>
+	<?php
+
 		// no need if Tiny MCE is present already
 		if ($tiny_mce_objects == "") {
 	?>

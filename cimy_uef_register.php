@@ -924,7 +924,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			<script type='text/javascript'>
 				var RecaptchaOptions = {
 					lang: '<?php echo substr(get_locale(), 0, 2); ?>',
-					tabindex : <?php echo strval($tabindex); ?>,
+					tabindex : <?php echo strval($tabindex); ?>
 				};
 			</script>
 	<?php

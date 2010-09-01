@@ -928,6 +928,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 				};
 			</script>
 	<?php
+		$tabindex++;
 
 		// no need if Tiny MCE is present already
 		if ($tiny_mce_objects == "") {

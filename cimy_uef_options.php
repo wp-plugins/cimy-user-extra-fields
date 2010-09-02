@@ -117,6 +117,8 @@ function cimy_save_options() {
 	$action = "add";
 
 	(isset($_POST['confirm_email'])) ? $options['confirm_email'] = true : $options['confirm_email'] = false;
+	if ($options['confirm_email'])
+		cimy_force_signup_table_creation();
 	(isset($_POST['mail_include_fields'])) ? $options['mail_include_fields'] = true : $options['mail_include_fields'] = false;
 	(isset($_POST['recaptcha'])) ? $options['recaptcha'] = true : $options['recaptcha'] = false;
 

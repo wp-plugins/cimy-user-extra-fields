@@ -167,6 +167,38 @@ function cimy_plugin_install () {
 			}
 		}
 
+		if (version_compare($options['version'], "2.0.0-beta1", "<=") === true) {
+			if ($options["recaptcha"])
+				$options["captcha"] = "recaptcha";
+			else
+				$options["captcha"] = "none";
+			unset($options["recaptcha"]);
+
+			for ($i = 0; $i <= 1; $i++) {
+				if ($i == 0)
+					$the_table = $wpdb_wp_fields_table;
+				else
+					$the_table = $wpdb_fields_table;
+
+				$sql = "SELECT ID, RULES FROM ".$the_table;
+				$all_rules = $wpdb->get_results($sql, ARRAY_A);
+
+				if (isset($all_rules)) {
+					foreach ($all_rules as $rule) {
+						$rule_to_be_updated = unserialize($rule["RULES"]);
+						$rule_id = $rule["ID"];
+	
+						// stupid bug introduced in v2.0.0-beta1
+						if (empty($rule_to_be_updated["edit"]))
+							$rule_to_be_updated["edit"] = "ok_edit";
+		
+						$sql = "UPDATE ".$the_table." SET RULES='".$wpdb->escape(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
+						$wpdb->query($sql);
+					}
+				}
+			}
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);
@@ -243,6 +275,7 @@ function cimy_manage_db($command) {
 		'aue_hidden_fields' => array('website', 'posts', 'email'),
 		'wp_hidden_fields' => array(),
 		'fieldset_title' => '',
+		'captcha' => 'none',
 	);
 
 	switch ($command) {

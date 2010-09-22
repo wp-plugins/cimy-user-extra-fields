@@ -536,6 +536,7 @@ function cimy_update_ExtraFields() {
 		}
 
 		if ((isset($_POST[$input_name])) && (!in_array($type, $cimy_uef_file_types))) {
+echo $type;
 			if ($type == "dropdown-multi")
 				$field_value = stripslashes(implode(",", $_POST[$input_name]));
 			else
@@ -622,7 +623,7 @@ function cimy_update_ExtraFields() {
 					$query.= $value;
 				}
 			}
-			
+
 			if ($type == 'checkbox') {
 				// if can be editable then write NO
 				// there is no way to understand if was YES or NO previously

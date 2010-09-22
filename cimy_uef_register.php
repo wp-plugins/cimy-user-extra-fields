@@ -138,6 +138,10 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 					continue;
 			}
 
+			// uploading a file is not supported when confirmation email is enabled (on MS is turned on by default yes)
+			if (((is_multisite()) || ($options["confirm_email"])) && (in_array($type, $cimy_uef_file_types)))
+				continue;
+
 			if (isset($meta[$input_name]))
 				$data = stripslashes($meta[$input_name]);
 			else if (isset($_POST[$input_name])) {
@@ -328,6 +332,10 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 			}
 
+			// uploading a file is not supported when confirmation email is enabled (on MS is turned on by default yes)
+			if (((is_multisite()) || ($options["confirm_email"])) && (in_array($type, $cimy_uef_file_types)))
+				continue;
+
 			if ($_POST["from"] == "profile") {
 				// if editing a different user (only admin)
 				if (isset($_GET['user_id']))
@@ -511,6 +519,15 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		}
 	}
 
+	if (isset($_POST["securimage_response_field"])) {
+		global $cuef_plugin_dir;
+		require_once($cuef_plugin_dir.'/securimage/securimage.php');
+		$securimage = new Securimage();
+		if ($securimage->check($_POST['securimage_response_field']) == false) {
+			$errors->add("securimage_code", '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.__('Typed code is not correct.', $cimy_uef_domain));
+		}
+	}
+
 	if (isset($_POST["recaptcha_response_field"])) {
 		$recaptcha_code_ok = false;
 
@@ -627,6 +644,10 @@ function cimy_registration_form($errors=null, $show_type=0) {
 						continue;
 				}
 			}
+
+			// uploading a file is not supported when confirmation email is enabled (on MS is turned on by default yes)
+			if (((is_multisite()) || ($options["confirm_email"])) && (in_array($type, $cimy_uef_file_types)))
+				continue;
 
 			if (isset($_POST[$post_input_name])) {
 				if ($type == "dropdown-multi")
@@ -903,7 +924,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 		$i++;
 	}
-	
+
 	if ($tiny_mce_objects != "") {
 		$mce_skin = "";
 		
@@ -917,18 +938,32 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		require_once($cuef_plugin_dir.'/cimy_uef_init_strength_meter.php');
 	}
 
-	if (($options['recaptcha']) && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
+	if ($options['captcha'] == "securimage") {
+		global $cuef_securimage_webpath;
+?>
+		<div style="width: 278px; float: left; height: 80px; vertical-align: text-top;">
+			<img id="captcha" align="left" style="padding-right: 5px; border: 0" src="<?php echo $cuef_securimage_webpath; ?>securimage_show_captcha.php" alt="CAPTCHA Image" />
+			<object type="application/x-shockwave-flash" data="<?php echo $cuef_securimage_webpath; ?>securimage_play.swf?audio=<?php echo $cuef_securimage_webpath; ?>securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" height="19" width="19"><param name="movie" value="<?php echo $cuef_securimage_webpath; ?>securimage_play.swf?audio=<?php echo $cuef_securimage_webpath; ?>securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" /></object>
+			<br /><br /><br /><br />
+			<a align="right" tabindex="<?php echo $tabindex; $tabindex++; ?>" style="border-style: none" href="#" onclick="document.getElementById('captcha').src = '<?php echo $cuef_securimage_webpath; ?>securimage_show_captcha.php?' + Math.random(); return false"><img src="<?php echo $cuef_securimage_webpath; ?>/images/refresh.gif" alt="<?php _e("Change image", $cimy_uef_domain); ?>" border="0" onclick="this.blur()" align="bottom" /></a>
+		</div>
+		<div style="width: 278px; float: left; height: 50px; vertical-align: bottom; padding: 5px;">
+			<?php _e("Insert the code:", $cimy_uef_domain); ?>&nbsp;<input type="text" name="securimage_response_field" size="10" maxlength="6" tabindex="<?php echo $tabindex; $tabindex++; ?>" />
+		</div>
+<?php
+	}
+
+	if (($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
 		require_once($cuef_plugin_dir.'/recaptcha/recaptchalib.php');
 
 	?>
 			<script type='text/javascript'>
 				var RecaptchaOptions = {
 					lang: '<?php echo substr(get_locale(), 0, 2); ?>',
-					tabindex : <?php echo strval($tabindex); ?>
+					tabindex : <?php echo strval($tabindex); $tabindex++; ?>
 				};
 			</script>
 	<?php
-		$tabindex++;
 
 		// no need if Tiny MCE is present already
 		if ($tiny_mce_objects == "") {

@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.0-beta1
+Version: 2.0.0-beta2
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -147,11 +147,13 @@ if (is_multisite()) {
 	$cuef_plugin_dir.= $cuef_plugin_path;
 	$cuef_css_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."css/";
 	$cuef_js_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."js/";
+	$cuef_securimage_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."securimage/";
 }
 else {
 	$cuef_plugin_dir = WP_CONTENT_DIR."/plugins/".$cuef_plugin_path;
 	$cuef_css_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."css/";
 	$cuef_js_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."js/";
+	$cuef_securimage_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."securimage/";
 }
 
 wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."upload_file.js", false, false);
@@ -167,7 +169,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.0-beta1";
+$cimy_uef_version = "2.0.0-beta2";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -508,6 +510,31 @@ else {
 
 	// add update engine for extra fields to user's registration
 	add_action('user_register', 'cimy_register_user_extra_fields');
+
+	// add filter to redirect after registration
+	add_filter('registration_redirect', 'cimy_uef_registration_redirect');
+	// this is needed only in the case where both redirection and email confirmation has been enabled
+	add_action('login_form_cimy_uef_redirect', 'cimy_uef_redirect');
+}
+
+function cimy_uef_registration_redirect($redirect_to) {
+	if (empty($redirect_to)) {
+		$options = cimy_get_options();
+
+		if ($options["redirect_to"] == "source")
+			$redirect_to = esc_attr($_SERVER["HTTP_REFERER"]);
+	}
+
+	return $redirect_to;
+}
+
+function cimy_uef_redirect() {
+	if (isset($_GET["cimy_key"]))
+		cimy_uef_activate("");
+
+	if (!empty($_REQUEST["redirect_to"]))
+		wp_safe_redirect($_REQUEST["redirect_to"]);
+
 }
 
 function cimy_change_signup_location($url) {

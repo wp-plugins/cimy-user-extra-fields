@@ -1163,7 +1163,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			<td align="center" style="vertical-align: middle;">
 				<p class="submit" style="border-width: 0px;">
 				<input name="reset" type="reset" value="<?php _e("Reset", $cimy_uef_domain); ?>" /><br /><br />
-				<input class="button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" onclick="changeFormAction('<?php echo $form_id; ?>', '<?php echo $field_anchor.$order; ?>')"/><br /><br />
+				<input class="button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" onclick="changeFormAction('<?php echo $form_id; ?>', '<?php echo $field_anchor.$order; ?>')" /><br /><br />
 				
 				<?php if (!$wp_fields) { ?>
 					<input name="submit_del[<?php echo $order ?>]" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />

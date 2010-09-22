@@ -557,6 +557,14 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.0.0 beta2 - 22/09/2010
+- Added Securimage Captcha support (thanks to Patrick McCain for sponsoring it)
+- Added redirection support (non MS only) (thanks to Patrick McCain for sponsoring it)
+- Fixed adding/updating a field is now more user-friendly
+- Fixed uploading of any file should be forbidden during the registration if the confirmation email is turned on
+- Fixed an user can't register again after admin deletion within 2 days if the email confirmation is turned on (non MS only)
+- Fixed show permissions were not saved properly (causing checkboxes can't be unchecked anymore since v2.0.0-beta1) (thanks to Bak)
+
 v2.0.0 beta1 - 02/09/2010
 - Added WordPress 3.0.x support
   - Fixed MultiSite recognization

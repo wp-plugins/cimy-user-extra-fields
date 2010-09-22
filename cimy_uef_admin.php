@@ -245,7 +245,7 @@ function cimy_admin_define_extra_fields() {
 		$empty = $_POST['empty'][$field_order];
 		$empty == "1" ? $store_rule['can_be_empty'] = true : $store_rule['can_be_empty'] = false;
 
-		$store_rule['edit'] = $_POST['edit'.$field_order];
+		$store_rule['edit'] = $_POST['edit'][$field_order];
 		
 		$email = $_POST['email'][$field_order];
 		$email == "1" ? $store_rule['email'] = true : $store_rule['email'] = false;
@@ -429,39 +429,7 @@ function cimy_admin_define_extra_fields() {
 	<?php
 
 	// print errors if there are some
-	if (count($errors) > 0) {
-	?>
-		<div class="error">
-		<h3><?php _e("ERROR", $cimy_uef_domain); ?></h3>
-		<ul>
-			<?php 
-			foreach ($errors as $error)
-				echo "<li>".$error."</li>";
-			?>
-		</ul>
-		<br />
-		</div>
-	<?php
-	}
-	?>
-
-	<?php
-
-	// print successes if there are some
-	if (count($results) > 0) {
-	?>
-		<div class="updated">
-		<h3><?php _e("SUCCESSFUL", $cimy_uef_domain); ?></h3>
-		<ul>
-			<?php 
-			foreach ($results as $result)
-				echo "<li>".$result."</li>";
-			?>
-		</ul>
-		<br />
-		</div>
-	<?php
-	}
+	cimy_uef_print_messages($errors, $results);
 	
 	if ($store_rule['min_length'] == 0)
 		unset($store_rule['min_length']);
@@ -771,15 +739,24 @@ function cimy_admin_define_extra_fields() {
 
 	</div>
 
+<script type="text/javascript">
+<!--//
+function changeFormAction(form_id, tr_id) {
+    var element = document.getElementById(form_id);
+    element.action = '#'+tr_id;
+}
+//-->
+</script>
+
 <?php
 	wp_print_scripts("cimy_uef_invert_sel");
 	$wp_fields = get_cimyFields(true);
 
-	cimy_admin_show_extra_fields($wp_fields, $submit_msgs, true);
-	cimy_admin_show_extra_fields($allFields, $submit_msgs, false);
+	cimy_admin_show_extra_fields($wp_fields, $submit_msgs, true, $errors, $results, $wp_fields_post, $field_order);
+	cimy_admin_show_extra_fields($allFields, $submit_msgs, false, $errors, $results, $wp_fields_post, $field_order);
 }
 
-function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
+function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $errors, $results, $wp_fields_post, $field_order) {
 	global $wpdb, $cimy_uef_domain, $rule_maxlen, $rule_email, $rule_canbeempty, $rule_equalto, $rule_equalto_case_sensitive, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $cimy_uef_file_types, $rule_equalto_regex;
 	
 	if (!cimy_check_admin("manage_options"))
@@ -1069,8 +1046,8 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 
 			$style = ('class="alternate"' == $style) ? '' : 'class="alternate"';
 			?>
-			
-			<tr <?php echo "id=\"".$field_anchor.$order."\" ".$style; ?>>
+			<?php if (($field_order == $order) && ($wp_fields_post == $wp_fields)) { ?><tr <?php echo "id=\"".$field_anchor.$order."\""; ?>><td colspan="5"><?php cimy_uef_print_messages($errors, $results); ?></td></tr><?php } ?>
+			<tr <?php echo $style; ?>>
 			<td align="center" style="vertical-align: middle;">
 				<input name="check[<?php echo $order ?>]" type="checkbox" value="<?php echo $order ?>" /><br /><br />
 				<label><strong><?php _e("Order", $cimy_uef_domain); ?></strong><br />
@@ -1186,7 +1163,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 			<td align="center" style="vertical-align: middle;">
 				<p class="submit" style="border-width: 0px;">
 				<input name="reset" type="reset" value="<?php _e("Reset", $cimy_uef_domain); ?>" /><br /><br />
-				<input class="button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" /><br /><br />
+				<input class="button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" onclick="changeFormAction('<?php echo $form_id; ?>', '<?php echo $field_anchor.$order; ?>')"/><br /><br />
 				
 				<?php if (!$wp_fields) { ?>
 					<input name="submit_del[<?php echo $order ?>]" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
@@ -1217,6 +1194,40 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields) {
 	</div>
 
 	<?php
+}
+
+function cimy_uef_print_messages($errors, $results) {
+	if (count($errors) > 0) {
+	?>
+		<div class="error inline">
+		<h3><?php _e("ERROR", $cimy_uef_domain); ?></h3>
+		<ul>
+			<?php 
+			foreach ($errors as $error)
+				echo "<li>".$error."</li>";
+			?>
+		</ul>
+		</div>
+	<?php
+	}
+	?>
+
+	<?php
+
+	// print successes if there are some
+	if (count($results) > 0) {
+	?>
+		<div class="updated inline">
+		<h3><?php _e("SUCCESSFUL", $cimy_uef_domain); ?></h3>
+		<ul>
+			<?php 
+			foreach ($results as $result)
+				echo "<li>".$result."</li>";
+			?>
+		</ul>
+		</div>
+	<?php
+	}
 }
 
 function cimy_admin_users_list_page() {

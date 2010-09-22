@@ -173,13 +173,20 @@ function cimy_signup_user_notification($user, $user_email, $key, $meta = '') {
 	if ( !apply_filters('wpmu_signup_user_notification', $user, $user_email, $key, $meta) )
 		return false;
 
+	$redirect_to = "";
+	// need to redirect?
+	if (!empty($_POST["redirect_to"])) {
+		$redirect_to = "&action=cimy_uef_redirect&redirect_to=".esc_attr($_POST["redirect_to"]);
+		unset($_POST["redirect_to"]);
+        }
+
 	// Send email with activation link.
 	$admin_email = get_site_option( 'admin_email' );
 	if ( $admin_email == '' )
 		$admin_email = 'support@' . $_SERVER['SERVER_NAME'];
 	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
-	$message = sprintf( apply_filters( 'wpmu_signup_user_notification_email', __( "To activate your user, please click the following link:\n\n%s\n\nAfter you activate, you will receive *another email* with your login.\n\n" ) ), site_url( "wp-login.php?cimy_key=$key" ), $key );
+	$message = sprintf( apply_filters( 'wpmu_signup_user_notification_email', __( "To activate your user, please click the following link:\n\n%s\n\nAfter you activate, you will receive *another email* with your login.\n\n" ) ), site_url( "wp-login.php?cimy_key=$key$redirect_to" ), $key );
 	// TODO: Don't hard code activation link.
 	$subject = sprintf( __( apply_filters( 'wpmu_signup_user_notification_subject', '[%1$s] Activate %2$s' ) ), $from_name, $user);
 	wp_mail($user_email, $subject, $message, $message_headers);
@@ -265,8 +272,8 @@ function cimy_check_user_on_signups($errors, $user_name, $user_email) {
 		$registered_at =  mysql2date('U', $signup->registered);
 		$now = current_time( 'timestamp', true );
 		$diff = $now - $registered_at;
-		// If registered more than two days ago, cancel registration and let this signup go through.
-		if ( $diff > 172800 )
+		// If registered more than two days ago or already approved and then deleted, cancel registration and let this signup go through.
+		if (($diff > 172800) || ($signup->active))
 			$wpdb->query( $wpdb->prepare("DELETE FROM ".$wpdb->prefix."signups WHERE user_login = %s", $user_name) );
 		else
 			$errors->add('user_name', __('That username is currently reserved but may be available in a couple of days.'));
@@ -278,8 +285,8 @@ function cimy_check_user_on_signups($errors, $user_name, $user_email) {
 	$signup = $wpdb->get_row( $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."signups WHERE user_email = %s", $user_email) );
 	if ( $signup != null ) {
 		$diff = current_time( 'timestamp', true ) - mysql2date('U', $signup->registered);
-		// If registered more than two days ago, cancel registration and let this signup go through.
-		if ( $diff > 172800 )
+		// If registered more than two days ago or already approved and then deleted, cancel registration and let this signup go through.
+		if (($diff > 172800) || ($signup->active))
 			$wpdb->query( $wpdb->prepare("DELETE FROM ".$wpdb->prefix."signups WHERE user_email = %s", $user_email) );
 		else
 			$errors->add('user_email', __('That email address has already been used. Please check your inbox for an activation email. It will become available in a couple of days if you do nothing.'));

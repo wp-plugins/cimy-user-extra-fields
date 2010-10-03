@@ -536,7 +536,6 @@ function cimy_update_ExtraFields() {
 		}
 
 		if ((isset($_POST[$input_name])) && (!in_array($type, $cimy_uef_file_types))) {
-echo $type;
 			if ($type == "dropdown-multi")
 				$field_value = stripslashes(implode(",", $_POST[$input_name]));
 			else

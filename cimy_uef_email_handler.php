@@ -168,7 +168,7 @@ function cimy_uef_welcome_user_to_admin($msg) {
 }
 
 function cimy_signup_user_notification($user, $user_email, $key, $meta = '') {
-	global $cuef_plugin_path;
+	global $cuef_plugin_path, $cimy_uef_domain;
 
 	if ( !apply_filters('wpmu_signup_user_notification', $user, $user_email, $key, $meta) )
 		return false;
@@ -184,49 +184,50 @@ function cimy_signup_user_notification($user, $user_email, $key, $meta = '') {
 	$admin_email = get_site_option( 'admin_email' );
 	if ( $admin_email == '' )
 		$admin_email = 'support@' . $_SERVER['SERVER_NAME'];
-	$from_name = get_site_option( 'site_name' ) == '' ? 'WordPress' : esc_html( get_site_option( 'site_name' ) );
+	$from_name = get_site_option( 'blogname' ) == '' ? 'WordPress' : esc_html( get_site_option( 'blogname' ) );
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
-	$message = sprintf( apply_filters( 'wpmu_signup_user_notification_email', __( "To activate your user, please click the following link:\n\n%s\n\nAfter you activate, you will receive *another email* with your login.\n\n" ) ), site_url( "wp-login.php?cimy_key=$key$redirect_to" ), $key );
+	$message = sprintf( apply_filters( 'wpmu_signup_user_notification_email', __( "To activate your user, please click the following link:\n\n%s\n\nAfter you activate, you will receive *another email* with your login.\n\n", $cimy_uef_domain) ), site_url( "wp-login.php?cimy_key=$key$redirect_to" ), $key );
 	// TODO: Don't hard code activation link.
-	$subject = sprintf( __( apply_filters( 'wpmu_signup_user_notification_subject', '[%1$s] Activate %2$s' ) ), $from_name, $user);
+	$subject = sprintf( __( apply_filters( 'wpmu_signup_user_notification_subject', '[%1$s] Activate %2$s' ), $cimy_uef_domain ), $from_name, $user);
 	wp_mail($user_email, $subject, $message, $message_headers);
 	return true;
 }
 
 function cimy_uef_activate($message) {
-	global $wpdb;
+	global $wpdb, $cimy_uef_domain;
+
 	if (isset($_GET["cimy_key"])) {
 		$result = cimy_uef_activate_signup($_GET["cimy_key"]);
 
 		if ( is_wp_error($result) ) {
 			if ( 'already_active' == $result->get_error_code()) {
 				$signup = $result->get_error_data();
-				$message = '<p class="message"><strong>'.__('Your account is now active!').'</strong><br />';
-				$message.= sprintf( __('Your site at <a href="%1$s">%2$s</a> is active. You may now log in to your site using your chosen username of &#8220;%3$s&#8221;.  Please check your email inbox at %4$s for your password and login instructions.  If you do not receive an email, please check your junk or spam folder.  If you still do not receive an email within an hour, you can <a href="%5$s">reset your password</a></p>.'), 'http://' . $signup->domain, $signup->domain, $signup->user_login, $signup->user_email, network_site_url( 'wp-login.php?action=lostpassword' ) );
+				$message = '<p class="message"><strong>'.__('Your account is now active!', $cimy_uef_domain).'</strong><br />';
+				$message.= sprintf( __('Your site at <a href="%1$s">%2$s</a> is active. You may now log in to your site using your chosen username of &#8220;%3$s&#8221;.  Please check your email inbox at %4$s for your password and login instructions.  If you do not receive an email, please check your junk or spam folder.  If you still do not receive an email within an hour, you can <a href="%5$s">reset your password</a></p>.', $cimy_uef_domain), 'http://' . $signup->domain, $signup->domain, $signup->user_login, $signup->user_email, network_site_url( 'wp-login.php?action=lostpassword' ) );
 			} else {
-				$message = '<p class="message"><strong>'.__('An error occurred during the activation').'</strong><br />';
+				$message = '<p class="message"><strong>'.__('An error occurred during the activation', $cimy_uef_domain).'</strong><br />';
 				$message.= $result->get_error_message().'</p>';
 			}
 		} else {
 			extract($result);
 			$user = new WP_User( (int) $user_id);
-			$message = '<p class="message"><strong>'.__('Your account is now active!').'</strong><br />'.__('Username:').' '.$user->user_login.'<br />'.__('Password:').' '.$password.'</p>';
+			$message = '<p class="message"><strong>'.__('Your account is now active!', $cimy_uef_domain).'</strong><br />'.sprintf(__('Username: %s'), $user->user_login).'<br />'.sprintf(__('Password: %s'), $password).'</p>';
 		}
 	}
 	return $message;
 }
 
 function cimy_uef_activate_signup($key) {
-	global $wpdb, $current_site;
+	global $wpdb, $current_site, $cimy_uef_domain;
 
 	require_once( ABSPATH . WPINC . '/registration.php');
 	$signup = $wpdb->get_row( $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."signups WHERE activation_key = %s", $key) );
 
 	if ( empty($signup) )
-		return new WP_Error('invalid_key', __('Invalid activation key.'));
+		return new WP_Error('invalid_key', __('Invalid activation key.', $cimy_uef_domain));
 
 	if ( $signup->active )
-		return new WP_Error('already_active', __('The site is already active.'), $signup);
+		return new WP_Error('already_active', __('The site is already active.', $cimy_uef_domain), $signup);
 
 	$meta = unserialize($signup->meta);
 	$user_login = $wpdb->escape($signup->user_login);
@@ -257,14 +258,14 @@ function cimy_uef_activate_signup($key) {
 	$wpdb->update( $wpdb->prefix."signups", array('active' => 1, 'activated' => $now), array('activation_key' => $key) );
 
 	if ( isset( $user_already_exists ) )
-		return new WP_Error( 'user_already_exists', __( 'That username is already activated.' ), $signup);
+		return new WP_Error( 'user_already_exists', __( 'That username is already activated.', $cimy_uef_domain), $signup);
 
 	wp_new_user_notification_original($user_id, $password);
 	return array('user_id' => $user_id, 'password' => $password, 'meta' => $meta);
 }
 
 function cimy_check_user_on_signups($errors, $user_name, $user_email) {
-	global $wpdb;
+	global $wpdb, $cimy_uef_domain;
 
 	// Has someone already signed up for this username?
 	$signup = $wpdb->get_row( $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."signups WHERE user_login = %s", $user_name) );
@@ -276,10 +277,10 @@ function cimy_check_user_on_signups($errors, $user_name, $user_email) {
 		if (($diff > 172800) || ($signup->active))
 			$wpdb->query( $wpdb->prepare("DELETE FROM ".$wpdb->prefix."signups WHERE user_login = %s", $user_name) );
 		else
-			$errors->add('user_name', __('That username is currently reserved but may be available in a couple of days.'));
+			$errors->add('user_name', __('That username is currently reserved but may be available in a couple of days.', $cimy_uef_domain));
 
 		if ( $signup->active == 0 && $signup->user_email == $user_email )
-			$errors->add('user_email_used', __('username and email used'));
+			$errors->add('user_email_used', __('username and email used', $cimy_uef_domain));
 	}
 
 	$signup = $wpdb->get_row( $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."signups WHERE user_email = %s", $user_email) );
@@ -289,7 +290,7 @@ function cimy_check_user_on_signups($errors, $user_name, $user_email) {
 		if (($diff > 172800) || ($signup->active))
 			$wpdb->query( $wpdb->prepare("DELETE FROM ".$wpdb->prefix."signups WHERE user_email = %s", $user_email) );
 		else
-			$errors->add('user_email', __('That email address has already been used. Please check your inbox for an activation email. It will become available in a couple of days if you do nothing.'));
+			$errors->add('user_email', __('That email address has already been used. Please check your inbox for an activation email. It will become available in a couple of days if you do nothing.', $cimy_uef_domain));
 	}
 
 	return $errors;

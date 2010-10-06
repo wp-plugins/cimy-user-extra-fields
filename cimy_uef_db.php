@@ -199,6 +199,16 @@ function cimy_plugin_install () {
 			}
 		}
 
+		if (version_compare($options['version'], "2.0.0-beta2", "<=") === true) {
+			$sql = "SELECT DESCRIPTION FROM $wpdb_wp_fields_table WHERE NAME='PASSWORD'";
+			$desc = $wpdb->get_var($sql);
+
+			if ($desc == __('<strong>Note:</strong> this website let you personalize your password; after the registration you will receive an e-mail with another password, do not care about that!', $cimy_uef_domain)) {
+				$sql = "UPDATE $wpdb_wp_fields_table SET DESCRIPTION='' WHERE NAME='PASSWORD'";
+				$wpdb->query($sql);
+			}
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);

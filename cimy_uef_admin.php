@@ -1251,6 +1251,30 @@ function cimy_admin_users_list_page() {
 
 	$extra_fields = get_cimyFields();
 
+	if (isset($_POST["submit_new_values"])) {
+		foreach ($_POST["users"] as $user_id) {
+			foreach ($_POST["ef_write_type"] as $ef_name=>$ef_type) {
+				if (!isset($_POST["ef_write_sel"][$ef_name]))
+					continue;
+
+				if (isset($_POST["ef_write"][$ef_name])) {
+					$ef_value = $_POST["ef_write"][$ef_name];
+
+					// if it is selected the "--- select ---" item then skip this check
+					if ((($ef_type == "dropdown") || ($ef_type == "dropdown-multi")) && ($ef_value == $dropdown_first_item))
+						continue;
+
+					set_cimyFieldValue($user_id, $ef_name, $ef_value);
+				}
+				else {
+					if ($ef_type == "checkbox") {
+						$ef_value = "NO";
+						set_cimyFieldValue($user_id, $ef_name, "");
+					}
+				}
+			}
+		}
+	}
 	// yes stupid WP_User_Search doesn't support custom $users_per_page support, lets add it!
 	class Cimy_User_Search extends WP_User_Search {
 		function Cimy_User_Search ($search_term = '', $page = '', $role = '', $users_per_page = 50) {
@@ -1461,10 +1485,10 @@ function cimy_admin_users_list_page() {
 		<table class="widefat" cellpadding="3" cellspacing="3" width="100%">
 		<?php
 		$thead_str = '<tr class="thead">';
-		$thead_str.= '<th id="cb" scope="col" class="check-column manage-column column-cb check-column" style=""><input type="checkbox" onclick="checkAll(document.getElementById(\'posts-filter\'));" /> </th>';
+		$thead_str.= '<th id="cb" scope="col" class="manage-column column-cb check-column" style=""><input type="checkbox" /> </th>';
 
 		$tfoot_str = '<tr class="thead">';
-		$tfoot_str.= '<th scope="col" class="check-column manage-column column-cb check-column" style=""><input type="checkbox" onclick="checkAll(document.getElementById(\'posts-filter\'));" /> </th>';
+		$tfoot_str.= '<th scope="col" class="manage-column column-cb check-column" style=""><input type="checkbox" /> </th>';
 
 		if (!in_array("username", $options['aue_hidden_fields'])) {
 			$thead_str.= '<th id="username" scope="col" class="manage-column column-username" style="">'.__("Username").'</th>';
@@ -1497,6 +1521,9 @@ function cimy_admin_users_list_page() {
 		}
 			
 		$i = 0;
+		$write_inputs = array();
+		$write_input_checkbox = array();
+
 		if (count($extra_fields) > 0)
 			foreach ($extra_fields as $thisField) {
 				$rules = $thisField['RULES'];
@@ -1528,21 +1555,28 @@ function cimy_admin_users_list_page() {
 					switch ($type) {
 						case "dropdown":
 							$ret = cimy_dropDownOptions($label, $search_value);
+							$ret2 = str_ireplace(' selected="selected"', '', $ret['html']);
 							$label = $ret['label'];
 							
 							$search_input = '<select name="ef_search['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
+							$write_input[$i] = '<td>'.$label.'</td><td><select name="ef_write['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
 							break;
 						case "dropdown-multi":
 							$ret = cimy_dropDownOptions($label, $search_value);
+							$ret2 = str_ireplace(' selected="selected"', '', $ret['html']);
 							$label = $ret['label'];
 							
 							$search_input = '<select name="ef_search['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
+							$write_input[$i] = '<td>'.$label.'</td><td><select name="ef_write['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
 							break;
 						case "text":
 						case "textarea":
 						case "textarea-rich":
-						case "picture":
 						case "picture-url":
+							$search_input = '<input type="text" name="ef_search['.$name.']" value="'.$search_value.'" size="6" />';
+							$write_input[$i] = '<td>'.$label.'</td><td><input type="text" name="ef_write['.$name.']" value="" size="40" />';
+							break;
+						case "picture":
 						case "file":
 							$search_input = '<input type="text" name="ef_search['.$name.']" value="'.$search_value.'" size="6" />';
 							break;
@@ -1553,6 +1587,7 @@ function cimy_admin_users_list_page() {
 								$checkbox_selected = "";
 							
 							$search_input = '<input type="checkbox" name="ef_search['.$name.']" value="1"'.$checkbox_selected.' />';
+							$write_input[$i] = '<td>'.$label.'</td><td><input type="checkbox" name="ef_write['.$name.']" value="1" />';
 							break;
 							
 						case "radio":
@@ -1562,9 +1597,21 @@ function cimy_admin_users_list_page() {
 								$radio_selected = "";
 							
 							$search_input = '<input type="radio" name="ef_search['.$name.']" value="'.$id.'"'.$radio_selected.' />';
+							$write_input[$i] = '<td>'.$label.'</td><td><input type="radio" name="ef_write['.$name.']" value="'.$label.'" />';
 							break;
 					}
-					
+
+					if (isset($write_input[$i])) {
+						if (empty($write_input_checkbox[$name])) {
+							$write_input[$i] = '<td><input type="checkbox" name="ef_write_sel['.$name.']" value="1" /></td>'.$write_input[$i];
+							$write_input_checkbox[$name] = true;
+						}
+						else
+							$write_input[$i] = '<td>&nbsp;</td>'.$write_input[$i];
+
+						$write_input[$i].= '<input type="hidden" name="ef_write_type['.$name.']" value="'.$type.'" /></td>';
+					}
+
 					$thead_str.= "$label<br />$search_input</th>";
 					$tfoot_str.= "$label</th>";
 				}
@@ -1767,7 +1814,32 @@ function cimy_admin_users_list_page() {
 		</div>
 	
 	<?php endif; ?>
-	
+
+	<?php if (!empty($write_input)) : ?>
+	<h2><?php _e("Update selected users", $cimy_uef_domain); ?></h2>
+	<table class="widefat" cellpadding="3" cellspacing="3">
+	<thead>
+		<tr class="thead">
+			<th class="manage-column column-name" style="" width="10px">&nbsp;</th><th class="manage-column column-name" style="" width="200px"><?php _e("Extra Fields", $cimy_uef_domain); ?></th><th class="manage-column column-name" style=""><?php _e("New value", $cimy_uef_domain); ?></th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr class="thead">
+			<th class="manage-column column-name" style="" width="10px">&nbsp;</th><th class="manage-column column-name" style="" width="200px"><?php _e("Extra Fields", $cimy_uef_domain); ?></th><th class="manage-column column-name" style=""><?php _e("New value", $cimy_uef_domain); ?></th>
+		</tr>
+	</tfoot>
+	<tbody>
+	<?php
+		foreach ($write_input as $input) {
+			echo '<tr>'.$input.'</tr>';
+		}
+	?>
+	</tbody>
+	</table>
+	<br />
+	<input class="button" type="submit" name="submit_new_values" value="<?php _e("Apply"); ?>" />
+	<?php endif; ?>
+
 	</form>
 	
 	</div>

@@ -1837,7 +1837,7 @@ function cimy_admin_users_list_page() {
 	</tbody>
 	</table>
 	<br />
-	<input class="button" type="submit" name="submit_new_values" value="<?php _e("Apply"); ?>" />
+	<input class="button" type="submit" name="submit_new_values" value="<?php _e("Update"); ?>" />
 	<?php endif; ?>
 
 	</form>

@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.0-beta2
+Version: 2.0.0
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -169,7 +169,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.0-beta2";
+$cimy_uef_version = "2.0.0";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -187,10 +187,10 @@ $cimy_uef_domain = 'cimy_uef';
 $cimy_uef_i18n_is_setup = false;
 cimy_uef_i18n_setup();
 
-if (is_multisite())
-	$wp_password_description = "";
-else
-	$wp_password_description = __('<strong>Note:</strong> this website let you personalize your password; after the registration you will receive an e-mail with another password, do not care about that!', $cimy_uef_domain);
+// if (is_multisite())
+// 	$wp_password_description = "";
+// else
+// 	$wp_password_description = __('<strong>Note:</strong> this website let you personalize your password; after the registration you will receive an e-mail with another password, do not care about that!', $cimy_uef_domain);
 
 $wp_hidden_fields = array(
 			'password' => array(
@@ -198,7 +198,7 @@ $wp_hidden_fields = array(
 						'post_name' => "user_pass",
 						'type' => "password",
 						'label' => __("Password"),
-						'desc' => $wp_password_description,
+						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
 								'max_length' => 100,
@@ -743,8 +743,6 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	global $cuef_upload_path, $cuef_upload_webpath, $cuef_plugin_dir, $cimy_uef_plugins_dir;
 
 	$type_path = "";
-// 	if ($type == "picture")
-// 		$type = "";
 	if (($type == "file") || ($type == "avatar"))
 		$type_path.= $type;
 

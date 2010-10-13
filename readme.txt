@@ -5,7 +5,7 @@ Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 1.5.3
+Stable tag: 2.0.0
 
 Add some useful fields to registration and user's info
 
@@ -28,7 +28,7 @@ WordPress is becoming more than ever a tool to open blog/websites and CMSs in an
  * registration-date
  * avatar
  * file
- 
+
 future versions can have more.
 
 = Following WordPress hidden fields can be enabled during registration: =
@@ -42,6 +42,12 @@ future versions can have more.
  * Jabber/Google Talk
  * biographical info
 
+= Other features: =
+ * reCAPTCHA
+ * custom registration logo (non MS installations)
+ * email confirmation (non MS installations)
+ * much more!
+
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
 
 = Two new menus are: =
@@ -51,8 +57,8 @@ WordPress and WordPress MultiSite per-blog registration:
     2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Wordpress MultiSite unique registration:
-    1. "Site Admin -> Users Extended" - lets you show users lists with the new fields that are created
-    2. "Site Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+    1. "Super Admin -> Users Extended" - lets you show users lists with the new fields that are created
+    2. "Super Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 = Rules are: =
 
@@ -113,7 +119,7 @@ There are two supported ways of using this plug-in under WordPress MultiSite:
   Every blog will have shared registration page and only the Super Admin can change it.
    * unpack the package under 'wp-content/mu-plugins' directory (if this directory does not exist, create it);
    * be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary);
-   * go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm.
+   * go to "Super Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm.
 
  2. Per-Blog registration
   If you want that every single Blog can define its own Extra Fields then you should choose this installation.

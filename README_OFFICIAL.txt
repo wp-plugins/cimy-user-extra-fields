@@ -35,17 +35,23 @@ Following WordPress hidden fields can be enabled during registration:
  * Jabber/Google Talk
  * biographical info
 
+Other features:
+ * reCAPTCHA
+ * custom registration logo (non MS installations)
+ * email confirmation (non MS installations)
+ * much more!
+
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
 
 Two new menus are:
 
-WordPress and WordPress MU per-blog registration:
+WordPress and WordPress MultiSite per-blog registration:
     1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
     2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
-Wordpress MU unique registration:
-    1. "Site Admin -> Users Extended" - lets you show users lists with the new fields that are created
-    2. "Site Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+Wordpress MultiSite unique registration:
+    1. "Super Admin -> Users Extended" - lets you show users lists with the new fields that are created
+    2. "Super Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Rules are:
 
@@ -94,28 +100,30 @@ BEFORE writing to me read carefully ALL the documentation AND the FAQ. Missing t
 Bugs or suggestions can be mailed at: cimmino.marco@gmail.com
 
 REQUIREMENTS:
-PHP >= 5.0.0
-WORDPRESS >= 2.6.x
-WORDPRESS MU >= 2.6.x
-MYSQL >= 4.0
+ * PHP >= 5.0.0
+ * WORDPRESS >= 3.0.x
+ * WORDPRESS MultiSite >= 3.0.x
+ * MYSQL >= 4.1.2
 
 INSTALLATION:
 - WordPress: just copy whole cimy-user-extra-fields subdir into your plug-in directory and activate it
 
-- WordPress MU:
-There are two supported ways of using this plug-in under WordPress MU:
+- WordPress MultiSite:
+There are two supported ways of using this plug-in under WordPress MultiSite:
 
 1) Unique registration
-If you want that ALL Blogs on your MU installation follow the same registration with the same fields this is the case for you.
-Every blog will have shared registration page and only the site administrators (of the whole MU installation) can change it.
-- unpack the package under 'mu-plugins' directory, be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary), then go to "Site Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm
+If you want that ALL Blogs on your MultiSite installation follow the same registration with the same fields this is the case for you.
+Every blog will have shared registration page and only the Super Admin can change it.
+ - unpack the package under 'wp-content/mu-plugins' directory (if this directory does not exist, create it);
+ - be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary);
+ - go to "Super Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm.
 
 2) Per-Blog registration
 If you want that every single Blog can define its own Extra Fields then you should choose this installation.
-Every registration will have Extra Fields defined by single blogs, every user will have anyway WordPress fields shared with ALL Blogs, this how it works
-WordPress MU.
-- unpack the package under 'plugins' directory; BE sure that cimy_uef_mu_activation.php is installed under 'mu-plugins' directory
-- then every single blog will have it under "Plugins" section
+Every registration will have Extra Fields defined by single blogs, every user will have anyway WordPress fields shared with ALL Blogs, this how it works WordPress MultiSite.
+ - unpack the package under 'wp-content/plugins' directory;
+ - be sure that cimy_uef_mu_activation.php is installed under 'wp-content/mu-plugins' directory (if this directory does not exist, create it);
+ - then every single blog will have it under "Plugins" section.
 
 
 UPDATE FROM A PREVIOUS VERSION:
@@ -377,7 +385,7 @@ $content: the content to be protected against HTML injections
 $override_allowed_tags [array|null, default null]: if you want to override allowed tags you should pass a proper array where all your favourite tags are listed.
 
 USAGE:
-echo cimy_uef_sanitize_content([$content], [$override_allowed_tags]);
+echo cimy_uef_sanitize_content($content, [$override_allowed_tags]);
 
 EXAMPLE:
 global $allowedtags;
@@ -452,13 +460,9 @@ Create the same directory needed for PICTURE support, avatars will be stored in 
 
 KNOWN ISSUES:
 - if you add too many fields in the "A&U Extended" menu they will go out of frame
-- some rules are applied only during registration (apart editable and visibility rules and max length for text and password fields only) - this has been fixed using Wordpress >= 2.8.x
 - some rules are never applied if you are using PHP 4.x please update to PHP 5.x as stated in the REQUIREMENTS
 - registration date cannot be modified
-- using WordPress password to let user customize its password works, but has one issue:
-  - on WordPress email received will contain wrong password (generated by WordPress), this due to WordPress limitation
-  - on WordPress MU email received and activation page contain correct password, no issues!
-- picture and avatar upload is disabled during registration under WordPress MU, will be possible once user is activated
+- picture and avatar upload is disabled during registration under WordPress MultiSite, will be possible once user is activated
 - if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again
 - dropdown issues:
   - custom value is not supported
@@ -508,9 +512,9 @@ A: Probably you installed the first time WordPress on PHP4 and you experienced t
 To fix the problem you need to create another administrator user and change admin user to another role and then back to administrator.
 
 
-Q: I'm using your plug-in on WordPress MU per-blog installation, I'm registering users on one blog but they appear on the main blog too, why?
+Q: I'm using your plug-in on WordPress MultiSite per-blog installation, I'm registering users on one blog but they appear on the main blog too, why?
 
-A: Because WordPress MU is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
+A: Because WordPress MultiSite is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
 Since I had already a long discussion with an user that didn't believe this, don't bother me to insist on this topic until you prove I'm wrong.
 
 
@@ -559,6 +563,40 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.0.0 - 13/10/2010
+- Added possibility to mass-write new data into the Extra Fields from A&U Extended page (thanks to Cuántica Webs for sponsoring it)
+- Fixed a debug information leftover introduced in 2.0.0-beta2 when saving a profile (thanks to Erik)
+- Fixed some obsolete/wrong strings (thanks Mary & Patrick)
+- Fixed some strings from the email confirmation were not translated correctly (non MS only)
+
+v2.0.0 beta2 - 22/09/2010
+- Added Securimage Captcha support (thanks to Patrick McCain for sponsoring it)
+- Added redirection support (non MS only) (thanks to Patrick McCain for sponsoring it)
+- Fixed adding/updating a field is now more user-friendly
+- Fixed uploading of any file should be forbidden during the registration if the confirmation email is turned on
+- Fixed an user can't register again after admin deletion within 2 days if the email confirmation is turned on (non MS only)
+- Fixed show permissions were not saved properly (causing checkboxes can't be unchecked anymore since v2.0.0-beta1) (thanks to Bak)
+
+v2.0.0 beta1 - 02/09/2010
+- Added WordPress 3.0.x support
+  - Fixed MultiSite recognization
+- Added reCAPTCHA support (thanks to Patrick McCain for sponsoring it)
+- Added password strength meter support (thanks to Patrick McCain for sponsoring it)
+- Added password confirmation support (thanks to Patrick McCain for sponsoring it)
+- Added email confirmation support (non MS only) (thanks to Patrick McCain for sponsoring it)
+- Added extra fields to welcome new user email support (thanks to JeffPBlues Design for sponsoring it)
+- Added custom login/registration logo support (non MS only) (thanks to Patrick McCain for sponsoring it)
+- Fixed some errors were not translated under registration form
+- Fixed rules shouldn't be applied if the user can't edit the field due to permissions (thanks to Paolo Sivori for pointing it)
+- Fixed localization was not working for MultiSite unique registration
+- Fixed extra fields search in the A&U Extended Page using Internet Explorer (thanks to Tom Matteson)
+- Fixed personalized password was not sent in the new user email (non MS only)
+- Fixed default password warning should not appear in case custom password has been entered (non MS only)
+- Fixed directory/file permissions (thanks to Jim)
+- Updated Italian translation
+- Code cleanup
+- Readme file updated
+
 v1.5.3 - 09/04/2010
 - Added set_cimyFieldValue function (thanks to Knark Planta for sponsoring)
 - Fixed some PHP warnings

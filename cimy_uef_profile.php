@@ -622,7 +622,7 @@ function cimy_update_ExtraFields() {
 					$query.= $value;
 				}
 			}
-			
+
 			if ($type == 'checkbox') {
 				// if can be editable then write NO
 				// there is no way to understand if was YES or NO previously

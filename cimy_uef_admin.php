@@ -1820,12 +1820,12 @@ function cimy_admin_users_list_page() {
 	<table class="widefat" cellpadding="3" cellspacing="3">
 	<thead>
 		<tr class="thead">
-			<th class="manage-column column-name" style="" width="10px">&nbsp;</th><th class="manage-column column-name" style="" width="200px"><?php _e("Extra Fields", $cimy_uef_domain); ?></th><th class="manage-column column-name" style=""><?php _e("New value", $cimy_uef_domain); ?></th>
+			<th class="manage-column column-name" style="" width="10px">&nbsp;</th><th class="manage-column column-name" style="" width="200px"><?php _e("Extra Fields", $cimy_uef_domain); ?></th><th class="manage-column column-name" style=""><?php _e("Value"); ?></th>
 		</tr>
 	</thead>
 	<tfoot>
 		<tr class="thead">
-			<th class="manage-column column-name" style="" width="10px">&nbsp;</th><th class="manage-column column-name" style="" width="200px"><?php _e("Extra Fields", $cimy_uef_domain); ?></th><th class="manage-column column-name" style=""><?php _e("New value", $cimy_uef_domain); ?></th>
+			<th class="manage-column column-name" style="" width="10px">&nbsp;</th><th class="manage-column column-name" style="" width="200px"><?php _e("Extra Fields", $cimy_uef_domain); ?></th><th class="manage-column column-name" style=""><?php _e("Value"); ?></th>
 		</tr>
 	</tfoot>
 	<tbody>

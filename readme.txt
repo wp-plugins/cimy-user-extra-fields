@@ -5,7 +5,7 @@ Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 1.5.3
+Stable tag: 2.0.0
 
 Add some useful fields to registration and user's info
 
@@ -28,7 +28,7 @@ WordPress is becoming more than ever a tool to open blog/websites and CMSs in an
  * registration-date
  * avatar
  * file
- 
+
 future versions can have more.
 
 = Following WordPress hidden fields can be enabled during registration: =
@@ -41,6 +41,12 @@ future versions can have more.
  * Yahoo IM
  * Jabber/Google Talk
  * biographical info
+
+= Other features: =
+ * reCAPTCHA
+ * custom registration logo (non MS installations)
+ * email confirmation (non MS installations)
+ * much more!
 
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
 

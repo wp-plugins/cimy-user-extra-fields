@@ -35,6 +35,12 @@ Following WordPress hidden fields can be enabled during registration:
  * Jabber/Google Talk
  * biographical info
 
+Other features:
+ * reCAPTCHA
+ * custom registration logo (non MS installations)
+ * email confirmation (non MS installations)
+ * much more!
+
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
 
 Two new menus are:
@@ -557,6 +563,12 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.0.0 - 13/10/2010
+- Added possibility to mass-write new data into the Extra Fields from A&U Extended page (thanks to Cuántica Webs for sponsoring it)
+- Fixed a debug information leftover introduced in 2.0.0-beta2 when saving a profile (thanks to Erik)
+- Fixed some obsolete/wrong strings (thanks Mary & Patrick)
+- Fixed some strings from the email confirmation were not translated correctly (non MS only)
+
 v2.0.0 beta2 - 22/09/2010
 - Added Securimage Captcha support (thanks to Patrick McCain for sponsoring it)
 - Added redirection support (non MS only) (thanks to Patrick McCain for sponsoring it)

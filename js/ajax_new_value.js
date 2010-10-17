@@ -32,7 +32,7 @@ jQuery(document).ready(function($) {
 			$('#ef-new-value-'+user_id+'-'+field_name).attr("checked", true);
 
 		if (extra_field_type == 'select-multiple')
-			$('#ef-new-value-'+user_id+'-'+field_name).val( old_value.split(','));
+			$('#ef-new-value-'+user_id+'-'+field_name).val(old_value.split(','));
 
 		$('.cancel').click(function() {
 			e.html(revert_e);

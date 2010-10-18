@@ -403,7 +403,7 @@ function cimy_check_admin($permission) {
 	return false;
 }
 
-function cimy_fieldsetOptions($selected=0, $order="") {
+function cimy_fieldsetOptions($selected=0, $order="", $select_all=false) {
 	global $cimy_uef_domain;
 
 	if (!cimy_check_admin('manage_options'))
@@ -414,20 +414,30 @@ function cimy_fieldsetOptions($selected=0, $order="") {
 	$i = 0;
 	$html = "<select name=\"fieldset[".$order."]\">\n";
 
-	if ($options['fieldset_title'] == "") {
+	if (empty($options['fieldset_title']) && !$select_all) {
 		$html.= "\t<option value=\"$i\" selected=\"selected\">".__("no fieldset", $cimy_uef_domain)."</option>\n";
 	}
 	else {
-		$fieldset_titles = explode(',', $options['fieldset_title']);
-
-		foreach ($fieldset_titles as $fieldset) {
-			if ($i == $selected)
+		if ($select_all) {
+			if (-1 == $selected)
 				$selected_txt = " selected=\"selected\"";
 			else
 				$selected_txt = "";
-	
-			$html.= "\t<option value=\"$i\"".$selected_txt.">".$fieldset."</option>\n";
-			$i++;
+			$html.= "\t<option value=\"-1\"".$selected_txt.">".__("All")."</option>\n";
+		}
+
+		if (!empty($options['fieldset_title'])) {
+			$fieldset_titles = explode(',', $options['fieldset_title']);
+
+			foreach ($fieldset_titles as $fieldset) {
+				if ($i == $selected)
+					$selected_txt = " selected=\"selected\"";
+				else
+					$selected_txt = "";
+		
+				$html.= "\t<option value=\"$i\"".$selected_txt.">".$fieldset."</option>\n";
+				$i++;
+			}
 		}
 	}
 

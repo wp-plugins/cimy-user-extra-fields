@@ -1231,7 +1231,7 @@ function cimy_uef_print_messages($errors, $results) {
 }
 
 function cimy_admin_users_list_page() {
-	global $wpdb, $wp_roles, $wpdb_data_table, $cimy_uef_options, $cuef_upload_path, $cimy_uef_domain;
+	global $wpdb, $wp_roles, $wpdb_data_table, $cimy_uef_options, $cuef_upload_path, $cimy_uef_domain, $cimy_uef_file_types;
 
 	if (!cimy_check_admin('edit_users'))
 		return;
@@ -1251,7 +1251,7 @@ function cimy_admin_users_list_page() {
 
 	$extra_fields = get_cimyFields();
 
-	if (isset($_POST["submit_new_values"])) {
+	if ((isset($_POST["submit_new_values"])) && (!empty($_POST["users"])) && (!empty($_POST["ef_write_type"]))) {
 		foreach ($_POST["users"] as $user_id) {
 			foreach ($_POST["ef_write_type"] as $ef_name=>$ef_type) {
 				if (!isset($_POST["ef_write_sel"][$ef_name]))
@@ -1275,6 +1275,12 @@ function cimy_admin_users_list_page() {
 			}
 		}
 	}
+
+	if (isset($_POST["fieldset"][0]))
+		$fieldset_selection = $_POST["fieldset"][0];
+	else
+		$fieldset_selection = -1;
+
 	// yes stupid WP_User_Search doesn't support custom $users_per_page support, lets add it!
 	class Cimy_User_Search extends WP_User_Search {
 		function Cimy_User_Search ($search_term = '', $page = '', $role = '', $users_per_page = 50) {
@@ -1299,7 +1305,6 @@ function cimy_admin_users_list_page() {
 
 	// Query the users
 	$wp_user_search = new Cimy_User_Search($_POST['usersearch'], $_GET['userspage'], $_GET['role'], $users_per_page);
-	
 	$search_result = $wp_user_search->get_results();
 
 	// search into extra field engine
@@ -1319,7 +1324,6 @@ function cimy_admin_users_list_page() {
 
 			if ($ef_search != "") {
 				$remove = false;
-				
 				$ef_value = $wpdb->get_var("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$userid." AND FIELD_ID=".$ef_id);
 
 				if (($ef_type == "text") || ($ef_type == "textarea") || ($ef_type == "textarea-rich") || ($ef_type == "picture") || ($ef_type == "picture-url") || ($ef_type == "file")) {
@@ -1386,6 +1390,7 @@ function cimy_admin_users_list_page() {
 	<form id="posts-filter" action="" method="post">
 	<ul class="subsubsub">
 	<?php
+	wp_nonce_field('extrafieldnewvalue', 'extrafieldnewvaluenonce', false);
 	$role_links = array();
 	$avail_roles = array();
 	$users_of_blog = get_users_of_blog();
@@ -1459,10 +1464,14 @@ function cimy_admin_users_list_page() {
 		<?php if ( $wp_user_search->is_search() ) : ?>
 			<p><a href="users.php?page=au_extended"><?php _e('&laquo; Back to All Users'); ?></a></p>
 		<?php endif;
-		
+
 		wp_print_scripts('admin-forms');
 		?>
 		<div class="alignleft actions">
+			<label><?php _e("Fieldset", $cimy_uef_domain); ?>
+			<?php echo cimy_fieldsetOptions($fieldset_selection, 0, true); ?>
+			</label>
+
 			<?php _e("Users per page", $cimy_uef_domain); ?> 
 			<select name="cimy_uef_users_per_page">
 			<?php
@@ -1535,10 +1544,14 @@ function cimy_admin_users_list_page() {
 					$id = $thisField['ID'];
 					$name = $thisField['NAME'];
 					$type = $thisField['TYPE'];
+					$fieldset = $thisField["FIELDSET"];
 
 					if ($type == "avatar")
 						continue;
-					
+
+					if (($fieldset_selection > -1) && ($fieldset_selection != $fieldset))
+						continue;
+
 					$search_input = "";
 					$search_value = "";
 
@@ -1559,7 +1572,7 @@ function cimy_admin_users_list_page() {
 							$label = $ret['label'];
 							
 							$search_input = '<select name="ef_search['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
-							$write_input[$i] = '<td>'.$label.'</td><td><select name="ef_write['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><select name="ef_write['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
 							break;
 						case "dropdown-multi":
 							$ret = cimy_dropDownOptions($label, $search_value);
@@ -1567,14 +1580,14 @@ function cimy_admin_users_list_page() {
 							$label = $ret['label'];
 							
 							$search_input = '<select name="ef_search['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
-							$write_input[$i] = '<td>'.$label.'</td><td><select name="ef_write['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><select name="ef_write['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
 							break;
 						case "text":
 						case "textarea":
 						case "textarea-rich":
 						case "picture-url":
 							$search_input = '<input type="text" name="ef_search['.$name.']" value="'.$search_value.'" size="6" />';
-							$write_input[$i] = '<td>'.$label.'</td><td><input type="text" name="ef_write['.$name.']" value="" size="40" />';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><input type="text" name="ef_write['.$name.']" value="" size="40" />';
 							break;
 						case "picture":
 						case "file":
@@ -1587,7 +1600,7 @@ function cimy_admin_users_list_page() {
 								$checkbox_selected = "";
 							
 							$search_input = '<input type="checkbox" name="ef_search['.$name.']" value="1"'.$checkbox_selected.' />';
-							$write_input[$i] = '<td>'.$label.'</td><td><input type="checkbox" name="ef_write['.$name.']" value="1" />';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><input type="checkbox" name="ef_write['.$name.']" value="1" />';
 							break;
 							
 						case "radio":
@@ -1702,7 +1715,6 @@ function cimy_admin_users_list_page() {
 			// print all the content of extra fields if there are some
 			if (count($extra_fields) > 0) {
 				foreach ($extra_fields as $thisField) {
-	
 					$field_id = $thisField['ID'];
 
 					// if user has not yet fields in the data table then create them
@@ -1713,12 +1725,16 @@ function cimy_admin_users_list_page() {
 				$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$user_object->ID, ARRAY_A);
 
 				foreach ($extra_fields as $thisField) {
-					
+					$name = $thisField['NAME'];
 					$rules = $thisField['RULES'];
 					$type = $thisField['TYPE'];
 					$value = $thisField['VALUE'];
+					$fieldset = $thisField["FIELDSET"];
 
 					if ($type == "avatar")
+						continue;
+
+					if (($fieldset_selection > -1) && ($fieldset_selection != $fieldset))
 						continue;
 
 					if ($rules['show_in_aeu']) {
@@ -1732,7 +1748,9 @@ function cimy_admin_users_list_page() {
 						}
 
 						echo "<td>";
-							
+						echo "<span id=\"edit-".$user_object->ID."-".$name."\">";
+						echo "<div id=\"value-".$user_object->ID."-".$name."\">";
+
 						if ($type == "picture-url") {
 							if ($field == "")
 								$field = $value;
@@ -1792,8 +1810,12 @@ function cimy_admin_users_list_page() {
 						}
 						else
 							echo $field;
-							
-						echo "&nbsp;"."</td>";
+
+						echo "</div>";
+						if ((!in_array($type, $cimy_uef_file_types)) && ($type != "radio"))
+							echo "[<a href=\"#\" onclick=\"editExtraField(".$user_object->ID.", '".$name."'); return false;\">".__("Change")."</a>]";
+
+						echo "&nbsp;</span></td>";
 					}
 				}
 			}
@@ -1845,6 +1867,41 @@ function cimy_admin_users_list_page() {
 	</div>
 	
 	<?php
+}
+
+function cimy_uef_admin_ajax_edit() {
+	global $cimy_uef_domain;
+
+	$dropdown_first_item = '--- '.__("select", $cimy_uef_domain).' ---';
+?>
+<script type='text/javascript'>
+/* <![CDATA[ */
+	var postL10n = {
+		ok: "<?php echo esc_js(__('OK')); ?>",
+		cancel: "<?php echo esc_js( __('Cancel')); ?>",
+		dropdown_first_item: "<?php echo esc_js($dropdown_first_item); ?>"
+	};
+	try{convertEntities(postL10n);}catch(e){};
+/* ]]> */
+</script>
+<?php
+	wp_enqueue_script("cimy_uef_ajax_new_value");
+}
+
+function cimy_uef_admin_ajax_save_ef_new_value() {
+	check_ajax_referer('extrafieldnewvalue', 'extrafieldnewvaluenonce');
+	$user_id = $_POST["user_id"];
+	$field_name = $_POST["field_name"];
+	$new_value = $_POST["new_value"];
+
+	$res = set_cimyFieldValue($user_id, $field_name, $new_value);
+
+	if (!empty($res[0]["USER_ID"]))
+		echo esc_attr($new_value);
+	else
+		echo null;
+
+	die;
 }
 
 function cimy_save_field($action, $table, $data) {

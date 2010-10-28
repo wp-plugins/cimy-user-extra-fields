@@ -693,7 +693,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 				$current_fieldset = $fieldset;
 
 				if (isset($fieldset_titles[$current_fieldset]))
-					echo "\n\t<h2>".$fieldset_titles[$current_fieldset]."</h2>\n";
+					echo "\n\t<h2>".esc_html($fieldset_titles[$current_fieldset])."</h2>\n";
 			}
 
 			if (($description != "") && ($type != "registration-date")) {

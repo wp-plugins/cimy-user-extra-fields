@@ -608,11 +608,11 @@ function cimy_show_options($results, $embedded) {
 			<?php
 				_e("Public KEY", $cimy_uef_domain);
 			?>
-				<input type="text" name="recaptcha_public_key" value="<?php echo $recaptcha_public_key; ?>" size="40" /><br />
+				<input type="text" name="recaptcha_public_key" value="<?php echo esc_attr($recaptcha_public_key); ?>" size="40" /><br />
 			<?php
 				_e("Private KEY", $cimy_uef_domain);
 			?>
-				<input type="text" name="recaptcha_private_key" value="<?php echo $recaptcha_private_key; ?>" size="40" />
+				<input type="text" name="recaptcha_private_key" value="<?php echo esc_attr($recaptcha_private_key); ?>" size="40" />
 			</td>
 		</tr>
 		<tr>
@@ -635,7 +635,7 @@ function cimy_show_options($results, $embedded) {
 			<th scope="row"><?php _e("Change login/registration page logo", $cimy_uef_domain); ?></th>
 			<td>
 				<?php if (!empty($options["registration-logo"])) { ?><input type="hidden" name="registration_logo_oldfile" value="<?php echo basename($options["registration-logo"]); ?>" />
-				<?php echo basename($options["registration-logo"]).'<br />'; ?>
+				<?php echo esc_html(basename($options["registration-logo"])).'<br />'; ?>
 				<input type="checkbox" name="registration_logo_del" value="1" />
 				<?php echo " ".__("Delete the picture", $cimy_uef_domain); ?><br /><br /><?php } ?>
 
@@ -734,11 +734,11 @@ function cimy_show_options($results, $embedded) {
 	<table class="form-table">
 		<tr>
 			<th scope="row" width="40%"><?php _e("Extra Fields section title", $cimy_uef_domain); ?></th>
-			<td width="60%"><input type="text" name="extra_fields_title" value="<?php echo $options['extra_fields_title']; ?>" size="35" maxlength="<?php echo $max_length_extra_fields_title; ?>" /></td>
+			<td width="60%"><input type="text" name="extra_fields_title" value="<?php echo esc_attr($options['extra_fields_title']); ?>" size="35" maxlength="<?php echo $max_length_extra_fields_title; ?>" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e("Fieldset's titles, separates with comma", $cimy_uef_domain); ?><br /><?php _e("example: title1,title2,title3", $cimy_uef_domain); ?></th>
-			<td><input type="text" name="fieldset_title" value="<?php echo $options['fieldset_title']; ?>" size="35" maxlength="<?php echo $max_length_fieldset_value; ?>" /> <?php _e("<strong>note:</strong> if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again", $cimy_uef_domain); ?></td>
+			<td><input type="text" name="fieldset_title" value="<?php echo esc_attr($options['fieldset_title']); ?>" size="35" maxlength="<?php echo $max_length_fieldset_value; ?>" /> <?php _e("<strong>note:</strong> if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again", $cimy_uef_domain); ?></td>
 		</tr>
 
 	</table>

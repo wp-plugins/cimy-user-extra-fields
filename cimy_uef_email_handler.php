@@ -11,9 +11,8 @@ function wp_new_user_notification($user_id, $plaintext_pass = '') {
 	if (isset($_POST["cimy_uef_wp_PASSWORD"]))
 		delete_usermeta($user_id, 'default_password_nag');
 
+	$options = cimy_get_options();
 	if (!is_multisite()) {
-		$options = cimy_get_options();
-
 		if (!$options["confirm_email"])
 			wp_new_user_notification_original($user_id, $plaintext_pass, $options["mail_include_fields"]);
 		// if confirmation email is enabled delete the default_password_nag but checks first if has not been done on top of this function!

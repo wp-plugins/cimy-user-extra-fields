@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.0
+Version: 2.0.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -157,8 +157,15 @@ else {
 }
 
 wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."upload_file.js", false, false);
-wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."invert_sel.js", false, false);
 wp_register_style("cimy_uef_register", $cuef_css_webpath."cimy_uef_register.css", false, false);
+
+function cimy_uef_admin_init() {
+	global $cuef_js_webpath;
+	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."invert_sel.js", false, false);
+	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."ajax_new_value.js", false, false);
+}
+
+add_action('admin_init', 'cimy_uef_admin_init');
 
 require_once($cuef_plugin_dir.'/cimy_uef_email_handler.php');
 require_once($cuef_plugin_dir.'/cimy_uef_db.php');
@@ -578,6 +585,9 @@ add_action('delete_user', 'cimy_delete_user_info');
 // add avatar filter
 add_filter('get_avatar', 'cimy_uef_avatar_filter', 1, 5);
 
+// add code to handle new value from ajax code in A&U Extended
+add_action('wp_ajax_save-extra-field-new-value', 'cimy_uef_admin_ajax_save_ef_new_value');
+
 function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="") {
 	global $wpdb, $wpdb_data_table, $wpdb_fields_table, $cuef_upload_path;
 
@@ -725,18 +735,19 @@ function cimy_admin_menu_custom() {
 	if (isset($cimy_top_menu) && (!is_multisite())) {
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Options"), "UEF: ".__("Options"), 'manage_options', "user_extra_fields_options", 'cimy_show_options_notembedded');
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Fields", $cimy_uef_domain), "UEF: ".__("Fields", $cimy_uef_domain), 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
-		add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'manage_options', "au_extended", 'cimy_admin_users_list_page');
+		$aue_page = add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'manage_options', "au_extended", 'cimy_admin_users_list_page');
 	}
 	else {
 		if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins")) {
-			add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'manage_options', "users_extended", 'cimy_admin_users_list_page');
+			$aue_page = add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'manage_options', "users_extended", 'cimy_admin_users_list_page');
 			add_submenu_page('wpmu-admin.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
 		}
 		else {
 			add_options_page($cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
-			add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'manage_options', "au_extended", 'cimy_admin_users_list_page');
+			$aue_page = add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'manage_options', "au_extended", 'cimy_admin_users_list_page');
 		}
 	}
+	add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
 }
 
 function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="") {

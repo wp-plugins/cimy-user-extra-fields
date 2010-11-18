@@ -145,24 +145,33 @@ if (is_multisite()) {
 		$cuef_plugin_path = "cimy-user-extra-fields/";
 
 	$cuef_plugin_dir.= $cuef_plugin_path;
-	$cuef_css_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."css/";
-	$cuef_js_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."js/";
-	$cuef_securimage_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."securimage/";
+// 	$cuef_css_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."css/";
+// 	$cuef_js_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."js/";
+// 	$cuef_securimage_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."securimage/";
 }
 else {
 	$cuef_plugin_dir = WP_CONTENT_DIR."/plugins/".$cuef_plugin_path;
-	$cuef_css_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."css/";
-	$cuef_js_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."js/";
-	$cuef_securimage_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."securimage/";
+// 	$cuef_css_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."css/";
+// 	$cuef_js_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."js/";
+// 	$cuef_securimage_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."securimage/";
 }
 
-wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."upload_file.js", false, false);
-wp_register_style("cimy_uef_register", $cuef_css_webpath."cimy_uef_register.css", false, false);
+// let's use plugins_url to build urls, take in account https too
+$cimy_uef_plugins_dirprefix = "";
+if ($cimy_uef_plugins_dir == "mu-plugins")
+	$cimy_uef_plugins_dirprefix = $cuef_plugin_path;
+
+$cuef_css_webpath = plugins_url($cimy_uef_plugins_dirprefix."css", __FILE__);
+$cuef_js_webpath = plugins_url($cimy_uef_plugins_dirprefix."js", __FILE__);
+$cuef_securimage_webpath = plugins_url($cimy_uef_plugins_dirprefix."securimage", __FILE__);
+
+wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."/upload_file.js", false, false);
+wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 
 function cimy_uef_admin_init() {
 	global $cuef_js_webpath;
-	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."invert_sel.js", false, false);
-	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."ajax_new_value.js", false, false);
+	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."/invert_sel.js", false, false);
+	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."/ajax_new_value.js", false, false);
 }
 
 add_action('admin_init', 'cimy_uef_admin_init');
@@ -176,7 +185,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.0";
+$cimy_uef_version = "2.0.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 

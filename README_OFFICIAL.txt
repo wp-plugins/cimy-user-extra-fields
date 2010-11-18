@@ -512,6 +512,12 @@ A: Probably you installed the first time WordPress on PHP4 and you experienced t
 To fix the problem you need to create another administrator user and change admin user to another role and then back to administrator.
 
 
+Q: I'm using your plug-in on WordPress MultiSite per-blog installation and when I register one user all Extra Fields are ignored, why?
+Q: I get this error: 'Fatal error: Call to undefined function cimy_uef_mu_blog_exists()', why?
+
+A: Because you missed to move cimy_uef_mu_activation.php file please check carefully the installation steps.
+
+
 Q: I'm using your plug-in on WordPress MultiSite per-blog installation, I'm registering users on one blog but they appear on the main blog too, why?
 
 A: Because WordPress MultiSite is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
@@ -563,6 +569,13 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.0.1 - 19/11/2010
+- Added possibility to change individual values "on the fly" into the Extra Fields from A&U Extended page (thanks to Cuántica Webs for sponsoring it)
+- Added Extra Fields group filtering in the A&U Extended page
+- Fixed various security issues (thanks to Mark Jaquith)
+- Fixed all URLs were not caring about https when used (thanks to Álvaro Degives-Más)
+- Fixed Extra Fields were not included in the admin email even if specified (MS only) (thanks to Kris LaGreca)
+
 v2.0.0 - 13/10/2010
 - Added possibility to mass-write new data into the Extra Fields from A&U Extended page (thanks to Cuántica Webs for sponsoring it)
 - Fixed a debug information leftover introduced in 2.0.0-beta2 when saving a profile (thanks to Erik)

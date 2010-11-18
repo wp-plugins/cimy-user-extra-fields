@@ -44,22 +44,32 @@ function cimy_admin_define_extra_fields() {
 		$res = cimy_save_options();
 	}
 	else if ((isset($_POST["submit_add"])) && (!empty($_POST["submit_add"]))) {
+		if (!check_admin_referer('cimy_uef_addfield', 'cimy_uef_addfieldnonce'))
+			return;
 		$action = "add";
 		$submit = $_POST["submit_add"];
 	}
 	else if ((isset($_POST["submit_edit"])) && (!empty($_POST["submit_edit"]))) {
+		if (!check_admin_referer('cimy_uef_editfield', 'cimy_uef_editfieldnonce'))
+			return;
 		$action = "edit";
 		$submit = $_POST["submit_edit"];
 	}
 	else if ((isset($_POST["submit_del"])) && (!empty($_POST["submit_del"]))) {
+		if (!check_admin_referer('cimy_uef_editfield', 'cimy_uef_editfieldnonce'))
+			return;
 		$action = "del";
 		$submit = $_POST["submit_del"];
 	}
 	else if ((isset($_POST["submit_del_sel"])) && (!empty($_POST["submit_del_sel"]))) {
+		if (!check_admin_referer('cimy_uef_editfield', 'cimy_uef_editfieldnonce'))
+			return;
 		$action = "delSel";
 		$submit = $_POST["submit_del_sel"];
 	}
 	else if ((isset($_POST["submit_order"])) && (!empty($_POST["submit_order"]))) {
+		if (!check_admin_referer('cimy_uef_editfield', 'cimy_uef_editfieldnonce'))
+			return;
 		$action = "order";
 		$submit = $_POST["submit_order"];
 	}
@@ -614,6 +624,7 @@ function cimy_admin_define_extra_fields() {
 	?>
 	
 	<form method="post" action="#addfield">
+		<?php wp_nonce_field('cimy_uef_addfield', 'cimy_uef_addfieldnonce', false); ?>
 		<p><?php _e("To add a new field you have to choose a name, type and label; optional are value and description. Rules are applied during user registration.", $cimy_uef_domain); ?></p>
 		<ul>
 			<li><?php _e("With <strong>radio</strong> and <strong>checkbox</strong>: <em>Value</em> and <em>equal TO</em> can only be 'Yes' or 'No' that means 'selected' or 'not selected'", $cimy_uef_domain); ?></li>
@@ -799,7 +810,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 	<form method="post" action="#addfield" id="<?php echo $form_id; ?>">
 
 	<?php
-	
+	wp_nonce_field('cimy_uef_editfield', 'cimy_uef_editfieldnonce', false);
 	if ($wp_fields)
 		echo '<input type="hidden" name="wp_fields" value="1" />';
 
@@ -1197,6 +1208,8 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 }
 
 function cimy_uef_print_messages($errors, $results) {
+	global $cimy_uef_domain;
+
 	if (count($errors) > 0) {
 	?>
 		<div class="error inline">
@@ -1252,6 +1265,8 @@ function cimy_admin_users_list_page() {
 	$extra_fields = get_cimyFields();
 
 	if ((isset($_POST["submit_new_values"])) && (!empty($_POST["users"])) && (!empty($_POST["ef_write_type"]))) {
+		if (!check_admin_referer('extrafieldnewvalue', 'extrafieldnewvaluenonce'))
+			return;
 		foreach ($_POST["users"] as $user_id) {
 			foreach ($_POST["ef_write_type"] as $ef_name=>$ef_type) {
 				if (!isset($_POST["ef_write_sel"][$ef_name]))

@@ -36,7 +36,7 @@ function cimy_extract_ExtraFields() {
 
 		if ($options['extra_fields_title'] != "") {
 			echo "<br clear=\"all\" />\n";
-			echo "<h2>".$options['extra_fields_title']."</h2>\n";
+			echo "<h2>".esc_html($options['extra_fields_title'])."</h2>\n";
 		}
 		
 		foreach ($extra_fields as $thisField) {
@@ -110,7 +110,7 @@ function cimy_extract_ExtraFields() {
 					$close_table = true;
 
 				if (isset($fieldset_titles[$current_fieldset]))
-					echo "\n\t<h3>".$fieldset_titles[$current_fieldset]."</h3>\n";
+					echo "\n\t<h3>".esc_html($fieldset_titles[$current_fieldset])."</h3>\n";
 				
 				echo '<table class="form-table">';
 				echo "\n";
@@ -622,7 +622,7 @@ function cimy_update_ExtraFields() {
 					$query.= $value;
 				}
 			}
-			
+
 			if ($type == 'checkbox') {
 				// if can be editable then write NO
 				// there is no way to understand if was YES or NO previously

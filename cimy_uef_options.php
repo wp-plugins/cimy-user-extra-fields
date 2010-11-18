@@ -10,7 +10,10 @@ function cimy_save_options() {
 		cimy_plugin_install();
 		return;
 	}
-	
+
+	if (!check_admin_referer('cimy_uef_options', 'cimy_uef_optionsnonce'))
+		return;
+
 	$results = array();
 	$do_not_save_options = false;
 	
@@ -117,8 +120,13 @@ function cimy_save_options() {
 	$action = "add";
 
 	(isset($_POST['confirm_email'])) ? $options['confirm_email'] = true : $options['confirm_email'] = false;
+	if ($options['confirm_email'])
+		cimy_force_signup_table_creation();
+	(isset($_POST['redirect_to'])) ? $options['redirect_to'] = $_POST['redirect_to'] : $options['redirect_to'] = "";
 	(isset($_POST['mail_include_fields'])) ? $options['mail_include_fields'] = true : $options['mail_include_fields'] = false;
-	(isset($_POST['recaptcha'])) ? $options['recaptcha'] = true : $options['recaptcha'] = false;
+
+	if (isset($_POST['captcha']))
+		$options['captcha'] = $_POST['captcha'];
 
 	if (isset($_POST['recaptcha_public_key'])) {
 		$options['recaptcha_public_key'] = trim($_POST['recaptcha_public_key']);
@@ -349,7 +357,7 @@ function cimy_show_options_notembedded() {
 }
 
 function cimy_show_options($results, $embedded) {
-	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_project_url, $cimy_uef_version, $cimy_uef_domain, $cimy_top_menu, $max_length_extra_fields_title, $cuef_upload_path;
+	global $wpdb, $wpdb_wp_fields_table, $wpdb_fields_table, $wpdb_data_table, $max_length_fieldset_value, $cimy_uef_name, $cimy_uef_url, $cimy_project_url, $cimy_uef_version, $cimy_uef_domain, $cimy_top_menu, $max_length_extra_fields_title, $cuef_upload_path, $cuef_plugin_dir;
 
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -373,7 +381,10 @@ function cimy_show_options($results, $embedded) {
 		$options['fieldset_title'] = esc_attr($options['fieldset_title']);
 		$options['mail_include_fields'] ? $mail_include_fields = ' checked="checked"' : $mail_include_fields = '';
 		$options['confirm_email'] ? $confirm_email = ' checked="checked"' : $confirm_email = '';
-		$options['recaptcha'] ? $recaptcha = ' checked="checked"' : $recaptcha = '';
+		$options['redirect_to'] == "source" ? $redirect_to_source = ' checked="checked"' : $redirect_to_source = '';
+		($options['captcha'] == "recaptcha") ? $recaptcha = ' checked="checked"' : $recaptcha = '';
+		($options['captcha'] == "securimage") ? $securimage = ' checked="checked"' : $securimage = '';
+		($options['captcha'] == "none") ? $no_captcha = ' checked="checked"' : $no_captcha = '';
 		isset($options['recaptcha_public_key']) ? $recaptcha_public_key = $options['recaptcha_public_key'] : $recaptcha_public_key = '';
 		isset($options['recaptcha_private_key']) ? $recaptcha_private_key = $options['recaptcha_private_key'] : $recaptcha_private_key = '';
 
@@ -404,9 +415,12 @@ function cimy_show_options($results, $embedded) {
 		$options['fieldset_title'] = "";
 		$mail_include_fields= '';
 		$confirm_email = '';
+		$redirect_to_source = '';
 		$recaptcha = '';
 		$recaptcha_public_key = '';
 		$recaptcha_private_key = '';
+		$securimage = '';
+		$no_captcha = ' checked="checked"';
 
 		$aue_hide_username = '';
 		$aue_hide_name = '';
@@ -506,6 +520,7 @@ function cimy_show_options($results, $embedded) {
 	}
 
 	?><form method="post" action="#options" id="cimy_uef_options">
+	<?php wp_nonce_field('cimy_uef_options', 'cimy_uef_optionsnonce', false); ?>
 	<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="Submit" value="<?php _e('Save Changes') ?>" /></p>
 	<h3><?php _e("General"); ?></h3>
 	<table class="form-table">
@@ -563,24 +578,60 @@ function cimy_show_options($results, $embedded) {
 			<td>
 			<?php
 				_e("user that registers should confirm its email address via a link click", $cimy_uef_domain);
+				echo "<br />";
+				_e("<strong>note:</strong> this option turned on will automatically disable (only during the registration) all upload fields: file, picture, avatar", $cimy_uef_domain);
+			?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<input type="checkbox" name="redirect_to" value="source"<?php echo $redirect_to_source; ?> />
+				<?php _e("Redirect to the source", $cimy_uef_domain); ?>
+			</th>
+			<td>
+			<?php
+				_e("after the registration or confirmation the user will be redirected to the address where was exactly before clicking on the registration link", $cimy_uef_domain);
 			?>
 			</td>
 		</tr>
 <?php } ?>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="recaptcha" value="1"<?php echo $recaptcha; ?> />
+				<input type="radio" name="captcha" value="none"<?php echo $no_captcha; ?> />
+				<?php _e('No captcha', $cimy_uef_domain); ?></a>
+			</th>
+			<td>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<input type="radio" name="captcha" value="recaptcha"<?php echo $recaptcha; ?> />
 				<?php _e('Enable <a href="http://www.google.com/recaptcha" target="_blank">reCAPTCHA</a>', $cimy_uef_domain); ?></a>
 			</th>
 			<td>
 			<?php
 				_e("Public KEY", $cimy_uef_domain);
 			?>
-				<input type="text" name="recaptcha_public_key" value="<?php echo $recaptcha_public_key; ?>" size="40" /><br />
+				<input type="text" name="recaptcha_public_key" value="<?php echo esc_attr($recaptcha_public_key); ?>" size="40" /><br />
 			<?php
 				_e("Private KEY", $cimy_uef_domain);
 			?>
-				<input type="text" name="recaptcha_private_key" value="<?php echo $recaptcha_private_key; ?>" size="40" />
+				<input type="text" name="recaptcha_private_key" value="<?php echo esc_attr($recaptcha_private_key); ?>" size="40" />
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<input type="radio" name="captcha" value="securimage"<?php echo $securimage; ?> />
+				<?php _e('Enable <a href="http://www.phpcaptcha.org/" target="_blank">Securimage Captcha</a>', $cimy_uef_domain); ?></a>
+			</th>
+			<td>
+				<?php _e('This captcha is probably weaker, but is easier for users', $cimy_uef_domain); ?>
+				<?php
+				if (!is_file($cuef_plugin_dir.'/securimage/securimage.php')) {
+					echo "<br />";
+					printf(__('<strong>WARNING: to activate this captcha download <a href="http://www.phpcaptcha.org/latest.zip" target="_blank">this package</a> and unpack it under %s</strong>', $cimy_uef_domain), $cuef_plugin_dir.'/recaptcha/');
+				}
+			      ?>
 			</td>
 		</tr>
 <?php if (!is_multisite()) { ?>
@@ -588,7 +639,7 @@ function cimy_show_options($results, $embedded) {
 			<th scope="row"><?php _e("Change login/registration page logo", $cimy_uef_domain); ?></th>
 			<td>
 				<?php if (!empty($options["registration-logo"])) { ?><input type="hidden" name="registration_logo_oldfile" value="<?php echo basename($options["registration-logo"]); ?>" />
-				<?php echo basename($options["registration-logo"]).'<br />'; ?>
+				<?php echo esc_html(basename($options["registration-logo"])).'<br />'; ?>
 				<input type="checkbox" name="registration_logo_del" value="1" />
 				<?php echo " ".__("Delete the picture", $cimy_uef_domain); ?><br /><br /><?php } ?>
 
@@ -687,11 +738,11 @@ function cimy_show_options($results, $embedded) {
 	<table class="form-table">
 		<tr>
 			<th scope="row" width="40%"><?php _e("Extra Fields section title", $cimy_uef_domain); ?></th>
-			<td width="60%"><input type="text" name="extra_fields_title" value="<?php echo $options['extra_fields_title']; ?>" size="35" maxlength="<?php echo $max_length_extra_fields_title; ?>" /></td>
+			<td width="60%"><input type="text" name="extra_fields_title" value="<?php echo esc_attr($options['extra_fields_title']); ?>" size="35" maxlength="<?php echo $max_length_extra_fields_title; ?>" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php _e("Fieldset's titles, separates with comma", $cimy_uef_domain); ?><br /><?php _e("example: title1,title2,title3", $cimy_uef_domain); ?></th>
-			<td><input type="text" name="fieldset_title" value="<?php echo $options['fieldset_title']; ?>" size="35" maxlength="<?php echo $max_length_fieldset_value; ?>" /> <?php _e("<strong>note:</strong> if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again", $cimy_uef_domain); ?></td>
+			<td><input type="text" name="fieldset_title" value="<?php echo esc_attr($options['fieldset_title']); ?>" size="35" maxlength="<?php echo $max_length_fieldset_value; ?>" /> <?php _e("<strong>note:</strong> if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again", $cimy_uef_domain); ?></td>
 		</tr>
 
 	</table>

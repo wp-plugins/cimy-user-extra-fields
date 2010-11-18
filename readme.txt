@@ -2,7 +2,7 @@
 Contributors: Marco Cimmino
 Donate link: http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/
 Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
-Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar
+Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar, recaptcha, captcha
 Requires at least: 3.0
 Tested up to: 3.0
 Stable tag: 2.0.1

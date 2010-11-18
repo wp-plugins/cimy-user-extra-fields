@@ -308,7 +308,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
-			$label = $thisField['LABEL'];
+			$label = esc_html($thisField['LABEL']);
 			$description = $thisField['DESCRIPTION'];
 			$input_name = $prefix.$wpdb->escape($name);
 			$unique_id = $prefix.$field_id;
@@ -373,7 +373,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	
 			if ($type == "dropdown") {
 				$ret = cimy_dropDownOptions($label, $value);
-				$label = $ret['label'];
+				$label = esc_html($ret['label']);
 				$html = $ret['html'];
 			}
 			

@@ -10,7 +10,10 @@ function cimy_save_options() {
 		cimy_plugin_install();
 		return;
 	}
-	
+
+	if (!check_admin_referer('cimy_uef_options', 'cimy_uef_optionsnonce'))
+		return;
+
 	$results = array();
 	$do_not_save_options = false;
 	
@@ -517,6 +520,7 @@ function cimy_show_options($results, $embedded) {
 	}
 
 	?><form method="post" action="#options" id="cimy_uef_options">
+	<?php wp_nonce_field('cimy_uef_options', 'cimy_uef_optionsnonce', false); ?>
 	<p class="submit" style="border-width: 0px;"><input class="button-primary" type="submit" name="Submit" value="<?php _e('Save Changes') ?>" /></p>
 	<h3><?php _e("General"); ?></h3>
 	<table class="form-table">

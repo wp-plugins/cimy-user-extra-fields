@@ -282,7 +282,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 	else
 		return NULL;
 
-	$field_data = cimy_change_radio_labels($field_data);
+	$field_data = cimy_change_radio_labels($field_data, $user_id);
 
 	if (($field_name) && ($user_id))
 		$field_data = $field_data[0]['VALUE'];
@@ -290,9 +290,9 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 	return $field_data;
 }
 
-function cimy_change_radio_labels($field_data) {
+function cimy_change_radio_labels($field_data, $user_id) {
 	$i = 0;
-	
+
 	while ($i < count($field_data)) {
 		if ($field_data[$i]['TYPE'] == "radio") {
 			$field_data[$i]['VALUE'] = $field_data[$i]['LABEL'];
@@ -302,7 +302,13 @@ function cimy_change_radio_labels($field_data) {
 			
 			$field_data[$i]['LABEL'] = $ret['label'];
 		}
-		
+		else if ($field_data[$i]['TYPE'] == "registration-date") {
+			if (isset($field_data[$i]['user_id']))
+				$field_data[$i]['VALUE'] = cimy_get_registration_date($field_data[$i]['user_id'], $field_data[$i]['VALUE']);
+			else
+				$field_data[$i]['VALUE'] = cimy_get_registration_date($user_id, $field_data[$i]['VALUE']);
+		}
+
 		$i++;
 	}
 	
@@ -479,6 +485,19 @@ function cimy_switch_current_blog($hidden_field=false) {
 
 		//restore_current_blog();
 	}
+}
+
+function cimy_get_registration_date($user_id, $value) {
+	if (!empty($value))
+		return $value;
+
+	$author_meta = get_userdata(intval($user_id));
+	$author_registered = $author_meta->user_registered;
+	if (!empty($author_registered))
+		if (($date = strtotime($author_registered)) !== FALSE);
+			return $date;
+
+	return "";
 }
 
 ?>

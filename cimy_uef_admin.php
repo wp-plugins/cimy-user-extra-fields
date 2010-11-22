@@ -1816,6 +1816,7 @@ function cimy_admin_users_list_page() {
 							echo '</a>';
 						}
 						else if ($type == "registration-date") {
+							$field = cimy_get_registration_date($user_object->ID, $field);
 							if (isset($rules['equal_to']))
 								$registration_date = cimy_get_formatted_date($field, $rules['equal_to']);
 							else
@@ -1827,7 +1828,7 @@ function cimy_admin_users_list_page() {
 							echo $field;
 
 						echo "</div>";
-						if ((!in_array($type, $cimy_uef_file_types)) && ($type != "radio"))
+						if ((!in_array($type, $cimy_uef_file_types)) && ($type != "radio") && ($type != "registration-date"))
 							echo "[<a href=\"#\" onclick=\"editExtraField(".$user_object->ID.", '".$name."'); return false;\">".__("Change")."</a>]";
 
 						echo "&nbsp;</span></td>";

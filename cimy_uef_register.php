@@ -201,7 +201,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 						break;
 						
 					case 'registration-date':
-						$field_value = mktime();
+						$field_value = time();
 						break;
 				}
 		

@@ -318,6 +318,7 @@ function cimy_extract_ExtraFields() {
 					break;
 					
 				case "registration-date":
+					$value = cimy_get_registration_date($get_user_id, $value);
 					if (isset($rules['equal_to']))
 						$obj_value = cimy_get_formatted_date($value, $rules['equal_to']);
 					else

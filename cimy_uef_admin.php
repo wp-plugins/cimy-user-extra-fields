@@ -287,6 +287,9 @@ function cimy_admin_define_extra_fields() {
 		$show_level = $_POST['show_level'][$field_order];
 		$store_rule['show_level'] = $show_level;
 
+		$email_admin = $_POST['email_admin'][$field_order];
+		$email_admin == "1" ? $store_rule['email_admin'] = true : $store_rule['email_admin'] = false;
+
 		// START CHECKING FOR ERRORS
 		if ($name == "")
 			$errors['name'] = __("Name not specified", $cimy_uef_domain);
@@ -451,106 +454,85 @@ function cimy_admin_define_extra_fields() {
 		unset($store_rule['max_length']);
 
 	// SHOW LEVEL
-	$show_anonymous = '';
+	$show_anonymous = ' selected="selected"';
 	$show_subscriber = '';
 	$show_contributor = '';
 	$show_author = '';
 	$show_editor = '';
 	$show_admin = '';
-	
+
+	(empty($label)) ? $selected_input["label"] = '' : $selected_input["label"] = $label;
+	(empty($value)) ? $selected_input["value"] = '' : $selected_input["value"] = $value;
+	$selected_input["name"] = '';
+	$selected_input["desc"] = '';
+	$selected_input["text"] = ' selected="selected"';
+	$selected_input["min_length"] = '';
+	$selected_input["exact_length"] = '';
+	$selected_input["max_length"] = '';
+	$selected_input["equal"] = '';
+	$selected_input["equal_to"] = '';
+	$selected_input["equal_to_case_sensitive"] = '';
+	$selected_input["equal_to_regex"] = '';
+	$selected_input["email"] = '';
+	$selected_input["email_admin"] = '';
+	$selected_input["ok_edit"] = ' selected="selected"';
+	$selected_input["minlen"] = '';
+	$selected_input["exactlen"] = '';
+	$selected_input["maxlen"] = '';
+
 	if ($action == "add") {
 		// CAN BE MODIFIED OR NOT
 		$selected_input[$store_rule['edit']] = ' selected="selected"';
 
 		// NAME
-		if ($name != "")
+		if (!empty($name))
 			$selected_input["name"] = $name;
-		else
-			$selected_input["name"] = '';
-	
-		// LABEL
-		if ($label != "")
-			$selected_input["label"] = $label;
-		else
-			$selected_input["label"] = '';
-		
-		// VALUE
-		if ($value != "")
-			$selected_input["value"] = $value;
-		else
-			$selected_input["value"] = '';
-		
+
 		// DESCRIPTION
-		if ($desc != "")
+		if (!empty($desc))
 			$selected_input["desc"] = $desc;
-		else
-			$selected_input["desc"] = '';
-		
+
 		// TYPE
-		if ($type != "")
+		if (!empty($type))
 			$selected_input[$type] = ' selected="selected"';
-		else
-			$selected_input["text"] = ' selected="selected"';
-	
+
 		// MIN LEN
-		if ($minlen != "")
+		if (!empty($minlen))
 			$selected_input["minlen"] = ' checked="checked"';
-		else
-			$selected_input["minlen"] = '';
-		
+
 		if (isset($store_rule['min_length']))
 			$selected_input["min_length"] = $store_rule['min_length'];
-		else
-			$selected_input["min_length"] = '';
-		
+
 		// EXACT LEN
-		if ($exactlen != "")
+		if (!empty($exactlen))
 			$selected_input["exactlen"] = ' checked="checked"';
-		else
-			$selected_input["exactlen"] = '';
-		
+
 		if (isset($store_rule['exact_length']))
 			$selected_input["exact_length"] = $store_rule['exact_length'];
-		else
-			$selected_input["exact_length"] = '';
 
 		// MAX LEN
-		if ($maxlen != "")
+		if (!empty($maxlen))
 			$selected_input["maxlen"] = ' checked="checked"';
-		else
-			$selected_input["maxlen"] = '';
-		
+
 		if (isset($store_rule['max_length']))
 			$selected_input["max_length"] = $store_rule['max_length'];
-		else
-			$selected_input["max_length"] = '';
-		
+
 		// EQUAL TO
 		if (isset($equal))
 			$selected_input["equal"] = ' checked="checked"';
-		else
-			$selected_input["equal"] = '';
-	
+
 		if (isset($store_rule['equal_to']))
 			$selected_input["equal_to"] = $store_rule['equal_to'];
-		else
-			$selected_input["equal_to"] = '';
-		
+
 		if (isset($equalto_casesens))
 			$selected_input["equal_to_case_sensitive"] = ' checked="checked"';
-		else
-			$selected_input["equal_to_case_sensitive"] = '';
 
 		if (isset($equalto_regex))
 			$selected_input["equal_to_regex"] = ' checked="checked"';
-		else
-			$selected_input["equal_to_regex"] = '';
 
 		// CHECK EMAIL SYNTAX
 		if ($store_rule['email'] == true)
 			$selected_input["email"] = ' checked="checked"';
-		else
-			$selected_input["email"] = '';
 
 		// SHOW LEVEL
 		switch ($store_rule['show_level']) {
@@ -573,11 +555,13 @@ function cimy_admin_define_extra_fields() {
 				$show_admin = ' selected="selected"';
 				break;
 		}
+
+		// EMAIL ADMIN
+		if ($store_rule['email_admin'] == true)
+			$selected_input["email_admin"] = ' checked="checked"';
 	}
 	// action is not "add"
 	else {
-		$selected_input["ok_edit"] = ' selected="selected"';
-		$show_anonymous = ' selected="selected"';
 	}
 
 	// CAN BE EMPTY
@@ -735,6 +719,10 @@ function cimy_admin_define_extra_fields() {
 			<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
 			</select>
 			<br />
+
+			<!-- EMAIL ADMIN -->
+			<input type="checkbox" name="email_admin[0]" value="1"<?php echo $selected_input["email_admin"]; ?> /> <?php _e("Send an email to the admin if the user changes its value", $cimy_uef_domain); ?><br />
+
 		</td>
 		<td align="center" style="vertical-align: middle;">
 			<p class="submit" style="border-width: 0px;">
@@ -1010,6 +998,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			else
 				$show_in_blog = "";
 
+			if ($rules['email_admin'])
+				$email_admin = ' checked="checked"';
+			else
+				$email_admin = "";
+
 			// SHOW LEVEL
 			$show_anonymous = '';
 			$show_subscriber = '';
@@ -1170,6 +1163,15 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
 				</select>
 				<br />
+
+				<?php
+				if (!$wp_fields) {
+				?>
+					<!-- EMAIL ADMIN -->
+					<input type="checkbox" name="email_admin[<?php echo $order ?>]" value="1"<?php echo $email_admin ?> /> <?php _e("Send an email to the admin if the user changes its value", $cimy_uef_domain); ?><br />
+				<?php
+				}
+				?>
 			</td>
 			<td align="center" style="vertical-align: middle;">
 				<p class="submit" style="border-width: 0px;">

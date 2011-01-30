@@ -121,6 +121,7 @@ function cimy_extract_ExtraFields() {
 			echo "\n\t";
 			
 			$value = esc_attr($value);
+			$old_value = esc_attr($old_value);
 
 			switch($type) {
 				case "picture-url":
@@ -379,6 +380,7 @@ function cimy_extract_ExtraFields() {
 				global $cimy_uef_plugins_dir;
 
 				$blog_path = $cuef_upload_path;
+				$old_value = basename($old_value);
 
 				if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
 					global $blog_id;
@@ -420,8 +422,8 @@ function cimy_extract_ExtraFields() {
 					// take the "can be modified" rule just set before
 					$dis_delete_img = $obj_disabled;
 					
-					echo '<input type="hidden" name="'.$input_name.'_oldfile" value="'.basename($value).'" />';
-					echo "\n\t\t";
+// 					echo '<input type="hidden" name="'.$input_name.'_oldfile" value="'.basename($value).'" />';
+// 					echo "\n\t\t";
 				}
 				
 				echo '<input type="checkbox" name="'.$input_name.'_del" value="1" style="width:auto; border:0; background:white;"'.$dis_delete_img.' />';
@@ -455,6 +457,8 @@ function cimy_extract_ExtraFields() {
 				echo "<br />".__("Picture URL:", $cimy_uef_domain)."<br />\n\t\t";
 			}
 
+			// write previous value
+			echo "<input type=\"hidden\" name=\"".$input_name."_".$field_id."_prev_value\" value=\"".$old_value."\" />\n\t\t";
 			// write to the html the form object built
 			if ($type != "registration-date")
 				echo $form_object;
@@ -490,12 +494,12 @@ function cimy_extract_ExtraFields() {
 }
 
 function cimy_update_ExtraFields() {
-	global $wpdb, $wpdb_data_table, $user_ID, $max_length_value, $fields_name_prefix, $cimy_uef_file_types, $user_level;
+	global $wpdb, $wpdb_data_table, $user_ID, $max_length_value, $fields_name_prefix, $cimy_uef_file_types, $user_level, $cimy_uef_domain;
 
 	// if updating meta-data from registration post then exit
 	if (isset($_POST['cimy_post']))
 		return;
-	
+
 	if (isset($_POST['user_id'])) {
 		$get_user_id = $_POST['user_id'];
 		
@@ -506,15 +510,18 @@ function cimy_update_ExtraFields() {
 		return;
 
 	$get_user_id = intval($get_user_id);
+	$profileuser = get_user_to_edit($get_user_id);
+	$user_login = $profileuser->user_login;
+	$user_displayname = $profileuser->display_name;
 	$extra_fields = get_cimyFields(false, true);
 
 	$query = "UPDATE ".$wpdb_data_table." SET VALUE=CASE FIELD_ID";
 	$i = 0;
 
 	$field_ids = "";
+	$mail_changes = "";
 
 	foreach ($extra_fields as $thisField) {
-
 		$field_id = $thisField["ID"];
 		$name = $thisField["NAME"];
 		$type = $thisField["TYPE"];
@@ -535,6 +542,8 @@ function cimy_update_ExtraFields() {
 			if (!$rules['show_in_profile'])
 				continue;
 		}
+
+		$prev_value = $wpdb->escape(stripslashes($_POST[$input_name."_".$field_id."_prev_value"]));
 
 		if ((isset($_POST[$input_name])) && (!in_array($type, $cimy_uef_file_types))) {
 			if ($type == "dropdown-multi")
@@ -562,22 +571,27 @@ function cimy_update_ExtraFields() {
 			$query.= " WHEN ".$field_id." THEN ";
 	
 			switch ($type) {
+				case 'dropdown':
+				case 'dropdown-multi':
+					$ret = cimy_dropDownOptions($label, $field_value);
+					$label = $ret['label'];
 				case 'picture-url':
 				case 'textarea':
 				case 'textarea-rich':
-				case 'dropdown':
-				case 'dropdown-multi':
 				case 'password':
 				case 'text':
 					$value = "'".$field_value."'";
+					$prev_value = "'".$prev_value."'";
 					break;
 
 				case 'checkbox':
 					$value = $field_value == '1' ? "'YES'" : "'NO'";
+					$prev_value = $prev_value == "YES" ? "'YES'" : "'NO'";
 					break;
 
 				case 'radio':
 					$value = $field_value == $field_id ? "'selected'" : "''";
+					$prev_value = "'".$prev_value."'";
 					break;
 			}
 
@@ -589,9 +603,6 @@ function cimy_update_ExtraFields() {
 			$rules = $thisField['RULES'];
 
 			if (in_array($type, $cimy_uef_file_types)) {
-				$profileuser = get_user_to_edit($get_user_id);
-				$user_login = $profileuser->user_login;
-
 				if ($type == "avatar") {
 					// since avatars are drawn max to 512px then we can save bandwith resizing, do it!
 					$rules['equal_to'] = 512;
@@ -602,8 +613,8 @@ function cimy_update_ExtraFields() {
 				else
 					$delete_file = false;
 				
-				if (isset($_POST[$input_name.'_oldfile']))
-					$old_file = stripslashes($_POST[$input_name.'_oldfile']);
+				if (isset($_POST[$input_name."_".$field_id."_prev_value"]))
+					$old_file = stripslashes($_POST[$input_name."_".$field_id."_prev_value"]);
 				else
 					$old_file = false;
 				
@@ -618,10 +629,13 @@ function cimy_update_ExtraFields() {
 					$field_ids.= $field_id;
 					
 					$value = "'".$field_value."'";
-					
+					$prev_value = "'".$prev_value."'";
+
 					$query.= " WHEN ".$field_id." THEN ";
 					$query.= $value;
 				}
+				else
+					$prev_value = $value;
 			}
 
 			if ($type == 'checkbox') {
@@ -635,11 +649,41 @@ function cimy_update_ExtraFields() {
 						$i = 1;
 		
 					$field_ids.= $field_id;
-		
+
+					$field_value = "NO";
+					$value = "'".$field_value."'";
+					$prev_value = $prev_value == "YES" ? "'YES'" : "'NO'";
+
 					$query.= " WHEN ".$field_id." THEN ";
-					$query.= "'NO'";
+					$query.= $value;
 				}
 			}
+
+			if ($type == 'dropdown-multi') {
+				// if can be editable then write ''
+				// there is no way to understand if was YES or NO previously
+				// without adding other hidden inputs so write always
+				if (($rules['edit'] == "ok_edit") || (($rules['edit'] == 'edit_only_by_admin') && (current_user_can('edit_users')))) {
+					if ($i > 0)
+						$field_ids.= ", ";
+					else
+						$i = 1;
+		
+					$field_ids.= $field_id;
+
+					$field_value = '';
+					$value = "'".$field_value."'";
+					$prev_value = "'".$prev_value."'";
+					$ret = cimy_dropDownOptions($label, $field_value);
+					$label = $ret['label'];
+					$query.= " WHEN ".$field_id." THEN ";
+					$query.= $value;
+				}
+			}
+		}
+		if (($rules["email_admin"]) && ($value != $prev_value) && ($type != "registration-date")) {
+			$mail_changes.= sprintf(__("%s previous value: %s new value: %s", $cimy_uef_domain), $label, stripslashes($prev_value), stripslashes($value));
+			$mail_changes.= "\r\n";
 		}
 	}
 
@@ -648,6 +692,13 @@ function cimy_update_ExtraFields() {
 
 		// $query WILL BE: UPDATE <table> SET VALUE=CASE FIELD_ID WHEN <field_id1> THEN <value1> [WHEN ... THEN ...] ELSE FIELD_ID END WHERE FIELD_ID IN(<field_id1>, [<field_id2>...]) AND USER_ID=<user_id>
 		$wpdb->query($query);
+	}
+
+	// mail only if set and if there is something to mail
+	if (!empty($mail_changes)) {
+		$admin_email = get_option('admin_email');
+		$mail_subject = sprintf(__("%s (%s) has changed one or more fields", $cimy_uef_domain), $user_displayname, $user_login);
+		wp_mail($admin_email, $mail_subject, $mail_changes);
 	}
 }
 

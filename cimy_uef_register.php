@@ -80,9 +80,11 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 	if ($_POST["action"] == "adduser")
 		return;
 
-	// if not set, set to -1 == anonymous
-	if (!isset($user_level))
-		$user_level = -1;
+	$my_user_level = $user_level;
+
+	// -1 == anonymous
+	if (!is_user_logged_in())
+		$my_user_level = -1;
 
 	$options = cimy_get_options();
 	$extra_fields = get_cimyFields(false, true);
@@ -128,7 +130,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
-			if ($user_level < $rules['show_level'])
+			if ($my_user_level < $rules['show_level'])
 				continue;
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
@@ -277,9 +279,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	if ($_POST["action"] == "adduser")
 		return $errors;
 
-	// if not set, set to -1 == anonymous
-	if (!isset($user_level))
-		$user_level = -1;
+	$my_user_level = $user_level;
+
+	// -1 == anonymous
+	if (!is_user_logged_in())
+		$my_user_level = -1;
 
 	$extra_fields = get_cimyFields(false, true);
 	$wp_fields = get_cimyFields(true);
@@ -315,7 +319,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
-			if ($user_level < $rules['show_level'])
+			if ($my_user_level < $rules['show_level'])
 				continue;
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
@@ -382,7 +386,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				$file_size = $_FILES[$input_name]['size'] / 1024;
 				$file_type = $_FILES[$input_name]['type'];
 				$value = $_FILES[$input_name]['name'];
-				$old_file = $_POST[$input_name."_oldfile"];
+				$old_file = $_POST[$input_name."_".$field_id."_prev_value"];
 				$del_old_file = $_POST[$input_name."_del"];
 			}
 
@@ -557,9 +561,11 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 // 	cimy_switch_to_blog();
 
-	// if not set, set to -1 == anonymous
-	if (!isset($user_level))
-		$user_level = -1;
+	$my_user_level = $user_level;
+
+	// -1 == anonymous
+	if (!is_user_logged_in())
+		$my_user_level = -1;
 
 	// needed by cimy_uef_init_mce.php
 	$cimy_uef_register_page = true;
@@ -629,7 +635,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
-			if (($user_level < $rules['show_level']) && ($i == 2))
+			if (($my_user_level < $rules['show_level']) && ($i == 2))
 				continue;
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules

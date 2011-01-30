@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.1
+Version: 2.0.2
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -11,7 +11,7 @@ Author URI: mailto:cimmino.marco@gmail.com
 /*
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
-Copyright (c) 2006-2010 Marco Cimmino
+Copyright (c) 2006-2011 Marco Cimmino
 
 Code for drop-down support is in part from Raymond Elferink raymond@raycom.com
 Code for regular expression under equalTo rule is in part from Shane Hartman shane@shanehartman.com
@@ -40,21 +40,25 @@ global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $w
 
 function cimy_uef_set_tables() {
 	global $wpdb, $old_wpdb_data_table, $wpdb_data_table, $old_wpdb_fields_table, $wpdb_fields_table, $wpdb_wp_fields_table, $cimy_uef_options, $cimy_uef_version, $cuef_upload_path, $cimy_uef_domain, $cimy_uef_plugins_dir;
+	$prefix = $wpdb->prefix;
 
 	if (is_multisite()) {
 		$cimy_uef_plugins_dir = __FILE__;
 		if (!stristr($cimy_uef_plugins_dir, "mu-plugins") === false)
+		{
+			$prefix = $wpdb->base_prefix;
 			$cimy_uef_plugins_dir = "mu-plugins";
+		}
 		else
 			$cimy_uef_plugins_dir = "plugins";
 	}
 
-	$old_wpdb_data_table = $wpdb->prefix."cimy_data";
-	$old_wpdb_fields_table = $wpdb->prefix."cimy_fields";
+	$old_wpdb_data_table = $prefix."cimy_data";
+	$old_wpdb_fields_table = $prefix."cimy_fields";
 
-	$wpdb_data_table = $wpdb->prefix."cimy_uef_data";
-	$wpdb_fields_table = $wpdb->prefix."cimy_uef_fields";
-	$wpdb_wp_fields_table = $wpdb->prefix."cimy_uef_wp_fields";
+	$wpdb_data_table = $prefix."cimy_uef_data";
+	$wpdb_fields_table = $prefix."cimy_uef_fields";
+	$wpdb_wp_fields_table = $prefix."cimy_uef_wp_fields";
 }
 
 cimy_uef_set_tables();
@@ -185,13 +189,13 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.1";
+$cimy_uef_version = "2.0.2";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
 $start_cimy_uef_comment = "<!--\n";
 $start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version."\n";
-$start_cimy_uef_comment .= "\tCopyright (c) 2006-2010 Marco Cimmino\n";
+$start_cimy_uef_comment .= "\tCopyright (c) 2006-2011 Marco Cimmino\n";
 $start_cimy_uef_comment .= "\t".$cimy_uef_url."\n";
 $start_cimy_uef_comment .= "-->\n";
 

@@ -24,24 +24,32 @@ function wp_new_user_notification($user_id, $plaintext_pass = '') {
 }
 endif;
 
-function wp_new_user_notification_original($user_id, $plaintext_pass = '', $include_fields = false) {
+function wp_new_user_notification_original($user_id, $plaintext_pass = '', $include_fields = false, $activation_data = false) {
 	$user = new WP_User($user_id);
 
 	$user_login = stripslashes($user->user_login);
 	$user_email = stripslashes($user->user_email);
+	$admin_email = get_option('admin_email');
 
 	// The blogname option is escaped with esc_html on the way into the database in sanitize_option
 	// we want to reverse this for the plain text arena of emails.
 	$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+	// Get the site domain and get rid of www.
+	$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+	if ( substr( $sitename, 0, 4 ) == 'www.' )
+		$sitename = substr( $sitename, 4 );
+
+	$from_email = 'wordpress@' . $sitename;
+	$headers = sprintf("From: %s <%s>\r\n\\", $blogname, $from_email);
 
 	$message  = sprintf(__('New user registration on your site %s:'), $blogname) . "\r\n\r\n";
 	$message .= sprintf(__('Username: %s'), $user_login) . "\r\n\r\n";
 	$message .= sprintf(__('E-mail: %s'), $user_email) . "\r\n";
 
 	if ($include_fields)
-		$message .= cimy_uef_mail_fields($user);
+		$message .= cimy_uef_mail_fields($user, $activation_data);
 
-	@wp_mail(get_option('admin_email'), sprintf(__('[%s] New User Registration'), $blogname), $message);
+	@wp_mail($admin_email, sprintf(__('[%s] New User Registration'), $blogname), $message, $headers);
 
 	if ( empty($plaintext_pass) )
 		return;
@@ -50,10 +58,10 @@ function wp_new_user_notification_original($user_id, $plaintext_pass = '', $incl
 	$message .= sprintf(__('Password: %s'), $plaintext_pass) . "\r\n";
 
 	if ($include_fields)
-		$message .= cimy_uef_mail_fields($user);
+		$message .= cimy_uef_mail_fields($user, $activation_data);
 	$message .= wp_login_url() . "\r\n";
 
-	wp_mail($user_email, sprintf(__('[%s] Your username and password'), $blogname), $message);
+	wp_mail($user_email, sprintf(__('[%s] Your username and password'), $blogname), $message, $headers);
 }
 
 function cimy_uef_mail_fields($user = false, $activation_data = false) {
@@ -73,9 +81,11 @@ function cimy_uef_mail_fields($user = false, $activation_data = false) {
 			$meta = $activation_data["meta"];
 
 		// neet to do it here, otherwise I pick up main options instead of blog's ones
-		cimy_switch_to_blog($meta);
+		if (is_multisite())
+			cimy_switch_to_blog($meta);
 		$options = cimy_get_options();
-		restore_current_blog();
+		if (is_multisite())
+			restore_current_blog();
 
 		if (!$options["mail_include_fields"])
 			return $message;
@@ -259,7 +269,8 @@ function cimy_uef_activate_signup($key) {
 	if ( isset( $user_already_exists ) )
 		return new WP_Error( 'user_already_exists', __( 'That username is already activated.', $cimy_uef_domain), $signup);
 
-	wp_new_user_notification_original($user_id, $password);
+	$options = cimy_get_options();
+	wp_new_user_notification_original($user_id, $password, $options["mail_include_fields"], $meta);
 	return array('user_id' => $user_id, 'password' => $password, 'meta' => $meta);
 }
 

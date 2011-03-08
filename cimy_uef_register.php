@@ -76,8 +76,8 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 	if (isset($meta["blog_id"]))
 		cimy_switch_to_blog($meta);
 
-	// avoid to save stuff if user is being added from: /wp-admin/user-new.php
-	if ($_POST["action"] == "adduser")
+	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
+	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
 		return;
 
 	$my_user_level = $user_level;
@@ -275,8 +275,8 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	if ((!is_multisite()) && ($options["confirm_email"])) {
 		$errors = cimy_check_user_on_signups($errors, $user_login, $user_email);
 	}
-	// avoid to save stuff if user is being added from: /wp-admin/user-new.php
-	if ($_POST["action"] == "adduser")
+	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
+	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
 		return $errors;
 
 	$my_user_level = $user_level;

@@ -437,7 +437,7 @@ $rule_email = array("text", "textarea", "textarea-rich", "password");
 $rule_cannot_be_empty = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "avatar", "file");
 
 // types that can admit a default value if empty
-$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file", "checkbox", "radio");
+$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file", "checkbox", "radio", "dropdown", "dropdown-multi");
 
 // types that can have 'equal to' rule
 $rule_equalto = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "file");

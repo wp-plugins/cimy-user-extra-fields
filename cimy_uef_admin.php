@@ -1248,7 +1248,7 @@ function cimy_uef_print_messages($errors, $results) {
 function cimy_admin_users_list_page() {
 	global $wpdb, $wp_roles, $wpdb_data_table, $cimy_uef_options, $cuef_upload_path, $cimy_uef_domain, $cimy_uef_file_types;
 
-	if (!cimy_check_admin('edit_users'))
+	if (!cimy_check_admin('list_users'))
 		return;
 	
 	$options = cimy_get_options();
@@ -1830,7 +1830,7 @@ function cimy_admin_users_list_page() {
 							echo $field;
 
 						echo "</div>";
-						if ((!in_array($type, $cimy_uef_file_types)) && ($type != "radio") && ($type != "registration-date"))
+						if ((!in_array($type, $cimy_uef_file_types)) && ($type != "radio") && ($type != "registration-date") && (current_user_can('edit_user', $user_object->ID)))
 							echo "[<a href=\"#\" onclick=\"editExtraField(".$user_object->ID.", '".$name."'); return false;\">".__("Change")."</a>]";
 
 						echo "&nbsp;</span></td>";

@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.2
+Version: 2.0.3
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -189,7 +189,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.2";
+$cimy_uef_version = "2.0.3";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -433,8 +433,11 @@ $rule_maxlen_needed = array("text", "password", "picture", "picture-url", "avata
 // types that can have 'check for email syntax' rule
 $rule_email = array("text", "textarea", "textarea-rich", "password");
 
+// types that can have cannot be empty rule
+$rule_cannot_be_empty = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "avatar", "file");
+
 // types that can admit a default value if empty
-$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file");
+$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file", "checkbox", "radio", "dropdown", "dropdown-multi");
 
 // types that can have 'equal to' rule
 $rule_equalto = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "file");
@@ -448,7 +451,7 @@ $rule_equalto_regex  = array("text", "textarea", "textarea-rich", "password", "d
 // types that are file to be uploaded
 $cimy_uef_file_types = array("picture", "avatar", "file");
 
-// type that are textarea and needs rows and cols attributes
+// types that are textarea and needs rows and cols attributes
 $cimy_uef_textarea_types = array("textarea", "textarea-rich");
 
 $max_length_name = 20;
@@ -913,7 +916,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 					if (!function_exists("image_resize"))
 						require_once(ABSPATH . 'wp-includes/media.php');
 
-					if (!function_exists(wp_load_image))
+					if (!function_exists("wp_load_image"))
 						require_once($cuef_plugin_dir.'/cimy_uef_missing_functions.php');
 
 					image_resize($file_full_path, $maxside, $maxside, false, "thumbnail");

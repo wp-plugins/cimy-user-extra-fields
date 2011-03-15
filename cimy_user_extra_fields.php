@@ -745,6 +745,7 @@ function cimy_uef_i18n_setup() {
 function cimy_admin_menu_custom() {
 	global $cimy_uef_name, $cimy_uef_domain, $cimy_top_menu, $cimy_uef_plugins_dir;
 
+	$aue_page = "";
 	if (isset($cimy_top_menu) && (!is_multisite())) {
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Options"), "UEF: ".__("Options"), 'manage_options', "user_extra_fields_options", 'cimy_show_options_notembedded');
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Fields", $cimy_uef_domain), "UEF: ".__("Fields", $cimy_uef_domain), 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
@@ -760,7 +761,8 @@ function cimy_admin_menu_custom() {
 			$aue_page = add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'list_users', "au_extended", 'cimy_admin_users_list_page');
 		}
 	}
-	add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
+	if (!empty($aue_page))
+		add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
 }
 
 function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="") {

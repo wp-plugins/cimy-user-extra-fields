@@ -569,6 +569,13 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.0.3 - 15/03/2011
+- Fixed A&U Extended page permissions to "list_users" instead of "edit_users" (thanks to Matt)
+- Fixed pre value for checkbox, radio, dropdown and dropdown-multi fields (thanks to Matt)
+- Fixed fields can be modified in some ways even if set to not to (thanks to Matt)
+- Fixed rules were applied anyway when adding new user from user-new.php (introduced with a change in WP 3.1) (thanks to Matt)
+- Fixed Fatal error: Cannot redeclare wp_load_image() on MS installations (thanks to jcraig)
+
 v2.0.2 - 05/02/2011
 - Fixed for some WordPress MS unique installations DB table definitions were wrongly set (thanks to Yuri)
 - Fixed registration date now works for all registered users, regardless when the field has been added

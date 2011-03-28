@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.3
+Version: 2.0.4
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -189,7 +189,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.3";
+$cimy_uef_version = "2.0.4";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -237,7 +237,7 @@ $wp_hidden_fields = array(
 						'name' => "PASSWORD2",
 						'post_name' => "user_pass2",
 						'type' => "password",
-						'label' => __("Password confirmation"),
+						'label' => __("Password confirmation", $cimy_uef_domain),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(

@@ -40,7 +40,7 @@
 	<script type='text/javascript'>
 	/* <![CDATA[ */
 	var commonL10n = {
-		warnDelete: "<?php echo esc_js(__('You are about to permanently delete the selected items.\n  \'Cancel\' to stop, \'OK\' to delete.')); ?>"
+		warnDelete: "<?php echo esc_js(__("You are about to permanently delete the selected items.\n  'Cancel' to stop, 'OK' to delete.")); ?>"
 	};
 	try{convertEntities(commonL10n);}catch(e){};
 	var pwsL10n = {

@@ -40,16 +40,16 @@
 	<script type='text/javascript'>
 	/* <![CDATA[ */
 	var commonL10n = {
-		warnDelete: "You are about to permanently delete the selected items.\n  \'Cancel\' to stop, \'OK\' to delete."
+		warnDelete: "<?php echo esc_js(__('You are about to permanently delete the selected items.\n  \'Cancel\' to stop, \'OK\' to delete.')); ?>"
 	};
 	try{convertEntities(commonL10n);}catch(e){};
 	var pwsL10n = {
-		empty: "Strength indicator",
-		short: "Very weak",
-		bad: "Weak",
-		good: "Medium",
-		strong: "Strong",
-		mismatch: "Mismatch"
+		empty: "<?php echo esc_js( __( 'Strength indicator' ) ); ?>",
+		short: "<?php echo esc_js( __( 'Very weak' ) ); ?>",
+		bad: "<?php echo esc_js( __( 'Weak' ) ); ?>",
+		good: "<?php echo esc_js( _x( 'Medium', 'password strength' ) ); ?>",
+		strong: "<?php echo esc_js( __( 'Strong' ) ); ?>",
+		mismatch: "<?php echo esc_js( __( 'Mismatch' ) ); ?>"
 	};
 	try{convertEntities(pwsL10n);}catch(e){};
 	/* ]]> */

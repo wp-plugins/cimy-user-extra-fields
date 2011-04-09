@@ -185,6 +185,7 @@ function cimy_extract_ExtraFields() {
 					$obj_tag = "textarea";
 					$obj_closing_tag = true;
 					$obj_style = "";
+					$obj_class = '';
 					
 					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
@@ -320,7 +321,7 @@ function cimy_extract_ExtraFields() {
 
 			
 			$obj_id = ' id="'.$fields_name_prefix.$field_id.'"';
-			$obj_class = '';
+// 			$obj_class = '';
 
 			$obj_maxlen = "";
 
@@ -469,8 +470,6 @@ function cimy_extract_ExtraFields() {
 		echo "</table>";
 		
 		if ($tiny_mce_objects != "") {
-			$mce_skin = 'skin : "wp_theme",';
-			
 			require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 		}
 

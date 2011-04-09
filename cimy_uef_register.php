@@ -932,8 +932,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	}
 
 	if ($tiny_mce_objects != "") {
-		$mce_skin = "";
-		
 		require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 	}
 

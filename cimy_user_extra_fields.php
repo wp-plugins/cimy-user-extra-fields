@@ -714,8 +714,8 @@ function cimy_change_login_registration_logo() {
 		list($logo_width, $logo_height, $logo_type, $logo_attr) = getimagesize($options["registration-logo"]);
 		?>
 		<style type="text/css">
-		#login h1 a {
-			background: url(<?php echo $cuef_upload_webpath.basename($options["registration-logo"]); ?>) no-repeat top center;
+		#login h1:first-child a:first-child {
+			background: url(<?php echo esc_url($cuef_upload_webpath.basename($options["registration-logo"])); ?>) no-repeat top center;
 			background-position: center top;
 			width: <?php echo max(328, $logo_width); ?>px;
 			height: <?php echo $logo_height; ?>px;

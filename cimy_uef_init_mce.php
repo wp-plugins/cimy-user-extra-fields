@@ -12,14 +12,13 @@ if ($cimy_uef_register_page) {
 	<script type='text/javascript'>
 		/* <![CDATA[ */
 			userSettings = {
-				url: "<?php echo SITECOOKIEPATH; ?>",
+				url: "<?php echo esc_url(SITECOOKIEPATH); ?>",
 				uid: "<?php echo $userid; ?>",
 				time: "<?php echo time(); ?>",
 			}
 		try{convertEntities(userSettings);}catch(e){};
 		/* ]]> */
 	</script>
-<!-- 	<script type='text/javascript' src='http://localhost/wordpress27/wp-admin/js/common.js?ver=20081126'></script> -->
 <?php
 } else
 	$userid = $get_user_id;
@@ -43,16 +42,6 @@ if ($cimy_uef_register_page) {
 	$mce_css = apply_filters('mce_css', $mce_css);
 	
 	if ( $https ) $mce_css = str_replace('http://', 'https://', $mce_css);
-
-	echo "\n\t<script type='text/javascript' src='".$baseurl."/tiny_mce.js'></script>\n";
-	
-	include_once(ABSPATH.'wp-includes/js/tinymce/langs/wp-langs.php' );
-
-	// WordPress 2.7 kindly renamed var from $strings to $lang
-	if (isset($strings))
-		echo '<script type="text/javascript" language="javascript">'.$strings."</script>";
-	else if (isset($lang))
-		echo '<script type="text/javascript" language="javascript">'.$lang."</script>";
 	
 	$mce_buttons = apply_filters('mce_buttons', array('bold', 'italic', 'strikethrough', '|', 'bullist', 'numlist', 'blockquote', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'link', 'unlink', 'image', 'wp_more', '|', 'spellchecker', 'fullscreen', 'wp_adv' ));
 	$mce_buttons = implode($mce_buttons, ',');
@@ -66,39 +55,98 @@ if ($cimy_uef_register_page) {
 	$mce_buttons_4 = apply_filters('mce_buttons_4', array());
 	$mce_buttons_4 = implode($mce_buttons_4, ',');
 	
-	$plugins = array( 'safari', 'inlinepopups', 'autosave', 'spellchecker', 'paste', 'media', 'fullscreen' );
+// 	$plugins = array( 'safari', 'inlinepopups', 'autosave', 'spellchecker', 'paste', 'media', 'fullscreen' );
+	$plugins = array( 'inlinepopups', 'spellchecker', 'paste', 'fullscreen', 'wpeditimage', 'wpgallery', 'tabfocus' );
 
 	// add 'wordpress' plug-in only if there is an user logged in, otherwise will produce issues on registration page
 	if ($userid != 0)
 		$plugins[] = 'wordpress';
 
-	$plugins = implode($plugins, ',');
-	
 	echo "\n\t";
-	echo '<script type="text/javascript" language="javascript">
-		tinyMCE.init({
-		mode : "exact",
-		theme : "'.$theme.'",
-		elements : "'.esc_attr($tiny_mce_objects).'",
-		theme_advanced_toolbar_location : "top",
-		theme_advanced_toolbar_align : "left",
-		theme_advanced_statusbar_location : "bottom",
-		extended_valid_elements : "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
-		theme_advanced_buttons1: "'.$mce_buttons.'",
-		theme_advanced_buttons2: "'.$mce_buttons_2.'",
-		theme_advanced_buttons3: "'.$mce_buttons_3.'",
-		theme_advanced_buttons4: "'.$mce_buttons_4.'",
-		'.$mce_skin.'
-		content_css : "'.$mce_css.'",
-		language: "'.$mce_locale.'",
-		spellchecker_languages : "'.$mce_spellchecker_languages.'",
-		theme_advanced_resizin: "true",
-		theme_advanced_resize_horizontal: "false",
-		dialog_type: "modal",
-		plugins: "'.$plugins.'",
-	})';
-	
-	echo "\n\t";
-	echo '</script>';
-	echo "\n";
+	$initArray = array(
+		'mode' => "exact",
+		'theme' => $theme,
+		'elements' => esc_attr($tiny_mce_objects),
+		'theme_advanced_toolbar_location' => "top",
+		'theme_advanced_toolbar_align' => "left",
+		'theme_advanced_statusbar_location' => "bottom",
+		'extended_valid_elements' => "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
+		'theme_advanced_buttons1' => $mce_buttons,
+		'theme_advanced_buttons2' => $mce_buttons_2,
+		'theme_advanced_buttons3' => $mce_buttons_3,
+		'theme_advanced_buttons4' => $mce_buttons_4,
+		'content_css' => $mce_css,
+		'language' => $mce_locale,
+		'spellchecker_languages' => $mce_spellchecker_languages,
+		'theme_advanced_resizin' => "true",
+		'theme_advanced_resize_horizontal' => "false",
+		'dialog_type' => "modal",
+		'plugins' => implode( ',', $plugins ),
+	);
+
+	if ($userid != 0)
+		$initArray['skin'] = "wp_theme";
+
+	if ( 'en' != $language )
+		include_once(ABSPATH . WPINC . '/js/tinymce/langs/wp-langs.php');
+
+	$mce_options = '';
+	foreach ( $initArray as $k => $v ) {
+		if ( is_bool($v) ) {
+			$val = $v ? 'true' : 'false';
+			$mce_options .= $k . ':' . $val . ', ';
+			continue;
+		} elseif ( !empty($v) && is_string($v) && ( '{' == $v{0} || '[' == $v{0} ) ) {
+			$mce_options .= $k . ':' . $v . ', ';
+			continue;
+		}
+
+		$mce_options .= $k . ':"' . $v . '", ';
+	}
+
+	global $concatenate_scripts, $compress_scripts, $tinymce_version;
+	$mce_options = rtrim( trim($mce_options), '\n\r,' );
+	$ext_plugins = '';
+	$compressed = $compress_scripts && $concatenate_scripts && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+		&& false !== strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip');
+
+	$version = apply_filters('tiny_mce_version', '');
+	$version = 'ver=' . $tinymce_version . $version;
 ?>
+<script type="text/javascript">
+/* <![CDATA[ */
+tinyMCEPreInit = {
+	base : "<?php echo $baseurl; ?>",
+	suffix : "",
+	query : "<?php echo $version; ?>",
+	mceInit : {<?php echo $mce_options; ?>},
+	load_ext : function(url,lang){var sl=tinymce.ScriptLoader;sl.markDone(url+'/langs/'+lang+'.js');sl.markDone(url+'/langs/'+lang+'_dlg.js');}
+};
+/* ]]> */
+</script>
+
+<?php
+	if ( $compressed )
+		echo "<script type='text/javascript' src='$baseurl/wp-tinymce.php?c=1&amp;$version'></script>\n";
+	else
+		echo "<script type='text/javascript' src='$baseurl/tiny_mce.js?$version'></script>\n";
+
+	if ( 'en' != $language && isset($lang) )
+		echo "<script type='text/javascript'>\n$lang\n</script>\n";
+	else
+		echo "<script type='text/javascript' src='$baseurl/langs/wp-langs-en.js?$version'></script>\n";
+?>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+<?php
+	if ( $ext_plugins )
+		echo "$ext_plugins\n";
+
+	if ( ! $compressed ) {
+?>
+(function(){var t=tinyMCEPreInit,sl=tinymce.ScriptLoader,ln=t.mceInit.language,th=t.mceInit.theme,pl=t.mceInit.plugins;sl.markDone(t.base+'/langs/'+ln+'.js');sl.markDone(t.base+'/themes/'+th+'/langs/'+ln+'.js');sl.markDone(t.base+'/themes/'+th+'/langs/'+ln+'_dlg.js');tinymce.each(pl.split(','),function(n){if(n&&n.charAt(0)!='-'){sl.markDone(t.base+'/plugins/'+n+'/langs/'+ln+'.js');sl.markDone(t.base+'/plugins/'+n+'/langs/'+ln+'_dlg.js');}});})();
+<?php } ?>
+tinyMCE.init(tinyMCEPreInit.mceInit);
+/* ]]> */
+</script>

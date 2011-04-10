@@ -125,6 +125,7 @@ function cimy_extract_ExtraFields() {
 			
 			$value = esc_attr($value);
 			$old_value = esc_attr($old_value);
+			$obj_class = '';
 
 			switch($type) {
 				case "picture-url":
@@ -321,8 +322,6 @@ function cimy_extract_ExtraFields() {
 
 			
 			$obj_id = ' id="'.$fields_name_prefix.$field_id.'"';
-// 			$obj_class = '';
-
 			$obj_maxlen = "";
 
 			if ((in_array($type, $rule_maxlen_needed)) && (!in_array($type, $cimy_uef_file_types))) {

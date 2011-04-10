@@ -505,21 +505,21 @@ function cimy_uef_is_field_disabled($type, $edit_rule, $old_value) {
 
 	switch($edit_rule)
 	{
-		'no_edit':
+		case 'no_edit':
 			return true;
 			break;
 
-		'edit_only_if_empty':
+		case 'edit_only_if_empty':
 			if ((in_array($type, $rule_cannot_be_empty)) && (!empty($old_value)))
 				return true;
 			break;
 
-		'edit_only_by_admin':
+		case 'edit_only_by_admin':
 			if (!current_user_can('edit_users'))
 				return true;
 			break;
 
-		'edit_only_by_admin_or_if_empty':
+		case 'edit_only_by_admin_or_if_empty':
 			if ((!current_user_can('edit_users')) && (!((in_array($type, $rule_cannot_be_empty)) && (empty($old_value)))))
 				return true;
 			break;

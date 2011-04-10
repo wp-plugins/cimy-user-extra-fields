@@ -914,7 +914,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 				if ($input_name == ($prefix."PASSWORD2")) {
 					echo "\n\t\t<div id=\"pass-strength-result\">".__('Strength indicator')."</div>";
-					echo "\n\t\t<p class=\"description indicator-hint\">".__('Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ &amp; ).')."</p><br />";
+					echo "\n\t\t<p class=\"description indicator-hint\">".__('Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).')."</p><br />";
 					$pass2_id = $unique_id;
 				}
 			}

@@ -506,10 +506,10 @@ function cimy_uef_is_field_disabled($type, $edit_rule, $old_value) {
 	if (($edit_rule == 'no_edit')
 	|| (($edit_rule == 'edit_only_if_empty') && (in_array($type, $rule_cannot_be_empty)) && (!empty($old_value)))
 	|| (($edit_rule == 'edit_only_by_admin') && (!current_user_can('edit_users')))
-	|| (($edit_rule == 'edit_only_by_admin_or_if_empty') && (!current_user_can('edit_users')))
-	|| (($edit_rule == 'edit_only_by_admin_or_if_empty') && (in_array($type, $rule_cannot_be_empty)) && (!empty($old_value))))
+	|| (($edit_rule == 'edit_only_by_admin_or_if_empty') && (in_array($type, $rule_cannot_be_empty)) && (!current_user_can('edit_users')) && (!empty($old_value))))
 		return true;
 
+	// field is enabled
 	return false;
 }
 		

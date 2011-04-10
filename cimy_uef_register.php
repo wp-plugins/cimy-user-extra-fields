@@ -589,7 +589,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	$radio_checked = array();
 
 	$i = 1;
-	$upload_image_function = false;
+	$upload_file_function = false;
 
 	// do first the WP fields then the EXTRA fields
 	while ($i <= 2) {
@@ -602,7 +602,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$prefix = $fields_name_prefix;
 			$current_fieldset = -1;
 
-			if ($options['fieldset_title'] != "")
+			if (!empty($options['fieldset_title']))
 				$fieldset_titles = explode(',', $options['fieldset_title']);
 			else
 				$fieldset_titles = array();
@@ -618,7 +618,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$type = $thisField['TYPE'];
 			$label = $thisField['LABEL'];
 			$description = $thisField['DESCRIPTION'];
-			$fieldset = $thisField['FIELDSET'];
+			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$input_name = $prefix.esc_attr($name);
 			$post_input_name = $prefix.$wpdb->escape($name);
 			$maxlen = 0;
@@ -695,7 +695,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			
 			$value = esc_attr($value);
 
-			if (($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset])) && ($i != 1)) {
+			if (($i != 1) && ($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset]))) {
 				$current_fieldset = $fieldset;
 
 				if (isset($fieldset_titles[$current_fieldset]))

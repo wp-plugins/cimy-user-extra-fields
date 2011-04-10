@@ -53,7 +53,7 @@ function cimy_extract_ExtraFields() {
 		$current_fieldset = -1;
 		$tiny_mce_objects = "";
 		
-		if ($options['fieldset_title'] != "")
+		if (!empty($options['fieldset_title']))
 			$fieldset_titles = explode(',', $options['fieldset_title']);
 		else
 			$fieldset_titles = array();

@@ -1683,7 +1683,10 @@ function cimy_admin_users_list_page() {
 			echo "
 			<tr $style>
 			
-			<th scope='row' class='check-column'><input type='checkbox' name='users[]' id='user_{$user_object->ID}' class='$role' value='{$user_object->ID}' /></th>";
+			<th scope='row' class='check-column'>";
+				if (current_user_can('edit_user', $user_object->ID))
+					echo "<input type='checkbox' name='users[]' id='user_{$user_object->ID}' class='$role' value='{$user_object->ID}' />";
+			echo "</th>";
 			
 			if (!in_array("username", $options['aue_hidden_fields'])) {
 				

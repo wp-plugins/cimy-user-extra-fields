@@ -569,6 +569,13 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.0.4 - 12/04/2011
+- Fixed password strength meter was not translated (thanks to Jonas for the patch)
+- Fixed tinyMCE was not working anymore since WP 3.1 (thanks to Jeremiah Tolbert)
+- Fixed tinyMCE had huge buttons if a different registration logo was set
+- Fixed "Can be modified only by admin or if empty" rule regressed in v2.0.3
+- Updated Brazilian Portuguese translation (Diana)
+
 v2.0.3 - 15/03/2011
 - Fixed A&U Extended page permissions to "list_users" instead of "edit_users" (thanks to Matt)
 - Fixed pre value for checkbox, radio, dropdown and dropdown-multi fields (thanks to Matt)

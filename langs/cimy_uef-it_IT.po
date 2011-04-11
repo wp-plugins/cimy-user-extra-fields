@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cimy User Extra Fields\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-30 14:00+0300\n"
-"PO-Revision-Date: 2011-01-30 14:05+0300\n"
+"PO-Revision-Date: 2011-03-26 18:09+0300\n"
 "Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
 "Language-Team:  <cimmino.marco@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -477,7 +477,7 @@ msgstr "Mostra password"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:240
 msgid "Password confirmation"
-msgstr ""
+msgstr "Conferma password"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:260
 #, fuzzy

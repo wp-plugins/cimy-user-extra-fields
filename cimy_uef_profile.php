@@ -49,11 +49,11 @@ function cimy_extract_ExtraFields() {
 // 		$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$get_user_id, ARRAY_A);
 
 		$radio_checked = array();
-
+		$upload_file_function = false;
 		$current_fieldset = -1;
 		$tiny_mce_objects = "";
 		
-		if ($options['fieldset_title'] != "")
+		if (!empty($options['fieldset_title']))
 			$fieldset_titles = explode(',', $options['fieldset_title']);
 		else
 			$fieldset_titles = array();
@@ -93,10 +93,13 @@ function cimy_extract_ExtraFields() {
 // 			}
 			$value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id));
 			$old_value = $value;
-			
+
+			if (($type == "radio") && (empty($radio_checked[$name])))
+				$radio_checked[$name] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id." AND VALUE=\"selected\""));
+
 			// if nothing is inserted and field admin default value then assign it
 			if (in_array($type, $rule_profile_value)) {
-				if ($value == "")
+				if (empty($value))
 					$value = $thisField['VALUE'];
 			}
 
@@ -122,6 +125,7 @@ function cimy_extract_ExtraFields() {
 			
 			$value = esc_attr($value);
 			$old_value = esc_attr($old_value);
+			$obj_class = '';
 
 			switch($type) {
 				case "picture-url":
@@ -142,10 +146,7 @@ function cimy_extract_ExtraFields() {
 					$obj_closing_tag = false;
 					$obj_style = ' class="regular-text"';
 					
-					if ((($old_value != "") && ($rules['edit'] == 'edit_only_if_empty'))
-					|| (($old_value != "") &&  (!current_user_can('edit_users')) && ($rules['edit'] == 'edit_only_by_admin_or_if_empty'))
-					|| ($rules['edit'] == 'no_edit')
-					|| (($rules['edit'] == 'edit_only_by_admin') && (!current_user_can('edit_users'))))
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
 						$obj_disabled = "";
@@ -163,10 +164,7 @@ function cimy_extract_ExtraFields() {
 					$obj_closing_tag = true;
 					$obj_style = "";
 					
-					if ((($old_value != "") && ($rules['edit'] == 'edit_only_if_empty'))
-					|| (($old_value != "") &&  (!current_user_can('edit_users')) && ($rules['edit'] == 'edit_only_by_admin_or_if_empty'))
-					|| ($rules['edit'] == 'no_edit')
-					|| (($rules['edit'] == 'edit_only_by_admin') && (!current_user_can('edit_users'))))
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
 						$obj_disabled = "";
@@ -188,11 +186,9 @@ function cimy_extract_ExtraFields() {
 					$obj_tag = "textarea";
 					$obj_closing_tag = true;
 					$obj_style = "";
+					$obj_class = '';
 					
-					if ((($old_value != "") && ($rules['edit'] == 'edit_only_if_empty'))
-					|| (($old_value != "") &&  (!current_user_can('edit_users')) && ($rules['edit'] == 'edit_only_by_admin_or_if_empty'))
-					|| ($rules['edit'] == 'no_edit')
-					|| (($rules['edit'] == 'edit_only_by_admin') && (!current_user_can('edit_users'))))
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
 						$obj_disabled = "";
@@ -223,10 +219,7 @@ function cimy_extract_ExtraFields() {
 					$obj_tag = "select";
 					$obj_closing_tag = true;
 				
-					if ((($old_value != "") && ($rules['edit'] == 'edit_only_if_empty'))
-					|| (($old_value != "") &&  (!current_user_can('edit_users')) && ($rules['edit'] == 'edit_only_by_admin_or_if_empty'))
-					|| ($rules['edit'] == 'no_edit')
-					|| (($rules['edit'] == 'edit_only_by_admin') && (!current_user_can('edit_users'))))
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
 						$obj_disabled = "";
@@ -244,8 +237,7 @@ function cimy_extract_ExtraFields() {
 					$obj_closing_tag = false;
 					$obj_style = ' style="width:auto; border:0; background:white;"';
 					
-					if (($rules['edit'] == 'no_edit')
-					|| ((($rules['edit'] == 'edit_only_by_admin') || ($rules['edit'] == 'edit_only_by_admin_or_if_empty')) && (!current_user_can('edit_users'))))
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
 						$obj_disabled = "";
@@ -262,16 +254,17 @@ function cimy_extract_ExtraFields() {
 					$obj_closing_tag = false;
 					$obj_style = ' style="width:auto; border:0; background:white;"';
 
-					if (($rules['edit'] == 'no_edit')
-					|| ((($rules['edit'] == 'edit_only_by_admin') || ($rules['edit'] == 'edit_only_by_admin_or_if_empty')) && (!current_user_can('edit_users'))))
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
 						$obj_disabled = "";
 
-					if ($value == "")
-						$obj_checked = '';
+					if (($value == "selected") || (($value == "YES") && ($radio_checked[$name] == 0))) {
+						$radio_checked[$name] = 1;
+						$obj_checked = ' checked="checked"';
+					}
 					else
-						$obj_checked.= ' checked="checked"';
+						$obj_checked = '';
 
 					break;
 
@@ -308,10 +301,7 @@ function cimy_extract_ExtraFields() {
 						$obj_style = ' onchange="uploadFile(\'your-profile\', \''.$fields_name_prefix.$field_id.'\', \''.$warning_msg.'\', Array(\'gif\', \'png\', \'jpg\', \'jpeg\', \'tiff\'));"';
 					}
 					
-					if ((($old_value != "") && ($rules['edit'] == 'edit_only_if_empty'))
-					|| (($old_value != "") &&  (!current_user_can('edit_users')) && ($rules['edit'] == 'edit_only_by_admin_or_if_empty'))
-					|| (($rules['edit'] == 'no_edit'))
-					|| (($rules['edit'] == 'edit_only_by_admin') && (!current_user_can('edit_users'))))
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
 						$obj_disabled = "";
@@ -332,8 +322,6 @@ function cimy_extract_ExtraFields() {
 
 			
 			$obj_id = ' id="'.$fields_name_prefix.$field_id.'"';
-			$obj_class = '';
-
 			$obj_maxlen = "";
 
 			if ((in_array($type, $rule_maxlen_needed)) && (!in_array($type, $cimy_uef_file_types))) {
@@ -414,7 +402,7 @@ function cimy_extract_ExtraFields() {
 				}
 
 				// if there is no image or there is the default one then disable delete button
-				if ($old_value == "") {
+				if (empty($old_value)) {
 					$dis_delete_img = ' disabled="disabled"';
 				}
 				// else if there is an image and it's not the default one
@@ -440,7 +428,7 @@ function cimy_extract_ExtraFields() {
 			}
 			
 			if ($type == "picture-url") {
-				if ($value != "") {
+				if (!empty($value)) {
 					if (intval($rules['equal_to'])) {
 						echo '<a target="_blank" href="'.$value.'">';
 						echo '<img src="'.$value.'" alt="picture"'.$size.' width="'.intval($rules['equal_to']).'" height="*" />';
@@ -481,8 +469,6 @@ function cimy_extract_ExtraFields() {
 		echo "</table>";
 		
 		if ($tiny_mce_objects != "") {
-			$mce_skin = 'skin : "wp_theme",';
-			
 			require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 		}
 
@@ -544,6 +530,8 @@ function cimy_update_ExtraFields() {
 		}
 
 		$prev_value = $wpdb->escape(stripslashes($_POST[$input_name."_".$field_id."_prev_value"]));
+		if (cimy_uef_is_field_disabled($type, $rules['edit'], $prev_value))
+			continue;
 
 		if ((isset($_POST[$input_name])) && (!in_array($type, $cimy_uef_file_types))) {
 			if ($type == "dropdown-multi")
@@ -642,43 +630,39 @@ function cimy_update_ExtraFields() {
 				// if can be editable then write NO
 				// there is no way to understand if was YES or NO previously
 				// without adding other hidden inputs so write always
-				if (($rules['edit'] == "ok_edit") || (($rules['edit'] == 'edit_only_by_admin') && (current_user_can('edit_users')))) {
-					if ($i > 0)
-						$field_ids.= ", ";
-					else
-						$i = 1;
-		
-					$field_ids.= $field_id;
+				if ($i > 0)
+					$field_ids.= ", ";
+				else
+					$i = 1;
 
-					$field_value = "NO";
-					$value = "'".$field_value."'";
-					$prev_value = $prev_value == "YES" ? "'YES'" : "'NO'";
+				$field_ids.= $field_id;
 
-					$query.= " WHEN ".$field_id." THEN ";
-					$query.= $value;
-				}
+				$field_value = "NO";
+				$value = "'".$field_value."'";
+				$prev_value = $prev_value == "YES" ? "'YES'" : "'NO'";
+
+				$query.= " WHEN ".$field_id." THEN ";
+				$query.= $value;
 			}
 
 			if ($type == 'dropdown-multi') {
 				// if can be editable then write ''
 				// there is no way to understand if was YES or NO previously
 				// without adding other hidden inputs so write always
-				if (($rules['edit'] == "ok_edit") || (($rules['edit'] == 'edit_only_by_admin') && (current_user_can('edit_users')))) {
-					if ($i > 0)
-						$field_ids.= ", ";
-					else
-						$i = 1;
-		
-					$field_ids.= $field_id;
+				if ($i > 0)
+					$field_ids.= ", ";
+				else
+					$i = 1;
 
-					$field_value = '';
-					$value = "'".$field_value."'";
-					$prev_value = "'".$prev_value."'";
-					$ret = cimy_dropDownOptions($label, $field_value);
-					$label = $ret['label'];
-					$query.= " WHEN ".$field_id." THEN ";
-					$query.= $value;
-				}
+				$field_ids.= $field_id;
+
+				$field_value = '';
+				$value = "'".$field_value."'";
+				$prev_value = "'".$prev_value."'";
+				$ret = cimy_dropDownOptions($label, $field_value);
+				$label = $ret['label'];
+				$query.= " WHEN ".$field_id." THEN ";
+				$query.= $value;
 			}
 		}
 		if (($rules["email_admin"]) && ($value != $prev_value) && ($type != "registration-date")) {

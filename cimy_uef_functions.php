@@ -500,4 +500,33 @@ function cimy_get_registration_date($user_id, $value) {
 	return "";
 }
 
+function cimy_uef_is_field_disabled($type, $edit_rule, $old_value) {
+	global $rule_cannot_be_empty;
+
+	switch($edit_rule)
+	{
+		case 'no_edit':
+			return true;
+			break;
+
+		case 'edit_only_if_empty':
+			if ((in_array($type, $rule_cannot_be_empty)) && (!empty($old_value)))
+				return true;
+			break;
+
+		case 'edit_only_by_admin':
+			if (!current_user_can('edit_users'))
+				return true;
+			break;
+
+		case 'edit_only_by_admin_or_if_empty':
+			if ((!current_user_can('edit_users')) && (!((in_array($type, $rule_cannot_be_empty)) && (empty($old_value)))))
+				return true;
+			break;
+	}
+
+	// field is enabled
+	return false;
+}
+
 ?>

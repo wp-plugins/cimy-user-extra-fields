@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.2
+Version: 2.0.4
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -189,7 +189,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.2";
+$cimy_uef_version = "2.0.4";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -237,7 +237,7 @@ $wp_hidden_fields = array(
 						'name' => "PASSWORD2",
 						'post_name' => "user_pass2",
 						'type' => "password",
-						'label' => __("Password confirmation"),
+						'label' => __("Password confirmation", $cimy_uef_domain),
 						'desc' => '',
 						'value' => '',
 						'store_rule' => array(
@@ -433,8 +433,11 @@ $rule_maxlen_needed = array("text", "password", "picture", "picture-url", "avata
 // types that can have 'check for email syntax' rule
 $rule_email = array("text", "textarea", "textarea-rich", "password");
 
+// types that can have cannot be empty rule
+$rule_cannot_be_empty = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "avatar", "file");
+
 // types that can admit a default value if empty
-$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file");
+$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file", "checkbox", "radio", "dropdown", "dropdown-multi");
 
 // types that can have 'equal to' rule
 $rule_equalto = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "file");
@@ -448,7 +451,7 @@ $rule_equalto_regex  = array("text", "textarea", "textarea-rich", "password", "d
 // types that are file to be uploaded
 $cimy_uef_file_types = array("picture", "avatar", "file");
 
-// type that are textarea and needs rows and cols attributes
+// types that are textarea and needs rows and cols attributes
 $cimy_uef_textarea_types = array("textarea", "textarea-rich");
 
 $max_length_name = 20;
@@ -711,8 +714,8 @@ function cimy_change_login_registration_logo() {
 		list($logo_width, $logo_height, $logo_type, $logo_attr) = getimagesize($options["registration-logo"]);
 		?>
 		<style type="text/css">
-		#login h1 a {
-			background: url(<?php echo $cuef_upload_webpath.basename($options["registration-logo"]); ?>) no-repeat top center;
+		#login h1:first-child a:first-child {
+			background: url(<?php echo esc_url($cuef_upload_webpath.basename($options["registration-logo"])); ?>) no-repeat top center;
 			background-position: center top;
 			width: <?php echo max(328, $logo_width); ?>px;
 			height: <?php echo $logo_height; ?>px;
@@ -741,26 +744,25 @@ function cimy_uef_i18n_setup() {
 
 function cimy_admin_menu_custom() {
 	global $cimy_uef_name, $cimy_uef_domain, $cimy_top_menu, $cimy_uef_plugins_dir;
-	
-	if (!cimy_check_admin('manage_options'))
-		return;
-	
+
+	$aue_page = "";
 	if (isset($cimy_top_menu) && (!is_multisite())) {
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Options"), "UEF: ".__("Options"), 'manage_options', "user_extra_fields_options", 'cimy_show_options_notembedded');
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Fields", $cimy_uef_domain), "UEF: ".__("Fields", $cimy_uef_domain), 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
-		$aue_page = add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'manage_options', "au_extended", 'cimy_admin_users_list_page');
+		$aue_page = add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'list_users', "au_extended", 'cimy_admin_users_list_page');
 	}
 	else {
 		if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins")) {
-			$aue_page = add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'manage_options', "users_extended", 'cimy_admin_users_list_page');
+			$aue_page = add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
 			add_submenu_page('wpmu-admin.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
 		}
 		else {
 			add_options_page($cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
-			$aue_page = add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'manage_options', "au_extended", 'cimy_admin_users_list_page');
+			$aue_page = add_submenu_page('profile.php', __('Authors &amp; Users Extended', $cimy_uef_domain), __('A&amp;U Extended', $cimy_uef_domain), 'list_users', "au_extended", 'cimy_admin_users_list_page');
 		}
 	}
-	add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
+	if (!empty($aue_page))
+		add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
 }
 
 function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="") {
@@ -913,7 +915,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 					if (!function_exists("image_resize"))
 						require_once(ABSPATH . 'wp-includes/media.php');
 
-					if (!function_exists(wp_load_image))
+					if (!function_exists("wp_load_image"))
 						require_once($cuef_plugin_dir.'/cimy_uef_missing_functions.php');
 
 					image_resize($file_full_path, $maxside, $maxside, false, "thumbnail");

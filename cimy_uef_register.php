@@ -76,8 +76,8 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 	if (isset($meta["blog_id"]))
 		cimy_switch_to_blog($meta);
 
-	// avoid to save stuff if user is being added from: /wp-admin/user-new.php
-	if ($_POST["action"] == "adduser")
+	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
+	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
 		return;
 
 	$my_user_level = $user_level;
@@ -275,8 +275,8 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	if ((!is_multisite()) && ($options["confirm_email"])) {
 		$errors = cimy_check_user_on_signups($errors, $user_login, $user_email);
 	}
-	// avoid to save stuff if user is being added from: /wp-admin/user-new.php
-	if ($_POST["action"] == "adduser")
+	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
+	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
 		return $errors;
 
 	$my_user_level = $user_level;
@@ -589,7 +589,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	$radio_checked = array();
 
 	$i = 1;
-	$upload_image_function = false;
+	$upload_file_function = false;
 
 	// do first the WP fields then the EXTRA fields
 	while ($i <= 2) {
@@ -602,7 +602,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$prefix = $fields_name_prefix;
 			$current_fieldset = -1;
 
-			if ($options['fieldset_title'] != "")
+			if (!empty($options['fieldset_title']))
 				$fieldset_titles = explode(',', $options['fieldset_title']);
 			else
 				$fieldset_titles = array();
@@ -618,7 +618,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$type = $thisField['TYPE'];
 			$label = $thisField['LABEL'];
 			$description = $thisField['DESCRIPTION'];
-			$fieldset = $thisField['FIELDSET'];
+			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$input_name = $prefix.esc_attr($name);
 			$post_input_name = $prefix.$wpdb->escape($name);
 			$maxlen = 0;
@@ -695,7 +695,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			
 			$value = esc_attr($value);
 
-			if (($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset])) && ($i != 1)) {
+			if (($i != 1) && ($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset]))) {
 				$current_fieldset = $fieldset;
 
 				if (isset($fieldset_titles[$current_fieldset]))
@@ -914,7 +914,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 				if ($input_name == ($prefix."PASSWORD2")) {
 					echo "\n\t\t<div id=\"pass-strength-result\">".__('Strength indicator')."</div>";
-					echo "\n\t\t<p class=\"description indicator-hint\">".__('Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ &amp; ).')."</p><br />";
+					echo "\n\t\t<p class=\"description indicator-hint\">".__('Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).')."</p><br />";
 					$pass2_id = $unique_id;
 				}
 			}
@@ -932,8 +932,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	}
 
 	if ($tiny_mce_objects != "") {
-		$mce_skin = "";
-		
 		require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 	}
 

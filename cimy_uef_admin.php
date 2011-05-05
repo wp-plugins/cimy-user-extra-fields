@@ -1395,7 +1395,7 @@ function cimy_admin_users_list_page() {
 			screen_icon("users");
 	?>
 	<?php if ( $wp_user_search->is_search() ) : ?>
-	<h2><?php printf(__('Users Matching "%s"'), wp_specialchars($wp_user_search->search_term)); ?></h2>
+	<h2><?php printf(__('Search results for &#8220;%s&#8221;')." (%s)", esc_html($wp_user_search->search_term), $wp_user_search->total_users_for_query); ?></h2>
 	<?php else : ?>
 	<h2><?php
 		if (is_multisite())
@@ -1409,20 +1409,9 @@ function cimy_admin_users_list_page() {
 	<?php
 	wp_nonce_field('extrafieldnewvalue', 'extrafieldnewvaluenonce', false);
 	$role_links = array();
-	$avail_roles = array();
-	$users_of_blog = get_users_of_blog();
-	$total_users = count( $users_of_blog );
-	
-	//var_dump($users_of_blog);
-	foreach ( (array) $users_of_blog as $b_user ) {
-		$b_roles = unserialize($b_user->meta_value);
-		foreach ( (array) $b_roles as $b_role => $val ) {
-			if ( !isset($avail_roles[$b_role]) )
-				$avail_roles[$b_role] = 0;
-			$avail_roles[$b_role]++;
-		}
-	}
-	
+	$users_of_blog = count_users();
+	$total_users = $users_of_blog['total_users'];
+	$avail_roles =& $users_of_blog['avail_roles'];
 	unset($users_of_blog);
 
 	$current_role = false;
@@ -1435,7 +1424,7 @@ function cimy_admin_users_list_page() {
 
 		$class = '';
 
-		if ( $this_role == $_GET['role'] ) {
+		if (!empty($_GET['role']) && $this_role == $_GET['role']) {
 			$current_role = $_GET['role'];
 			$class = ' class="current"';
 		}

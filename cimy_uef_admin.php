@@ -1394,16 +1394,20 @@ function cimy_admin_users_list_page() {
 		if (function_exists("screen_icon"))
 			screen_icon("users");
 	?>
-	<?php if ( $wp_user_search->is_search() ) : ?>
-	<h2><?php printf(__('Search results for &#8220;%s&#8221;')." (%s)", esc_html($wp_user_search->search_term), $wp_user_search->total_users_for_query); ?></h2>
-	<?php else : ?>
 	<h2><?php
 		if (is_multisite())
 			_e("Users Extended List", $cimy_uef_domain);
 		else
 			_e("Authors &amp; Users Extended List", $cimy_uef_domain);
+
+	if ( current_user_can( 'create_users' ) ) { ?>
+		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>
+	<?php } elseif ( is_multisite() && current_user_can( 'promote_users' ) ) { ?>
+		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x( 'Add Existing', 'user' ); ?></a>
+	<?php }
+	if ( $wp_user_search->is_search() )
+		printf('<span class="subtitle">'.__('Search results for &#8220;%s&#8221;')." (%s)</span>", esc_html($wp_user_search->search_term), $wp_user_search->total_users_for_query);
 	?></h2>
-	<?php endif; ?>
 	<form id="posts-filter" action="" method="post">
 	<ul class="subsubsub">
 	<?php

@@ -1408,9 +1408,7 @@ function cimy_admin_users_list_page() {
 	if ( $wp_user_search->is_search() )
 		printf('<span class="subtitle">'.__('Search results for &#8220;%s&#8221;')." (%s)</span>", esc_html($wp_user_search->search_term), $wp_user_search->total_users_for_query);
 	?></h2>
-	<form id="posts-filter" action="" method="post">
-	<ul class="subsubsub">
-	<?php
+	<form id="posts-filter" action="" method="post"><?php
 	wp_nonce_field('extrafieldnewvalue', 'extrafieldnewvaluenonce', false);
 	$role_links = array();
 	$users_of_blog = count_users();
@@ -1439,11 +1437,9 @@ function cimy_admin_users_list_page() {
 		$role_links[] = "<li><a href=\"$tmp_link\"$class>" . $name . '</a>';
 	}
 	
-	echo implode(' |</li>', $role_links) . '</li>';
+	echo '<ul class="subsubsub">'.implode(' |</li>', $role_links) . '</li></ul>';
 	unset($role_links);
 ?>
-	</ul>
-
 	<p id="post-search" class="search-box">
 	<input type="text" class="search-input" id="post-search-input" name="usersearch" value="<?php echo esc_attr($wp_user_search->search_term); ?>" />
 	<input type="submit" value="<?php _e( 'Search Users' ); ?>" class="button" />
@@ -1470,11 +1466,11 @@ function cimy_admin_users_list_page() {
 	<?php endif; ?>
 	
 
-	<?php if ( $wp_user_search->get_results() ) : ?>
 		<?php if ( $wp_user_search->is_search() ) : ?>
 			<p><a href="users.php?page=au_extended"><?php _e('&laquo; Back to All Users'); ?></a></p>
-		<?php endif;
-
+		<?php endif; ?>
+	</div>
+	<?php if ( $wp_user_search->get_results() ) :
 		wp_print_scripts('admin-forms');
 		?>
 		<div class="alignleft actions">
@@ -1499,7 +1495,6 @@ function cimy_admin_users_list_page() {
 			</select>
 			<input class="button" type="submit" name="submit" value="<?php _e("Apply"); ?>" />
 		</div>
-	</div>
 
 		<table class="widefat" cellpadding="3" cellspacing="3" width="100%">
 		<?php
@@ -1875,11 +1870,8 @@ function cimy_admin_users_list_page() {
 	<br />
 	<input class="button" type="submit" name="submit_new_values" value="<?php _e("Update"); ?>" />
 	<?php endif; ?>
-
 	</form>
-	
 	</div>
-	
 	<?php
 }
 

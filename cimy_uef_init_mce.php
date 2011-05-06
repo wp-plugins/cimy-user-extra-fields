@@ -1,6 +1,6 @@
 <?php
 // needed only in the registration page
-if ($cimy_uef_register_page) {
+if (!empty($cimy_uef_register_page)) {
 	$userid = isset($current_user) ? $current_user->ID : 0;
 ?>
 	<script type='text/javascript'>

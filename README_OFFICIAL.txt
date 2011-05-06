@@ -46,7 +46,7 @@ The plug-in adds two new menu voices in the admin for the administrator and two 
 Two new menus are:
 
 WordPress and WordPress MultiSite per-blog registration:
-    1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
+    1. "Users -> Users Extended" - lets you show users lists with the new fields that are created
     2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Wordpress MultiSite unique registration:
@@ -81,7 +81,7 @@ Visualization rules
     * field can be hidden in user's profile
 	[all]
 
-    * field can be hidden in A&U Extended page
+    * field can be hidden in Users Extended page
 	[all]
 
     * field can be hidden in Search Engine (only if you installed the template)
@@ -459,7 +459,7 @@ Create the same directory needed for PICTURE support, avatars will be stored in 
 
 
 KNOWN ISSUES:
-- if you add too many fields in the "A&U Extended" menu they will go out of frame
+- if you add too many fields in the "Users Extended" menu they will go out of frame
 - some rules are never applied if you are using PHP 4.x please update to PHP 5.x as stated in the REQUIREMENTS
 - registration date cannot be modified
 - picture and avatar upload is disabled during registration under WordPress MultiSite, will be possible once user is activated
@@ -470,6 +470,24 @@ KNOWN ISSUES:
 
 
 FAQ:
+Q: When will be supported mandatory accept of terms and conditions field?
+
+A: Has been always there: is as easy as adding a checkbox and setting "equal to" rule to YES.
+
+
+Q: What the Database options do exactly?
+
+A: Basically you can:
+- empty or drop extra fields or extra fields data (inserted by users)
+- reset or drop plug-in's options
+
+
+Q: Yes but will this affect other data? It says "WordPress Fields table", this is scary.
+
+A: No, it will affect _only_ the data produced by the plug-in. Really.
+Also keep in mind that if you do NOT have to restore default values or uninstall the plug-in, then you do not need to touch them.
+
+
 Q: Cimy User Extra Fields is not compatible with "Themed Login", how can I do?
 
 A: The reality is this plug-in IS compatible with WordPress 2.1 or greater and "Themed Login" NOT, so it's NOT a Cimy User Extra Field's bug! However I have tried with a little success a workaround to make it works, but first please understand that this is totally untested and unsupported hack, if you want a better one ask the author of that plug-in to support new WordPress!
@@ -569,6 +587,12 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.0.5 - /05/2011
+- A&U Extended is now renamed to Users Extended
+- Updated Users Extended page to use newer functions and to show # of search results
+- Fixed several html bugs in Users Extended page
+- Fixed several (but minor) security issues
+
 v2.0.4 - 12/04/2011
 - Fixed password strength meter was not translated (thanks to Jonas for the patch)
 - Fixed tinyMCE was not working anymore since WP 3.1 (thanks to Jeremiah Tolbert)

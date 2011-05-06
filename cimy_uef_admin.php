@@ -8,6 +8,9 @@ function cimy_admin_define_extra_fields() {
 // if (!empty($_POST))
 // 	print_r($_POST);
 
+	$role = & get_role('administrator');
+	$role->add_cap('view_cimy_extra_fields');
+
 	$errors = Array();
 	$results = Array();
 
@@ -460,6 +463,7 @@ function cimy_admin_define_extra_fields() {
 	$show_author = '';
 	$show_editor = '';
 	$show_admin = '';
+	$show_view_cimy_extra_fields = '';
 
 	(empty($label)) ? $selected_input["label"] = '' : $selected_input["label"] = $label;
 	(empty($value)) ? $selected_input["value"] = '' : $selected_input["value"] = $value;
@@ -553,6 +557,9 @@ function cimy_admin_define_extra_fields() {
 				break;
 			case '8':
 				$show_admin = ' selected="selected"';
+				break;
+			case 'view_cimy_extra_fields':
+				$show_view_cimy_extra_fields = ' selected="selected"';
 				break;
 		}
 
@@ -717,6 +724,7 @@ function cimy_admin_define_extra_fields() {
 			<option value="2"<?php echo $show_author ?>><?php echo translate_user_role("Author"); ?></option>
 			<option value="5"<?php echo $show_editor ?>><?php echo translate_user_role("Editor"); ?></option>
 			<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
+			<option value="view_cimy_extra_fields"<?php echo $show_view_cimy_extra_fields ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
 			</select>
 			<br />
 
@@ -1010,6 +1018,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$show_author = '';
 			$show_editor = '';
 			$show_admin = '';
+			$show_view_cimy_extra_fields = '';
 
 			switch ($rules['show_level']) {
 				case '-1':
@@ -1029,6 +1038,9 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 					break;
 				case '8':
 					$show_admin = ' selected="selected"';
+					break;
+				case 'view_cimy_extra_fields':
+					$show_view_cimy_extra_fields = ' selected="selected"';
 					break;
 			}
 
@@ -1161,6 +1173,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<option value="2"<?php echo $show_author ?>><?php echo translate_user_role("Author"); ?></option>
 				<option value="5"<?php echo $show_editor ?>><?php echo translate_user_role("Editor"); ?></option>
 				<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
+				<option value="view_cimy_extra_fields"<?php echo $show_view_cimy_extra_fields ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
 				</select>
 				<br />
 

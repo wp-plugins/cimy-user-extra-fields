@@ -130,8 +130,16 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
-			if ($my_user_level < $rules['show_level'])
-				continue;
+			if ($i == 2)
+			{
+				if ($rules['show_level'] == 'view_cimy_extra_fields')
+				{
+					if (!current_user_can($rules['show_level']))
+						continue;
+				}
+				else if ($my_user_level < $rules['show_level'])
+					continue;
+			}
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {
@@ -319,8 +327,16 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
-			if ($my_user_level < $rules['show_level'])
-				continue;
+			if ($i == 2)
+			{
+				if ($rules['show_level'] == 'view_cimy_extra_fields')
+				{
+					if (!current_user_can($rules['show_level']))
+						continue;
+				}
+				else if ($my_user_level < $rules['show_level'])
+					continue;
+			}
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {
@@ -635,8 +651,16 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
-			if (($my_user_level < $rules['show_level']) && ($i == 2))
-				continue;
+			if ($i == 2)
+			{
+				if ($rules['show_level'] == 'view_cimy_extra_fields')
+				{
+					if (!current_user_can($rules['show_level']))
+						continue;
+				}
+				else if ($my_user_level < $rules['show_level'])
+					continue;
+			}
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {

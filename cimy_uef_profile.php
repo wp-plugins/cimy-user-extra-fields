@@ -77,7 +77,12 @@ function cimy_extract_ExtraFields() {
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
-			if ($user_level < $rules['show_level'])
+			if ($rules['show_level'] == 'view_cimy_extra_fields')
+			{
+				if (!current_user_can($rules['show_level']))
+					continue;
+			}
+			else if ($user_level < $rules['show_level'])
 				continue;
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
@@ -519,7 +524,12 @@ function cimy_update_ExtraFields() {
 
 		// if the current user LOGGED IN has not enough permissions to see the field, skip it
 		// apply only for EXTRA FIELDS
-		if ($user_level < $rules['show_level'])
+		if ($rules['show_level'] == 'view_cimy_extra_fields')
+		{
+			if (!current_user_can($rules['show_level']))
+				continue;
+		}
+		else if ($user_level < $rules['show_level'])
 			continue;
 
 		// if show_level == anonymous then do NOT ovverride other show_xyz rules

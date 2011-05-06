@@ -616,8 +616,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
-			$label = $thisField['LABEL'];
-			$description = $thisField['DESCRIPTION'];
+			$label = cimy_uef_sanitize_content($thisField['LABEL']);
+			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$input_name = $prefix.esc_attr($name);
 			$post_input_name = $prefix.$wpdb->escape($name);

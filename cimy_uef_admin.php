@@ -1321,7 +1321,7 @@ function cimy_admin_users_list_page() {
 	}
 
 	// Query the users
-	$wp_user_search = new Cimy_User_Search($_POST['usersearch'], $_GET['userspage'], $_GET['role'], $users_per_page);
+	$wp_user_search = new Cimy_User_Search(empty($_POST['usersearch']) ? "" : $_POST['usersearch'], empty($_GET['userspage']) ? "" : $_GET['userspage'], empty($_GET['role']) ? "" : $_GET['role'], $users_per_page);
 	$search_result = $wp_user_search->get_results();
 
 	// search into extra field engine
@@ -1395,10 +1395,7 @@ function cimy_admin_users_list_page() {
 			screen_icon("users");
 	?>
 	<h2><?php
-		if (is_multisite())
-			_e("Users Extended List", $cimy_uef_domain);
-		else
-			_e("Authors &amp; Users Extended List", $cimy_uef_domain);
+	_e("Users Extended", $cimy_uef_domain);
 
 	if ( current_user_can( 'create_users' ) ) { ?>
 		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>
@@ -1545,9 +1542,10 @@ function cimy_admin_users_list_page() {
 		
 					$i++;
 					
-					$label = $thisField['LABEL'];
+					$label = cimy_uef_sanitize_content($thisField['LABEL']);
 					$id = $thisField['ID'];
 					$name = $thisField['NAME'];
+					$name_esc_attr = esc_attr($thisField['NAME']);
 					$type = $thisField['TYPE'];
 					$fieldset = $thisField["FIELDSET"];
 
@@ -1576,27 +1574,27 @@ function cimy_admin_users_list_page() {
 							$ret2 = str_ireplace(' selected="selected"', '', $ret['html']);
 							$label = $ret['label'];
 							
-							$search_input = '<select name="ef_search['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
-							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><select name="ef_write['.$name.']"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
+							$search_input = '<select name="ef_search['.$name_esc_attr.']"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name_esc_attr.'"><select name="ef_write['.$name_esc_attr.']"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
 							break;
 						case "dropdown-multi":
 							$ret = cimy_dropDownOptions($label, $search_value);
 							$ret2 = str_ireplace(' selected="selected"', '', $ret['html']);
 							$label = $ret['label'];
 							
-							$search_input = '<select name="ef_search['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
-							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><select name="ef_write['.$name.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
+							$search_input = '<select name="ef_search['.$name_esc_attr.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name_esc_attr.'"><select name="ef_write['.$name_esc_attr.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
 							break;
 						case "text":
 						case "textarea":
 						case "textarea-rich":
 						case "picture-url":
-							$search_input = '<input type="text" name="ef_search['.$name.']" value="'.$search_value.'" size="6" />';
-							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><input type="text" name="ef_write['.$name.']" value="" size="40" />';
+							$search_input = '<input type="text" name="ef_search['.$name_esc_attr.']" value="'.$search_value.'" size="6" />';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name_esc_attr.'"><input type="text" name="ef_write['.$name_esc_attr.']" value="" size="40" />';
 							break;
 						case "picture":
 						case "file":
-							$search_input = '<input type="text" name="ef_search['.$name.']" value="'.$search_value.'" size="6" />';
+							$search_input = '<input type="text" name="ef_search['.$name_esc_attr.']" value="'.$search_value.'" size="6" />';
 							break;
 						case "checkbox":
 							if ($search_value != "")
@@ -1604,8 +1602,8 @@ function cimy_admin_users_list_page() {
 							else
 								$checkbox_selected = "";
 							
-							$search_input = '<input type="checkbox" name="ef_search['.$name.']" value="1"'.$checkbox_selected.' />';
-							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name.'"><input type="checkbox" name="ef_write['.$name.']" value="1" />';
+							$search_input = '<input type="checkbox" name="ef_search['.$name_esc_attr.']" value="1"'.$checkbox_selected.' />';
+							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name_esc_attr.'"><input type="checkbox" name="ef_write['.$name_esc_attr.']" value="1" />';
 							break;
 							
 						case "radio":
@@ -1614,20 +1612,20 @@ function cimy_admin_users_list_page() {
 							else
 								$radio_selected = "";
 							
-							$search_input = '<input type="radio" name="ef_search['.$name.']" value="'.$id.'"'.$radio_selected.' />';
-							$write_input[$i] = '<td>'.$label.'</td><td><input type="radio" name="ef_write['.$name.']" value="'.$label.'" />';
+							$search_input = '<input type="radio" name="ef_search['.$name_esc_attr.']" value="'.$id.'"'.$radio_selected.' />';
+							$write_input[$i] = '<td>'.$label.'</td><td><input type="radio" name="ef_write['.$name_esc_attr.']" value="'.$label.'" />';
 							break;
 					}
 
 					if (isset($write_input[$i])) {
 						if (empty($write_input_checkbox[$name])) {
-							$write_input[$i] = '<td><input type="checkbox" name="ef_write_sel['.$name.']" value="1" /></td>'.$write_input[$i];
+							$write_input[$i] = '<td><input type="checkbox" name="ef_write_sel['.$name_esc_attr.']" value="1" /></td>'.$write_input[$i];
 							$write_input_checkbox[$name] = true;
 						}
 						else
 							$write_input[$i] = '<td>&nbsp;</td>'.$write_input[$i];
 
-						$write_input[$i].= '<input type="hidden" name="ef_write_type['.$name.']" value="'.$type.'" /></td>';
+						$write_input[$i].= '<input type="hidden" name="ef_write_type['.$name_esc_attr.']" value="'.$type.'" /></td>';
 					}
 
 					$thead_str.= "$label<br />$search_input</th>";
@@ -1734,6 +1732,7 @@ function cimy_admin_users_list_page() {
 
 				foreach ($extra_fields as $thisField) {
 					$name = $thisField['NAME'];
+					$name_esc_attr = esc_attr($thisField['NAME']);
 					$rules = $thisField['RULES'];
 					$type = $thisField['TYPE'];
 					$value = $thisField['VALUE'];
@@ -1756,8 +1755,8 @@ function cimy_admin_users_list_page() {
 						}
 
 						echo "<td>";
-						echo "<span id=\"edit-".$user_object->ID."-".$name."\">";
-						echo "<div id=\"value-".$user_object->ID."-".$name."\">";
+						echo "<div id=\"edit-".$user_object->ID."-".$name_esc_attr."\">";
+						echo "<div id=\"value-".$user_object->ID."-".$name_esc_attr."\">";
 
 						if ($type == "picture-url") {
 							if ($field == "")
@@ -1822,9 +1821,9 @@ function cimy_admin_users_list_page() {
 
 						echo "</div>";
 						if ((!in_array($type, $cimy_uef_file_types)) && ($type != "radio") && ($type != "registration-date") && (current_user_can('edit_user', $user_object->ID)))
-							echo "[<a href=\"#\" onclick=\"editExtraField(".$user_object->ID.", '".$name."'); return false;\">".__("Change")."</a>]";
+							echo "[<a href=\"#\" onclick=\"editExtraField(".$user_object->ID.", '".$name_esc_attr."'); return false;\">".__("Change")."</a>]";
 
-						echo "&nbsp;</span></td>";
+						echo "&nbsp;</div></td>";
 					}
 				}
 			}

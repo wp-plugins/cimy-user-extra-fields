@@ -70,8 +70,8 @@ function cimy_extract_ExtraFields() {
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
-			$label = $thisField['LABEL'];
-			$description = $thisField['DESCRIPTION'];
+			$label = cimy_uef_sanitize_content($thisField['LABEL']);
+			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = $thisField['FIELDSET'];
 			$input_name = $fields_name_prefix.esc_attr($name);
 

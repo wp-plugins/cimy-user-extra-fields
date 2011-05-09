@@ -346,29 +346,10 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				continue;
 
 			if ($_POST["from"] == "profile") {
-				// if editing a different user (only admin)
-				if (isset($_GET['user_id']))
-					$get_user_id = $_GET['user_id'];
-				else if (isset($_POST['user_id']))
-					$get_user_id = $_POST['user_id'];
-				// editing own profile
-				else
-					$get_user_id = $user_ID;
-
-				if (!empty($get_user_id)) {
-					global $wpdb_data_table;
-					$get_user_id = intval($get_user_id);
-
-					// we need the freaking old value
-					$old_value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id));
-
-					// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
-					if ((($old_value != "") && ($rules['edit'] == 'edit_only_if_empty'))
-					|| (($old_value != "") &&  (!current_user_can('edit_users')) && ($rules['edit'] == 'edit_only_by_admin_or_if_empty'))
-					|| ($rules['edit'] == 'no_edit')
-					|| (($rules['edit'] == 'edit_only_by_admin') && (!current_user_can('edit_users'))))
-						continue;
-				}
+				$old_value = $_POST[$input_name."_".$field_id."_prev_value"];
+				// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
+				if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
+					continue;
 			}
 
 			if (isset($_POST[$input_name])) {

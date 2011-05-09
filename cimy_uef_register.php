@@ -116,8 +116,6 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$fields = $extra_fields;
 			$prefix = $fields_name_prefix;
 		}
-		
-		$i++;
 
 		foreach ($fields as $thisField) {
 
@@ -228,6 +226,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 				wp_update_user($userdata);
 			}
 		}
+		$i++;
 	}
 
 	if ($user_signups) {
@@ -312,8 +311,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$fields = $extra_fields;
 			$prefix = $fields_name_prefix;
 		}
-		
-		$i++;
 
 		foreach ($fields as $thisField) {
 			$field_id = $thisField['ID'];
@@ -417,8 +414,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 			// if the flag can be empty is NOT set OR the field is not empty then other check can be useful, otherwise skip all
 			if ((!$rules['can_be_empty']) || ($value != "")) {
-				// yea $i should be == 1 but ++ already so == 2 :)
-				if (($i == 2) && ($input_name == ($prefix."PASSWORD2"))) {
+				if (($i == 1) && ($input_name == ($prefix."PASSWORD2"))) {
 					if ($value != $_POST[$prefix."PASSWORD"])
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('does not match.', $cimy_uef_domain));
 				}
@@ -537,6 +533,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 			}
 		}
+		$i++;
 	}
 
 	if (isset($_POST["securimage_response_field"])) {

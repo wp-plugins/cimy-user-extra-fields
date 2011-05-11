@@ -538,7 +538,7 @@ A: Because you missed to move cimy_uef_mu_activation.php file please check caref
 
 Q: I'm using your plug-in on WordPress MultiSite per-blog installation, I'm registering users on one blog but they appear on the main blog too, why?
 
-A: Because WordPress MultiSite is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
+A: Because WordPress MS is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
 Since I had already a long discussion with an user that didn't believe this, don't bother me to insist on this topic until you prove I'm wrong.
 
 
@@ -587,9 +587,11 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.0.5 - /05/2011
+v2.0.5 - 11/05/2011
+- Added 'view_cimy_extra_fields' capability and rule to Show field if user has this cap (thanks to Matt)
 - A&U Extended is now renamed to Users Extended
 - Updated Users Extended page to use newer functions and to show # of search results
+- Updated equalTo field can now accomodate up to 500 characters string
 - Fixed several html bugs in Users Extended page
 - Fixed several (but minor) security issues
 

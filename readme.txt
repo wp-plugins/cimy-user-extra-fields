@@ -5,7 +5,7 @@ Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar, recaptcha, captcha
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 
 Add some useful fields to registration and user's info
 
@@ -53,7 +53,7 @@ The plug-in adds two new menu voices in the admin for the administrator and two 
 = Two new menus are: =
 
 WordPress and WordPress MultiSite per-blog registration:
-    1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
+    1. "Users -> Users Extended" - lets you show users lists with the new fields that are created
     2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Wordpress MultiSite unique registration:
@@ -88,7 +88,7 @@ Wordpress MultiSite unique registration:
     * field can be hidden in user's profile
 	[all]
 
-    * field can be hidden in A&U Extended page
+    * field can be hidden in Users Extended page
 	[all]
 
     * field can be hidden in Search Engine (only if you installed the template)

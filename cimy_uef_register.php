@@ -116,8 +116,6 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$fields = $extra_fields;
 			$prefix = $fields_name_prefix;
 		}
-		
-		$i++;
 
 		foreach ($fields as $thisField) {
 
@@ -129,17 +127,13 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$input_name = $prefix.$wpdb->escape($name);
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
-			// apply only for EXTRA FIELDS
-			if ($i == 2)
+			if ($rules['show_level'] == 'view_cimy_extra_fields')
 			{
-				if ($rules['show_level'] == 'view_cimy_extra_fields')
-				{
-					if (!current_user_can($rules['show_level']))
-						continue;
-				}
-				else if ($my_user_level < $rules['show_level'])
+				if (!current_user_can($rules['show_level']))
 					continue;
 			}
+			else if ($my_user_level < $rules['show_level'])
+				continue;
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {
@@ -228,6 +222,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 				wp_update_user($userdata);
 			}
 		}
+		$i++;
 	}
 
 	if ($user_signups) {
@@ -312,8 +307,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$fields = $extra_fields;
 			$prefix = $fields_name_prefix;
 		}
-		
-		$i++;
 
 		foreach ($fields as $thisField) {
 			$field_id = $thisField['ID'];
@@ -326,17 +319,13 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$unique_id = $prefix.$field_id;
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
-			// apply only for EXTRA FIELDS
-			if ($i == 2)
+			if ($rules['show_level'] == 'view_cimy_extra_fields')
 			{
-				if ($rules['show_level'] == 'view_cimy_extra_fields')
-				{
-					if (!current_user_can($rules['show_level']))
-						continue;
-				}
-				else if ($my_user_level < $rules['show_level'])
+				if (!current_user_can($rules['show_level']))
 					continue;
 			}
+			else if ($my_user_level < $rules['show_level'])
+				continue;
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {
@@ -357,29 +346,10 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				continue;
 
 			if ($_POST["from"] == "profile") {
-				// if editing a different user (only admin)
-				if (isset($_GET['user_id']))
-					$get_user_id = $_GET['user_id'];
-				else if (isset($_POST['user_id']))
-					$get_user_id = $_POST['user_id'];
-				// editing own profile
-				else
-					$get_user_id = $user_ID;
-
-				if (!empty($get_user_id)) {
-					global $wpdb_data_table;
-					$get_user_id = intval($get_user_id);
-
-					// we need the freaking old value
-					$old_value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id));
-
-					// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
-					if ((($old_value != "") && ($rules['edit'] == 'edit_only_if_empty'))
-					|| (($old_value != "") &&  (!current_user_can('edit_users')) && ($rules['edit'] == 'edit_only_by_admin_or_if_empty'))
-					|| ($rules['edit'] == 'no_edit')
-					|| (($rules['edit'] == 'edit_only_by_admin') && (!current_user_can('edit_users'))))
-						continue;
-				}
+				$old_value = $_POST[$input_name."_".$field_id."_prev_value"];
+				// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
+				if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
+					continue;
 			}
 
 			if (isset($_POST[$input_name])) {
@@ -417,8 +387,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 			// if the flag can be empty is NOT set OR the field is not empty then other check can be useful, otherwise skip all
 			if ((!$rules['can_be_empty']) || ($value != "")) {
-				// yea $i should be == 1 but ++ already so == 2 :)
-				if (($i == 2) && ($input_name == ($prefix."PASSWORD2"))) {
+				if (($i == 1) && ($input_name == ($prefix."PASSWORD2"))) {
 					if ($value != $_POST[$prefix."PASSWORD"])
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('does not match.', $cimy_uef_domain));
 				}
@@ -537,6 +506,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 			}
 		}
+		$i++;
 	}
 
 	if (isset($_POST["securimage_response_field"])) {
@@ -572,6 +542,8 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	return $errors;
 }
 
+// show_type == 0 - normal form
+// show_type == 1 - search form, all fields are text, password fields are skipped
 function cimy_registration_form($errors=null, $show_type=0) {
 	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level, $cimy_uef_domain;
 
@@ -650,17 +622,13 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			}
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
-			// apply only for EXTRA FIELDS
-			if ($i == 2)
+			if ($rules['show_level'] == 'view_cimy_extra_fields')
 			{
-				if ($rules['show_level'] == 'view_cimy_extra_fields')
-				{
-					if (!current_user_can($rules['show_level']))
-						continue;
-				}
-				else if ($my_user_level < $rules['show_level'])
+				if (!current_user_can($rules['show_level']))
 					continue;
 			}
+			else if ($my_user_level < $rules['show_level'])
+				continue;
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {

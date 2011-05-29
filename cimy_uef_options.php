@@ -24,6 +24,7 @@ function cimy_save_options() {
 	$options['aue_hidden_fields'] = array();
 	$options['wp_hidden_fields'] = array();
 
+	$options['welcome_email'] = stripslashes($_POST['welcome_email']);
 	$options['extra_fields_title'] = stripslashes($_POST['extra_fields_title']);
 	$options['extra_fields_title'] = substr($options['extra_fields_title'], 0, $max_length_extra_fields_title);
 
@@ -381,6 +382,7 @@ function cimy_show_options($results, $embedded) {
 		$options['fieldset_title'] = esc_attr($options['fieldset_title']);
 		$options['mail_include_fields'] ? $mail_include_fields = ' checked="checked"' : $mail_include_fields = '';
 		$options['confirm_email'] ? $confirm_email = ' checked="checked"' : $confirm_email = '';
+		$welcome_email = $options['welcome_email'];
 		$options['redirect_to'] == "source" ? $redirect_to_source = ' checked="checked"' : $redirect_to_source = '';
 		($options['captcha'] == "recaptcha") ? $recaptcha = ' checked="checked"' : $recaptcha = '';
 		($options['captcha'] == "securimage") ? $securimage = ' checked="checked"' : $securimage = '';
@@ -414,6 +416,7 @@ function cimy_show_options($results, $embedded) {
 		$db_options = false;
 		$options['fieldset_title'] = "";
 		$mail_include_fields= '';
+		$welcome_email = '';
 		$confirm_email = '';
 		$redirect_to_source = '';
 		$recaptcha = '';
@@ -581,6 +584,15 @@ function cimy_show_options($results, $embedded) {
 				echo "<br />";
 				_e("<strong>note:</strong> this option turned on will automatically disable (only during the registration) all upload fields: file, picture, avatar", $cimy_uef_domain);
 			?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<?php _e("Customize welcome Email to the new user", $cimy_uef_domain); ?>
+			</th>
+			<td>
+				<textarea name="welcome_email" rows="6" cols="50"><?php echo esc_html($welcome_email); ?></textarea><br />
+				<?php _e("if you change or remove the placeholders then the email won't have the correct information", $cimy_uef_domain); ?>
 			</td>
 		</tr>
 		<tr>

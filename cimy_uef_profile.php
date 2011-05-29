@@ -369,7 +369,9 @@ function cimy_extract_ExtraFields() {
 
 			if ($type == "avatar") {
 				$user_email = $profileuser->user_email;
-				echo '<div id="profpic">'.get_avatar($user_email, $size = '128')."</div>\n\t\t";
+				$img_avatar = get_avatar($user_email, $size = '128');
+				$img_avatar = str_replace("<img", "<img id='$field_id_data'", $img_avatar);
+				echo '<div id="profpic">'.$img_avatar."</div>\n\t\t";
 			}
 
 			if ((in_array($type, $cimy_uef_file_types)) && (!empty($value))) {
@@ -430,7 +432,10 @@ function cimy_extract_ExtraFields() {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
 					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Update picture", $cimy_uef_domain)."\"  /></p>";
-					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#$field_id_data').imgAreaSelect({ handles: true, fadeSpeed: 200, onSelectChange: preview }); });</script>";
+					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
+					if ($type == "avatar")
+						$imgarea_options.= ", aspectRatio: '1:1'";
+					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#$field_id_data').imgAreaSelect({ $imgarea_options }); });</script>";
 				}
 				echo '<input type="checkbox" name="'.$input_name.'_del" value="1" style="width:auto; border:0; background:white;"'.$dis_delete_img.' />';
 

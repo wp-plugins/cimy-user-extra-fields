@@ -588,7 +588,7 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<?php _e("Customize welcome Email to the new user", $cimy_uef_domain); ?>
+				<?php _e("Customize welcome email sent to the new user", $cimy_uef_domain); ?>
 			</th>
 			<td>
 				<textarea name="welcome_email" rows="6" cols="50"><?php echo esc_html($welcome_email); ?></textarea><br />

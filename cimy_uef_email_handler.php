@@ -12,7 +12,6 @@ function wp_new_user_notification($user_id, $plaintext_pass = '') {
 		delete_user_meta($user_id, 'default_password_nag');
 
 	$options = cimy_get_options();
-
 	if (!is_multisite()) {
 		if (!$options["confirm_email"])
 			wp_new_user_notification_original($user_id, $plaintext_pass, $options["mail_include_fields"], false, $options["welcome_email"]);

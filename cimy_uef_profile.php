@@ -281,7 +281,7 @@ function cimy_extract_ExtraFields() {
 				case "file":
 					$allowed_exts = '';
 					if (isset($rules['equal_to']))
-						if ($rules['equal_to'] != "")
+						if (!empty($rules['equal_to']))
 							$allowed_exts = "'".implode("', '", explode(",", $rules['equal_to']))."'";
 
 					// javascript will be added later
@@ -431,7 +431,7 @@ function cimy_extract_ExtraFields() {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_y2\" id=\"".$field_id_data."_y2\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Update picture", $cimy_uef_domain)."\"  /></p>";
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
 					if ($type == "avatar")
 						$imgarea_options.= ", aspectRatio: '1:1'";

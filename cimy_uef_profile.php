@@ -565,6 +565,16 @@ function cimy_update_ExtraFields() {
 		$rules = $thisField["RULES"];
 		$input_name = $fields_name_prefix.$wpdb->escape($name);
 		$field_id_data = $input_name."_".$field_id."_data";
+		$adv_array = explode(",", $rules["advanced_options"]);
+		$advanced_options = array();
+		foreach ($adv_array as $item)
+		{
+			if (count($tmp_array) < 2)
+				continue;
+			$tmp_array = explode("=", $item);
+			if (strtolower($tmp_array[0]) == "filename")
+				$advanced_options["filename"] = $tmp_array[1];
+		}
 
 		cimy_insert_ExtraFields_if_not_exist($get_user_id, $field_id);
 
@@ -662,7 +672,7 @@ function cimy_update_ExtraFields() {
 				else
 					$old_file = false;
 				
-				$field_value = cimy_manage_upload($input_name, $user_login, $rules, $old_file, $delete_file, $type);
+				$field_value = cimy_manage_upload($input_name, $user_login, $rules, $old_file, $delete_file, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 
 				if ((!empty($field_value)) || ($delete_file)) {
 					if ($i > 0)

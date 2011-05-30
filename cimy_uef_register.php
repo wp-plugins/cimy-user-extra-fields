@@ -125,6 +125,16 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$label = $thisField["LABEL"];
 			$rules = $thisField["RULES"];
 			$input_name = $prefix.$wpdb->escape($name);
+			$adv_array = explode(",", $rules["advanced_options"]);
+			$advanced_options = array();
+			foreach ($adv_array as $item)
+			{
+				$tmp_array = explode("=", $item);
+				if (count($tmp_array) < 2)
+					continue;
+				if (strtolower($tmp_array[0]) == "filename")
+					$advanced_options["filename"] = $tmp_array[1];
+			}
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			if ($rules['show_level'] == 'view_cimy_extra_fields')
@@ -163,7 +173,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			}
 
 			if (in_array($type, $cimy_uef_file_types)) {
-				$data = cimy_manage_upload($input_name, sanitize_user($_POST['user_login']), $rules, false, false, $type);
+				$data = cimy_manage_upload($input_name, sanitize_user($_POST['user_login']), $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 			}
 			else {
 				if ($type == "picture-url")

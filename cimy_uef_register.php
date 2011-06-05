@@ -547,6 +547,12 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$errors->add("recaptcha_code", '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.__('Typed code is not correct.', $cimy_uef_domain));
 	}
 
+	if ($options['confirm_form']) {
+		if ((empty($errors->errors)) && (isset($_POST["register_confirmation"]))) {
+			$errors->add('register_confirmation', 'true');
+		}
+	}
+
 	cimy_switch_current_blog();
 
 	return $errors;
@@ -554,6 +560,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 // show_type == 0 - normal form
 // show_type == 1 - search form, all fields are text, password fields are skipped
+// show_type == 2 - confirmation form, all fields are plain text, images can be cropped
 function cimy_registration_form($errors=null, $show_type=0) {
 	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level, $cimy_uef_domain;
 
@@ -576,18 +583,28 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		$input_class = "cimy_uef_input_27";
 
 	$options = cimy_get_options();
-
 	$tabindex = 21;
 	
 	echo $start_cimy_uef_comment;
-	echo "\t";
 	// needed to apply default values only first time and not in case of errors
-	echo '<input type="hidden" name="cimy_post" value="1" />';
-	echo "\n";
+	echo "\t<input type=\"hidden\" name=\"cimy_post\" value=\"1\" />\n";
+	if (($options['confirm_form']) && ($show_type == 0))
+		echo "\t<input type=\"hidden\" name=\"register_confirmation\" value=\"1\" />\n";
 	$radio_checked = array();
 
 	$i = 1;
 	$upload_file_function = false;
+	if ($show_type == 2) {
+?>
+	<p id="user_login_p">
+		<label for="user_login"><?php _e("Username"); ?> </label><input type="hidden" name="user_login" id="user_login" value="<?php echo esc_attr($_POST["user_login"]); ?>" /><?php echo esc_html($_POST["user_login"]); ?>
+	</p>
+	<p id="user_email_p">
+		<label for="user_email"><?php _e("E-mail"); ?> </label><input type="hidden" name="user_email" id="user_email" value="<?php echo esc_attr($_POST["user_email"]); ?>" /><?php echo esc_html($_POST["user_email"]); ?>
+	</p>
+	<br />
+<?php
+	}
 
 	// do first the WP fields then the EXTRA fields
 	while ($i <= 2) {
@@ -609,7 +626,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		$tiny_mce_objects = "";
 	
 		foreach ($fields as $thisField) {
-	
 			$field_id = $thisField['ID'];
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
@@ -629,6 +645,10 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 				if (($type == "avatar") || ($type == "picture") || ($type == "file"))
 					$type = "text";
+			}
+			else if ($show_type == 2) {
+				$old_type = $type;
+				$type = "hidden";
 			}
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
@@ -852,6 +872,24 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$obj_closing_tag = false;
 					break;
 
+				case "hidden":
+					if ($old_type == "password") {
+						$obj_label = '';
+						$obj_value2 = "";
+					}
+					else {
+						$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
+						$obj_value2 = "$value";
+					}
+					$obj_class = '';
+					$obj_name = ' name="'.$input_name.'"';
+					$obj_type = ' type="hidden"';
+					$obj_value = ' value="'.$value.'"';
+					$obj_checked = "";
+					$obj_tag = "input";
+					$obj_closing_tag = false;
+					break;
+
 				case "registration-date":
 					$obj_label = '';
 					$obj_class = '';
@@ -895,6 +933,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 			if ($obj_closing_tag)
 				$form_object.= ">".$obj_value2."</".$obj_tag.">";
+			else if ($type == "hidden")
+				$form_object.= " />".$obj_value2;
 			else
 				$form_object.= " />";
 
@@ -910,7 +950,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			// write to the html the form object built
 			echo $form_object;
 
-			if (($i == 1) && ($options['password_meter'])) {
+			if (($show_type == 0) && ($i == 1) && ($options['password_meter'])) {
 				if ($input_name == ($prefix."PASSWORD"))
 					$pass1_id = $unique_id;
 
@@ -932,15 +972,14 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 		$i++;
 	}
+	echo "\t<br />";
 
 	if ($tiny_mce_objects != "") {
 		require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 	}
 
 	if ($options['password_meter']) {
-	?>
-		<script type='text/javascript' src='<?php trailingslashit(get_option('siteurl'));?>wp-includes/js/jquery/jquery.js?ver=1.2.3'></script>
-	<?php
+		wp_print_scripts("jquery");
 		require_once($cuef_plugin_dir.'/cimy_uef_init_strength_meter.php');
 	}
 

@@ -580,6 +580,9 @@ function cimy_confirmation_form() {
 		<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="<?php esc_attr_e('Register'); ?>" tabindex="100" /></p>
 		</form>
 
+		<p id="nav">
+		<a href="javascript: history.go(-1)"><?php _e('&larr; Back', $cimy_uef_domain) ?></a>
+		</p>
 <?php
 		login_footer("");
 		exit(0);

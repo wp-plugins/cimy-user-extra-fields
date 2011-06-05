@@ -566,7 +566,7 @@ function cimy_confirmation_form() {
 	if ($confirmation) {
 		global $cimy_uef_domain;
 		$message = new WP_Error();
-		$message->add('confirmation', __('Confirm your registration.'), 'message');
+		$message->add('confirmation', __('Confirm your registration', $cimy_uef_domain), 'message');
 
 		login_header(__("Confirm your registration", $cimy_uef_domain), "", $message);
 ?>

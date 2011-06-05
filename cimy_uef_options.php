@@ -121,6 +121,7 @@ function cimy_save_options() {
 	$action = "add";
 
 	(isset($_POST['confirm_email'])) ? $options['confirm_email'] = true : $options['confirm_email'] = false;
+	(isset($_POST['confirm_form'])) ? $options['confirm_form'] = true : $options['confirm_form'] = false;
 	if ($options['confirm_email'])
 		cimy_force_signup_table_creation();
 	(isset($_POST['redirect_to'])) ? $options['redirect_to'] = $_POST['redirect_to'] : $options['redirect_to'] = "";
@@ -382,6 +383,7 @@ function cimy_show_options($results, $embedded) {
 		$options['fieldset_title'] = esc_attr($options['fieldset_title']);
 		$options['mail_include_fields'] ? $mail_include_fields = ' checked="checked"' : $mail_include_fields = '';
 		$options['confirm_email'] ? $confirm_email = ' checked="checked"' : $confirm_email = '';
+		$options['confirm_form'] ? $confirm_form = ' checked="checked"' : $confirm_form = '';
 		$welcome_email = $options['welcome_email'];
 		$options['redirect_to'] == "source" ? $redirect_to_source = ' checked="checked"' : $redirect_to_source = '';
 		($options['captcha'] == "recaptcha") ? $recaptcha = ' checked="checked"' : $recaptcha = '';
@@ -418,6 +420,7 @@ function cimy_show_options($results, $embedded) {
 		$mail_include_fields= '';
 		$welcome_email = '';
 		$confirm_email = '';
+		$confirm_form = '';
 		$redirect_to_source = '';
 		$recaptcha = '';
 		$recaptcha_public_key = '';
@@ -583,6 +586,17 @@ function cimy_show_options($results, $embedded) {
 				_e("user that registers should confirm its email address via a link click", $cimy_uef_domain);
 				echo "<br />";
 				_e("<strong>note:</strong> this option turned on will automatically disable (only during the registration) all upload fields: file, picture, avatar", $cimy_uef_domain);
+			?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">
+				<input type="checkbox" name="confirm_form" value="1"<?php echo $confirm_form; ?> />
+				<?php _e("Enable form confirmation", $cimy_uef_domain); ?>
+			</th>
+			<td>
+			<?php
+				_e("a summary of the registration form will be presented to the user", $cimy_uef_domain);
 			?>
 			</td>
 		</tr>

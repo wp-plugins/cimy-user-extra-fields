@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.1.0-beta2
+Version: 2.1.0-beta3
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -189,7 +189,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.1.0-beta2";
+$cimy_uef_version = "2.1.0-beta3";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -528,6 +528,9 @@ else {
 	// add custom login/registration logo
 	add_action('login_head', 'cimy_change_login_registration_logo');
 
+	// add confirmation form
+	add_action('login_form_register', 'cimy_confirmation_form');
+
 	// add filter for email activation
 	add_filter('login_message', 'cimy_uef_activate');
 
@@ -538,6 +541,49 @@ else {
 	add_filter('registration_redirect', 'cimy_uef_registration_redirect');
 	// this is needed only in the case where both redirection and email confirmation has been enabled
 	add_action('login_form_cimy_uef_redirect', 'cimy_uef_redirect');
+}
+
+function cimy_confirmation_form() {
+	$confirmation = false;
+	$http_post = ('POST' == $_SERVER['REQUEST_METHOD']);
+	$user_login = '';
+	$user_email = '';
+
+	if ($http_post) {
+		$user_login = $_POST['user_login'];
+		$user_email = $_POST['user_email'];
+		$errors = register_new_user($user_login, $user_email);
+
+		if (!is_wp_error($errors)) {
+			$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';
+			wp_safe_redirect( $redirect_to );
+			exit();
+		}
+		else if ((count($errors->errors) == 1) && (isset($errors->errors["register_confirmation"]))) {
+			$confirmation = true;
+		}
+	}
+	if ($confirmation) {
+		global $cimy_uef_domain;
+		$message = new WP_Error();
+		$message->add('confirmation', __('Confirm your registration.'), 'message');
+
+		login_header(__("Confirm your registration", $cimy_uef_domain), "", $message);
+?>
+		<form name="registerform" id="registerform" action="<?php echo site_url('wp-login.php?action=register', 'login_post') ?>" method="post">
+<?php
+		cimy_registration_form(null, 2);
+?>
+		<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
+		<br class="clear" />
+		<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
+		<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="<?php esc_attr_e('Register'); ?>" tabindex="100" /></p>
+		</form>
+
+<?php
+		login_footer("");
+		exit(0);
+	}
 }
 
 function cimy_uef_registration_redirect($redirect_to) {

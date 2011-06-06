@@ -569,9 +569,9 @@ function cimy_update_ExtraFields() {
 		$advanced_options = array();
 		foreach ($adv_array as $item)
 		{
+			$tmp_array = explode("=", $item);
 			if (count($tmp_array) < 2)
 				continue;
-			$tmp_array = explode("=", $item);
 			if (strtolower($tmp_array[0]) == "filename")
 				$advanced_options["filename"] = $tmp_array[1];
 		}

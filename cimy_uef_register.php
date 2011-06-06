@@ -630,6 +630,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
+			$old_type = $type;
 			$label = cimy_uef_sanitize_content($thisField['LABEL']);
 			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
@@ -647,7 +648,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$type = "text";
 			}
 			else if ($show_type == 2) {
-				$old_type = $type;
 				$type = "hidden";
 			}
 
@@ -678,13 +678,13 @@ function cimy_registration_form($errors=null, $show_type=0) {
 				continue;
 
 			if (isset($_POST[$post_input_name])) {
-				if ($type == "dropdown-multi")
+				if (($type == "dropdown-multi") || ($old_type == "dropdown-multi"))
 					$value = stripslashes(implode(",", $_POST[$post_input_name]));
 				else
 					$value = stripslashes($_POST[$post_input_name]);
 			}
 			else if (isset($_GET[$name])) {
-				if ($type == "dropdown-multi")
+				if (($type == "dropdown-multi") || ($old_type == "dropdown-multi"))
 					$value = stripslashes(implode(",", $_GET[$name]));
 				else
 					$value = stripslashes($_GET[$name]);
@@ -694,7 +694,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 				$value = $thisField['VALUE'];
 				
 				switch($type) {
-	
 					case "radio":
 						if ($value == "YES")
 							$value = $field_id;
@@ -724,7 +723,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					echo "\n\t<h2>".esc_html($fieldset_titles[$current_fieldset])."</h2>\n";
 			}
 
-			if (($description != "") && ($type != "registration-date")) {
+			if ((!empty($description)) && ($type != "registration-date")) {
 				echo "\t";
 				echo '<p id="'.$prefix.'p_desc_'.$field_id.'" class="desc"><br />'.$description.'</p>';
 				echo "\n";
@@ -873,11 +872,22 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					break;
 
 				case "hidden":
-					if ($old_type == "password") {
-						$obj_label = '';
-						$obj_value2 = "";
+					$obj_label = "";
+					$obj_value2 = "";
+					switch ($old_type) {
+						case 'checkbox':
+							$value == 1 ? $value = __("YES", $cimy_uef_domain) : $value = __("NO", $cimy_uef_domain);
+							break;
+						case 'radio':
+							intval($value) == intval($field_id) ? $value = __("YES", $cimy_uef_domain) : $value = __("NO", $cimy_uef_domain);
+							break;
+						case 'dropdown':
+						case 'dropdown-multi':
+							$ret = cimy_dropDownOptions($label, $value);
+							$label = $ret['label'];
+							break;
 					}
-					else {
+					if ($old_type != "password") {
 						$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
 						$obj_value2 = "$value";
 					}

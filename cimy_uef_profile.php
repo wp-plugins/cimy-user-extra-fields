@@ -567,8 +567,7 @@ function cimy_update_ExtraFields() {
 		$field_id_data = $input_name."_".$field_id."_data";
 		$adv_array = explode(",", $rules["advanced_options"]);
 		$advanced_options = array();
-		foreach ($adv_array as $item)
-		{
+		foreach ($adv_array as $item) {
 			$tmp_array = explode("=", $item);
 			if (count($tmp_array) < 2)
 				continue;

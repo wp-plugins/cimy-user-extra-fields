@@ -127,8 +127,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$input_name = $prefix.$wpdb->escape($name);
 			$adv_array = explode(",", $rules["advanced_options"]);
 			$advanced_options = array();
-			foreach ($adv_array as $item)
-			{
+			foreach ($adv_array as $item) {
 				$tmp_array = explode("=", $item);
 				if (count($tmp_array) < 2)
 					continue;
@@ -876,10 +875,10 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$obj_value2 = "";
 					switch ($old_type) {
 						case 'checkbox':
-							$value == 1 ? $value = __("YES", $cimy_uef_domain) : $value = __("NO", $cimy_uef_domain);
+							$value == 1 ? $obj_value2 = __("YES", $cimy_uef_domain) : $obj_value2 = __("NO", $cimy_uef_domain);
 							break;
 						case 'radio':
-							intval($value) == intval($field_id) ? $value = __("YES", $cimy_uef_domain) : $value = __("NO", $cimy_uef_domain);
+							intval($value) == intval($field_id) ? $obj_value2 = __("YES", $cimy_uef_domain) : $obj_value2 = __("NO", $cimy_uef_domain);
 							break;
 						case 'dropdown':
 						case 'dropdown-multi':
@@ -889,7 +888,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					}
 					if ($old_type != "password") {
 						$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
-						$obj_value2 = "$value";
+						if (empty($obj_value2))
+							$obj_value2 = $value;
 					}
 					$obj_class = '';
 					$obj_name = ' name="'.$input_name.'"';

@@ -349,6 +349,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$description = $thisField['DESCRIPTION'];
 			$input_name = $prefix.$wpdb->escape($name);
 			$unique_id = $prefix.$field_id;
+			$field_id_data = $input_name."_".$field_id."_data";
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			if ($rules['show_level'] == 'view_cimy_extra_fields')
@@ -398,8 +399,15 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				$label = esc_html($ret['label']);
 				$html = $ret['html'];
 			}
-			
-			if (in_array($type, $cimy_uef_file_types)) {
+
+			// confirmation page
+			if ((!empty($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
+				$file_size = $_POST[$field_id_data."_size"];
+				$file_type = $_POST[$field_id_data."_type"];
+				$old_file = "";
+				$del_old_file = "";
+			}
+			else if (in_array($type, $cimy_uef_file_types)) {
 				// filesize in Byte transformed in KiloByte
 				$file_size = $_FILES[$input_name]['size'] / 1024;
 				$file_type = $_FILES[$input_name]['type'];
@@ -418,7 +426,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			}
 
 			// if the flag can be empty is NOT set OR the field is not empty then other check can be useful, otherwise skip all
-			if ((!$rules['can_be_empty']) || ($value != "")) {
+			if ((!$rules['can_be_empty']) || (!empty($value))) {
 				if (($i == 1) && ($input_name == ($prefix."PASSWORD2"))) {
 					if ($value != $_POST[$prefix."PASSWORD"])
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('does not match.', $cimy_uef_domain));
@@ -428,14 +436,14 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('hasn&#8217;t a correct email syntax.', $cimy_uef_domain));
 				}
 
-				if ((!$rules['can_be_empty']) && (in_array($type, $rule_canbeempty)) && ($value == "")) {
+				if ((!$rules['can_be_empty']) && (in_array($type, $rule_canbeempty)) && (empty($value))) {
 					$empty_error = true;
 
 					// IF   1. it's a file type
 					// AND  2. there is an old one uploaded
 					// AND  3. this old one is not gonna be deleted
 					// THEN   do not throw the empty error.
-					if ((in_array($type, $cimy_uef_file_types)) && ($old_file != "") && ($del_old_file == ""))
+					if ((in_array($type, $cimy_uef_file_types)) && (!empty($old_file)) && (empty($del_old_file)))
 						$empty_error = false;
 
 					if ($empty_error)
@@ -478,7 +486,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 				// CHECK IF IT IS A REAL PICTURE
 				if (($type == "picture") || ($type == "avatar")) {
-					if ((stristr($file_type, "image/") === false) && ($value != "")) {
+					if ((stristr($file_type, "image/") === false) && (!empty($value))) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('should be an image.', $cimy_uef_domain));
 					}
 				}
@@ -994,6 +1002,10 @@ function cimy_registration_form($errors=null, $show_type=0) {
 				$form_object.= ">".$obj_value2."</".$obj_tag.">";
 			else if ($type == "hidden") {
 				$form_object.= " />".$obj_value2;
+				if (in_array($old_type, $cimy_uef_file_types)) {
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_size\" id=\"".$field_id_data."_size\" value=\"".strval($_FILES[$input_name]['size'] / 1024)."\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_type\" id=\"".$field_id_data."_type\" value=\"".strval($_FILES[$input_name]['type'])."\" />";
+				}
 				if (($old_type == "picture") || ($old_type == "avatar")) {
 					if (!$is_jquery_added) {
 						wp_print_scripts("jquery");

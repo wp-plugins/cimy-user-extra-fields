@@ -529,4 +529,52 @@ function cimy_uef_is_field_disabled($type, $edit_rule, $old_value) {
 	return false;
 }
 
+function cimy_uef_crop_image($file, $field_id_data) {
+	if (!empty($_POST[$field_id_data."_button"]) && (!empty($_POST[$field_id_data.'_w'])) && (!empty($_POST[$field_id_data.'_h']))) {
+		global $cimy_uef_plugins_dir, $cuef_upload_path;
+
+		$blog_path = $cuef_upload_path;
+		if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
+			global $blog_id;
+			$blog_path .= $blog_id."/";
+		}
+
+		$targ_w = $_POST[$field_id_data.'_w'];
+		$targ_h = $_POST[$field_id_data.'_h'];
+		$jpeg_quality = 100;
+
+		$src = $file;
+		$dst = $file;
+		$size = getimagesize($src);
+		switch ($size["mime"]) {
+			case "image/jpeg":
+				$img_r = imagecreatefromjpeg($src); //jpeg file
+				break;
+			case "image/gif":
+				$img_r = imagecreatefromgif($src); //gif file
+				break;
+			case "image/png":
+				$img_r = imagecreatefrompng($src); //png file
+				break;
+			default:
+				$img_r = false;
+		}
+		if (!empty($img_r)) {
+			$dst_r = ImageCreateTrueColor($targ_w, $targ_h);
+			imagecopyresampled($dst_r, $img_r, 0, 0, $_POST[$field_id_data.'_x1'],$_POST[$field_id_data.'_y1'], $targ_w, $targ_h, $targ_w, $targ_h);
+			switch ($size["mime"]) {
+				case "image/jpeg":
+					imagejpeg($dst_r, $dst, $jpeg_quality); //jpeg file
+					break;
+				case "image/gif":
+					imagegif($dst_r, $dst); //gif file
+					break;
+				case "image/png":
+					imagepng($dst_r, $dst); //png file
+					break;
+			}
+		}
+	}
+}
+
 ?>

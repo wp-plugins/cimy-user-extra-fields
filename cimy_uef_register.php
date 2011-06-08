@@ -118,13 +118,13 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 		}
 
 		foreach ($fields as $thisField) {
-
 			$type = $thisField["TYPE"];
 			$name = $thisField["NAME"];
 			$field_id = $thisField["ID"];
 			$label = $thisField["LABEL"];
 			$rules = $thisField["RULES"];
 			$input_name = $prefix.$wpdb->escape($name);
+			$field_id_data = $input_name."_".$field_id."_data";
 			$adv_array = explode(",", $rules["advanced_options"]);
 			$advanced_options = array();
 			foreach ($adv_array as $item) {
@@ -133,6 +133,8 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 					continue;
 				if (strtolower($tmp_array[0]) == "filename")
 					$advanced_options["filename"] = $tmp_array[1];
+				else if (strtolower($tmp_array[0]) == "ratio")
+					$advanced_options["ratio"] = $tmp_array[1];
 			}
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
@@ -172,7 +174,28 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			}
 
 			if (in_array($type, $cimy_uef_file_types)) {
-				$data = cimy_manage_upload($input_name, sanitize_user($_POST['user_login']), $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
+				$user_login_sanitized = sanitize_user($_POST['user_login']);
+				if ((isset($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
+					$temp_user_login = $_POST["temp_user_login"];
+					global $cimy_uef_plugins_dir, $cuef_upload_path;
+
+					$blog_path = $cuef_upload_path;
+					if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
+						global $blog_id;
+
+						$blog_path .= $blog_id."/";
+					}
+					$temp_dir = $blog_path.$temp_user_login;
+					$final_dir = $blog_path.$user_login_sanitized;
+					rename($temp_dir, $final_dir);
+					$data = str_replace("/".$temp_user_login."/", "/".$user_login_sanitized."/", $data);
+					$file_on_server = $blog_path.$user_login_sanitized."/".basename($data);
+
+					if (($type == "picture") || ($type == "avatar"))
+						cimy_uef_crop_image($file_on_server, $field_id_data);
+				}
+				else
+					$data = cimy_manage_upload($input_name, $user_login_sanitized, $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 			}
 			else {
 				if ($type == "picture-url")
@@ -547,7 +570,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	}
 
 	if ($options['confirm_form']) {
-		if ((empty($errors->errors)) && (isset($_POST["register_confirmation"]))) {
+		if ((empty($errors->errors)) && (isset($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 1)) {
 			$errors->add('register_confirmation', 'true');
 		}
 	}
@@ -587,14 +610,22 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	echo $start_cimy_uef_comment;
 	// needed to apply default values only first time and not in case of errors
 	echo "\t<input type=\"hidden\" name=\"cimy_post\" value=\"1\" />\n";
-	if (($options['confirm_form']) && ($show_type == 0))
-		echo "\t<input type=\"hidden\" name=\"register_confirmation\" value=\"1\" />\n";
+	if ($options['confirm_form']) {
+		if ($show_type == 0)
+			echo "\t<input type=\"hidden\" name=\"register_confirmation\" value=\"1\" />\n";
+		else if ($show_type == 2)
+			echo "\t<input type=\"hidden\" name=\"register_confirmation\" value=\"2\" />\n";
+	}
 	$radio_checked = array();
 
 	$i = 1;
 	$upload_file_function = false;
+	$is_jquery_added = false;
+	$crop_image_function = false;
 	if ($show_type == 2) {
+		$temp_user_login = ".cimytemp_".sanitize_user($_POST['user_login']).'_'.rand().'.tmp';
 ?>
+	<input type="hidden" name="temp_user_login" value="<?php echo esc_attr($temp_user_login); ?>" />
 	<p id="user_login_p">
 		<label for="user_login"><?php _e("Username"); ?> </label><input type="hidden" name="user_login" id="user_login" value="<?php echo esc_attr($_POST["user_login"]); ?>" /><?php echo esc_html($_POST["user_login"]); ?>
 	</p>
@@ -637,6 +668,18 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$post_input_name = $prefix.$wpdb->escape($name);
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;
+			$field_id_data = $input_name."_".$field_id."_data";
+			$adv_array = explode(",", $rules["advanced_options"]);
+			$advanced_options = array();
+			foreach ($adv_array as $item) {
+				$tmp_array = explode("=", $item);
+				if (count($tmp_array) < 2)
+					continue;
+				if (strtolower($tmp_array[0]) == "filename")
+					$advanced_options["filename"] = $tmp_array[1];
+				else if (strtolower($tmp_array[0]) == "ratio")
+					$advanced_options["ratio"] = $tmp_array[1];
+			}
 
 			// showing the search then there is no need to upload buttons
 			if ($show_type == 1) {
@@ -885,6 +928,12 @@ function cimy_registration_form($errors=null, $show_type=0) {
 							$ret = cimy_dropDownOptions($label, $value);
 							$label = $ret['label'];
 							break;
+						case 'picture':
+						case 'avatar':
+						case 'file':
+							$value = cimy_manage_upload($input_name, $temp_user_login, $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
+							$obj_value2 = "&nbsp;";
+							break;
 					}
 					if ($old_type != "password") {
 						$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
@@ -943,8 +992,31 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 			if ($obj_closing_tag)
 				$form_object.= ">".$obj_value2."</".$obj_tag.">";
-			else if ($type == "hidden")
+			else if ($type == "hidden") {
 				$form_object.= " />".$obj_value2;
+				if (($old_type == "picture") || ($old_type == "avatar")) {
+					if (!$is_jquery_added) {
+						wp_print_scripts("jquery");
+						$is_jquery_added = true;
+					}
+					$crop_image_function = true;
+					echo '<img id="'.$field_id_data.'" src="'.$value.'" alt="picture" /><br />';
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_button\" id=\"".$field_id_data."_button\" value=\"1\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_x1\" id=\"".$field_id_data."_x1\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_y1\" id=\"".$field_id_data."_y1\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_x2\" id=\"".$field_id_data."_x2\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_y2\" id=\"".$field_id_data."_y2\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
+					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
+					if (!empty($advanced_options["ratio"]))
+						$imgarea_options.= ", aspectRatio: '".esc_js($advanced_options["ratio"])."'";
+					else if ($type == "avatar")
+						$imgarea_options.= ", aspectRatio: '1:1'";
+					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#".esc_js($field_id_data)."').imgAreaSelect({ ".$imgarea_options." }); });</script>";
+				}
+
+			}
 			else
 				$form_object.= " />";
 
@@ -984,13 +1056,25 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	}
 	echo "\t<br />";
 
-	if ($tiny_mce_objects != "") {
-		require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
+	if ($show_type == 0) {
+		if (!empty($tiny_mce_objects)) {
+			require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
+		}
+
+		if ($options['password_meter']) {
+			if (!$is_jquery_added) {
+				wp_print_scripts("jquery");
+				$is_jquery_added = true;
+			}
+
+			require_once($cuef_plugin_dir.'/cimy_uef_init_strength_meter.php');
+		}
 	}
 
-	if ($options['password_meter']) {
-		wp_print_scripts("jquery");
-		require_once($cuef_plugin_dir.'/cimy_uef_init_strength_meter.php');
+	if ($crop_image_function) {
+		wp_print_scripts('imgareaselect');
+		wp_print_styles('imgareaselect');
+		wp_print_scripts('cimy_uef_img_selection');
 	}
 
 	if ($options['captcha'] == "securimage") {

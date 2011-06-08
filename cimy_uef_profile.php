@@ -433,9 +433,11 @@ function cimy_extract_ExtraFields() {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
 					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
-					if ($type == "avatar")
+					if (!empty($advanced_options["ratio"]))
+						$imgarea_options.= ", aspectRatio: '".esc_js($advanced_options["ratio"])."'";
+					else if ($type == "avatar")
 						$imgarea_options.= ", aspectRatio: '1:1'";
-					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#$field_id_data').imgAreaSelect({ $imgarea_options }); });</script>";
+					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#".esc_js($field_id_data)."').imgAreaSelect({ ".$imgarea_options." }); });</script>";
 				}
 				echo '<input type="checkbox" name="'.$input_name.'_del" value="1" style="width:auto; border:0; background:white;"'.$dis_delete_img.' />';
 
@@ -476,7 +478,7 @@ function cimy_extract_ExtraFields() {
 			else
 				echo $obj_value;
 			
-			if (($description != "") && ($type != "picture") && ($type != "picture-url")) {
+			if ((!empty($description)) && ($type != "picture") && ($type != "picture-url")) {
 				if (($type == "textarea") || ($type == "textarea-rich"))
 					echo "<br />";
 				else
@@ -497,29 +499,7 @@ function cimy_extract_ExtraFields() {
 		if ($crop_image_function) {
 			wp_print_scripts('imgareaselect');
 			wp_print_styles('imgareaselect');
-			echo "<script type='text/javascript'>
-				function preview(img, selection) {
-					if (!selection.width || !selection.height)
-						return;
-
-					var scaleX = 100 / selection.width;
-					var scaleY = 100 / selection.height;
-
-					jQuery('#preview img').css({
-						width: Math.round(scaleX * 300),
-						height: Math.round(scaleY * 300),
-						marginLeft: -Math.round(scaleX * selection.x1),
-						marginTop: -Math.round(scaleY * selection.y1)
-					});
-
-					jQuery('#'+img.id+'_x1').val(selection.x1);
-					jQuery('#'+img.id+'_y1').val(selection.y1);
-					jQuery('#'+img.id+'_x2').val(selection.x2);
-					jQuery('#'+img.id+'_y2').val(selection.y2);
-					jQuery('#'+img.id+'_w').val(selection.width);
-					jQuery('#'+img.id+'_h').val(selection.height);
-				}
-			</script>";
+			wp_print_scripts('cimy_uef_img_selection');
 		}
 
 		if ($upload_file_function)
@@ -573,6 +553,8 @@ function cimy_update_ExtraFields() {
 				continue;
 			if (strtolower($tmp_array[0]) == "filename")
 				$advanced_options["filename"] = $tmp_array[1];
+			else if (strtolower($tmp_array[0]) == "ratio")
+				$advanced_options["ratio"] = $tmp_array[1];
 		}
 
 		cimy_insert_ExtraFields_if_not_exist($get_user_id, $field_id);
@@ -690,54 +672,9 @@ function cimy_update_ExtraFields() {
 				else
 					$prev_value = $value;
 
-				if (!empty($_POST[$field_id_data."_button"]) && (!empty($_POST[$field_id_data.'_w'])) && (!empty($_POST[$field_id_data.'_h'])))
-				{
-					global $cimy_uef_plugins_dir, $cuef_upload_path;
-
-					$blog_path = $cuef_upload_path;
-					if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
-						global $blog_id;
-						$blog_path .= $blog_id."/";
-					}
-
-					$file_on_server = $blog_path.$user_login."/".basename($old_file);
-					$targ_w = $_POST[$field_id_data.'_w'];
-					$targ_h = $_POST[$field_id_data.'_h'];
-					$jpeg_quality = 100;
-
-					$src = $file_on_server;
-					$dst = $file_on_server;
-					$size = getimagesize($src);
-					switch ($size["mime"]) {
-						case "image/jpeg":
-							$img_r = imagecreatefromjpeg($src); //jpeg file
-							break;
-						case "image/gif":
-							$img_r = imagecreatefromgif($src); //gif file
-							break;
-						case "image/png":
-							$img_r = imagecreatefrompng($src); //png file
-							break;
-						default:
-							$img_r = false;
-					}
-					if (!empty($img_r))
-					{
-						$dst_r = ImageCreateTrueColor($targ_w, $targ_h);
-						imagecopyresampled($dst_r, $img_r, 0, 0, $_POST[$field_id_data.'_x1'],$_POST[$field_id_data.'_y1'], $targ_w, $targ_h, $targ_w, $targ_h);
-						switch ($size["mime"]) {
-							case "image/jpeg":
-								imagejpeg($dst_r, $dst, $jpeg_quality); //jpeg file
-								break;
-							case "image/gif":
-								imagegif($dst_r, $dst); //gif file
-								break;
-							case "image/png":
-								imagepng($dst_r, $dst); //png file
-								break;
-						}
-					}
-				}
+				$file_on_server = $blog_path.$user_login."/".basename($old_file);
+				if (($type == "picture") || ($type == "avatar"))
+					cimy_uef_crop_image($file_on_server);
 			}
 
 			if ($type == 'checkbox') {

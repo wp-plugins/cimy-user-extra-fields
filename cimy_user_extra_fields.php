@@ -566,6 +566,7 @@ function cimy_confirmation_form() {
 	}
 	if ($confirmation) {
 		global $cimy_uef_domain;
+		$redirect_to = apply_filters( 'registration_redirect', !empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '' );
 		$message = new WP_Error();
 		$message->add('confirmation', __('Confirm your registration', $cimy_uef_domain), 'message');
 

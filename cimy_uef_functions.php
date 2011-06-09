@@ -577,4 +577,27 @@ function cimy_uef_crop_image($file, $field_id_data) {
 	}
 }
 
+function cimy_uef_parse_advanced_options($options) {
+	$advanced_options = array();
+	$adv_array = explode(",", $options);
+	foreach ($adv_array as $item) {
+		$tmp_array = explode("=", $item);
+		if (count($tmp_array) < 2)
+			continue;
+		if (strtolower($tmp_array[0]) == "filename")
+			$advanced_options["filename"] = $tmp_array[1];
+		else if (strtolower($tmp_array[0]) == "crop_ratio")
+			$advanced_options["crop_ratio"] = $tmp_array[1];
+		else if (strtolower($tmp_array[0]) == "crop_x1")
+			$advanced_options["crop_x1"] = $tmp_array[1];
+		else if (strtolower($tmp_array[0]) == "crop_y1")
+			$advanced_options["crop_y1"] = $tmp_array[1];
+		else if (strtolower($tmp_array[0]) == "crop_x2")
+			$advanced_options["crop_x2"] = $tmp_array[1];
+		else if (strtolower($tmp_array[0]) == "crop_y2")
+			$advanced_options["crop_y2"] = $tmp_array[1];
+	}
+	return $advanced_options;
+}
+
 ?>

@@ -434,7 +434,7 @@ function cimy_extract_ExtraFields() {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
 					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
-					if ((!empty($advanced_options["crop_x1"])) && (!empty($advanced_options["crop_y1"])) && (!empty($advanced_options["crop_x2"])) && (!empty($advanced_options["crop_y2"]))) {
+					if ((isset($advanced_options["crop_x1"])) && (isset($advanced_options["crop_y1"])) && (isset($advanced_options["crop_x2"])) && (isset($advanced_options["crop_y2"]))) {
 						$imgarea_options.= ", x1: ".intval($advanced_options["crop_x1"]);
 						$imgarea_options.= ", y1: ".intval($advanced_options["crop_y1"]);
 						$imgarea_options.= ", x2: ".intval($advanced_options["crop_x2"]);

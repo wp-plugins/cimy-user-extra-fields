@@ -125,17 +125,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$rules = $thisField["RULES"];
 			$input_name = $prefix.$wpdb->escape($name);
 			$field_id_data = $input_name."_".$field_id."_data";
-			$adv_array = explode(",", $rules["advanced_options"]);
-			$advanced_options = array();
-			foreach ($adv_array as $item) {
-				$tmp_array = explode("=", $item);
-				if (count($tmp_array) < 2)
-					continue;
-				if (strtolower($tmp_array[0]) == "filename")
-					$advanced_options["filename"] = $tmp_array[1];
-				else if (strtolower($tmp_array[0]) == "ratio")
-					$advanced_options["ratio"] = $tmp_array[1];
-			}
+			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			if ($rules['show_level'] == 'view_cimy_extra_fields')
@@ -677,17 +667,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;
 			$field_id_data = $input_name."_".$field_id."_data";
-			$adv_array = explode(",", $rules["advanced_options"]);
-			$advanced_options = array();
-			foreach ($adv_array as $item) {
-				$tmp_array = explode("=", $item);
-				if (count($tmp_array) < 2)
-					continue;
-				if (strtolower($tmp_array[0]) == "filename")
-					$advanced_options["filename"] = $tmp_array[1];
-				else if (strtolower($tmp_array[0]) == "ratio")
-					$advanced_options["ratio"] = $tmp_array[1];
-			}
+			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
 			// showing the search then there is no need to upload buttons
 			if ($show_type == 1) {
@@ -1021,8 +1001,14 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
-					if (!empty($advanced_options["ratio"]))
-						$imgarea_options.= ", aspectRatio: '".esc_js($advanced_options["ratio"])."'";
+					if ((!empty($advanced_options["crop_x1"])) && (!empty($advanced_options["crop_y1"])) && (!empty($advanced_options["crop_x2"])) && (!empty($advanced_options["crop_y2"]))) {
+						$imgarea_options.= ", x1: ".intval($advanced_options["crop_x1"]);
+						$imgarea_options.= ", y1: ".intval($advanced_options["crop_y1"]);
+						$imgarea_options.= ", x2: ".intval($advanced_options["crop_x2"]);
+						$imgarea_options.= ", y2: ".intval($advanced_options["crop_y2"]);
+					}
+					if (!empty($advanced_options["crop_ratio"]))
+						$imgarea_options.= ", aspectRatio: '".esc_js($advanced_options["crop_ratio"])."'";
 					else if ($type == "avatar")
 						$imgarea_options.= ", aspectRatio: '1:1'";
 					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#".esc_js($field_id_data)."').imgAreaSelect({ ".$imgarea_options." }); });</script>";
@@ -1134,6 +1120,53 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	cimy_switch_current_blog(true);
 
 	echo $end_cimy_uef_comment;
+}
+
+function cimy_confirmation_form() {
+	$confirmation = false;
+	$http_post = ('POST' == $_SERVER['REQUEST_METHOD']);
+	$user_login = '';
+	$user_email = '';
+
+	if ($http_post) {
+		$user_login = $_POST['user_login'];
+		$user_email = $_POST['user_email'];
+		$errors = register_new_user($user_login, $user_email);
+
+		if (!is_wp_error($errors)) {
+			$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';
+			wp_safe_redirect( $redirect_to );
+			exit();
+		}
+		else if ((count($errors->errors) == 1) && (isset($errors->errors["register_confirmation"]))) {
+			$confirmation = true;
+		}
+	}
+	if ($confirmation) {
+		global $cimy_uef_domain;
+		$redirect_to = apply_filters( 'registration_redirect', !empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '' );
+		$message = new WP_Error();
+		$message->add('confirmation', __('Confirm your registration', $cimy_uef_domain), 'message');
+
+		login_header(__("Confirm your registration", $cimy_uef_domain), "", $message);
+?>
+		<form name="registerform" id="registerform" action="<?php echo site_url('wp-login.php?action=register', 'login_post') ?>" method="post">
+<?php
+		cimy_registration_form(null, 2);
+?>
+		<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
+		<br class="clear" />
+		<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
+		<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="<?php esc_attr_e('Register'); ?>" tabindex="100" /></p>
+		</form>
+
+		<p id="nav">
+		<a href="javascript: history.go(-1)"><?php _e('&larr; Back', $cimy_uef_domain) ?></a>
+		</p>
+<?php
+		login_footer("");
+		exit(0);
+	}
 }
 
 ?>

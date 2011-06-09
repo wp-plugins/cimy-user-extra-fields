@@ -425,14 +425,15 @@ function cimy_extract_ExtraFields() {
 // 					echo "\n\t\t";
 				}
 
-				if (($type == "picture") || ($type == "avatar")) {
+				if ((($type == "picture") || ($type == "avatar")) && (empty($rules["equal_to"]))) {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_x1\" id=\"".$field_id_data."_x1\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_y1\" id=\"".$field_id_data."_y1\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_x2\" id=\"".$field_id_data."_x2\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_y2\" id=\"".$field_id_data."_y2\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
+// 					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_button\" value=\"1\"  />";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
 					if ((isset($advanced_options["crop_x1"])) && (isset($advanced_options["crop_y1"])) && (isset($advanced_options["crop_x2"])) && (isset($advanced_options["crop_y2"]))) {
 						$imgarea_options.= ", x1: ".intval($advanced_options["crop_x1"]);
@@ -670,9 +671,19 @@ function cimy_update_ExtraFields() {
 				else
 					$prev_value = $value;
 
+				global $cimy_uef_plugins_dir, $cuef_upload_path;
+
+				$blog_path = $cuef_upload_path;
+				$old_value = basename($old_value);
+
+				if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
+					global $blog_id;
+
+					$blog_path .= $blog_id."/";
+				}
 				$file_on_server = $blog_path.$user_login."/".basename($old_file);
 				if (($type == "picture") || ($type == "avatar"))
-					cimy_uef_crop_image($file_on_server);
+					cimy_uef_crop_image($file_on_server, $field_id_data);
 			}
 
 			if ($type == 'checkbox') {

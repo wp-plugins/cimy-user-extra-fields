@@ -596,6 +596,8 @@ function cimy_uef_parse_advanced_options($options) {
 			$advanced_options["crop_x2"] = $tmp_array[1];
 		else if (strtolower($tmp_array[0]) == "crop_y2")
 			$advanced_options["crop_y2"] = $tmp_array[1];
+		else if (strtolower($tmp_array[0]) == "no-thumb")
+			$advanced_options["no-thumb"] = $tmp_array[1];
 	}
 	return $advanced_options;
 }

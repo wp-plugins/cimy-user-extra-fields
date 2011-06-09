@@ -76,6 +76,7 @@ function cimy_extract_ExtraFields() {
 			$fieldset = $thisField['FIELDSET'];
 			$input_name = $fields_name_prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
+			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
@@ -433,8 +434,15 @@ function cimy_extract_ExtraFields() {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
 					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
-					if (!empty($advanced_options["ratio"]))
-						$imgarea_options.= ", aspectRatio: '".esc_js($advanced_options["ratio"])."'";
+					if ((!empty($advanced_options["crop_x1"])) && (!empty($advanced_options["crop_y1"])) && (!empty($advanced_options["crop_x2"])) && (!empty($advanced_options["crop_y2"]))) {
+						$imgarea_options.= ", x1: ".intval($advanced_options["crop_x1"]);
+						$imgarea_options.= ", y1: ".intval($advanced_options["crop_y1"]);
+						$imgarea_options.= ", x2: ".intval($advanced_options["crop_x2"]);
+						$imgarea_options.= ", y2: ".intval($advanced_options["crop_y2"]);
+					}
+
+					if (!empty($advanced_options["crop_ratio"]))
+						$imgarea_options.= ", aspectRatio: '".esc_js($advanced_options["crop_ratio"])."'";
 					else if ($type == "avatar")
 						$imgarea_options.= ", aspectRatio: '1:1'";
 					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#".esc_js($field_id_data)."').imgAreaSelect({ ".$imgarea_options." }); });</script>";
@@ -545,17 +553,7 @@ function cimy_update_ExtraFields() {
 		$rules = $thisField["RULES"];
 		$input_name = $fields_name_prefix.$wpdb->escape($name);
 		$field_id_data = $input_name."_".$field_id."_data";
-		$adv_array = explode(",", $rules["advanced_options"]);
-		$advanced_options = array();
-		foreach ($adv_array as $item) {
-			$tmp_array = explode("=", $item);
-			if (count($tmp_array) < 2)
-				continue;
-			if (strtolower($tmp_array[0]) == "filename")
-				$advanced_options["filename"] = $tmp_array[1];
-			else if (strtolower($tmp_array[0]) == "ratio")
-				$advanced_options["ratio"] = $tmp_array[1];
-		}
+		$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
 		cimy_insert_ExtraFields_if_not_exist($get_user_id, $field_id);
 

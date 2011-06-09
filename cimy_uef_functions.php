@@ -602,4 +602,22 @@ function cimy_uef_parse_advanced_options($options) {
 	return $advanced_options;
 }
 
+function cimy_uef_get_dir_or_filename($user_login, $url="", $is_thumbnail=false) {
+	global $cimy_uef_plugins_dir, $cuef_upload_path;
+
+	$blog_path = $cuef_upload_path;
+	if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
+		global $blog_id;
+
+		$blog_path .= $blog_id."/";
+	}
+
+	if (empty($url))
+		return $blog_path.$user_login;
+	else if ($is_thumbnail)
+		return $blog_path.$user_login."/".cimy_get_thumb_path(basename($url));
+	else
+		return $blog_path.$user_login."/".basename($url);
+}
+
 ?>

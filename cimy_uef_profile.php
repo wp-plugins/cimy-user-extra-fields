@@ -376,23 +376,15 @@ function cimy_extract_ExtraFields() {
 			}
 
 			if ((in_array($type, $cimy_uef_file_types)) && (!empty($value))) {
-				global $cimy_uef_plugins_dir;
-
-				$blog_path = $cuef_upload_path;
 				$old_value = basename($old_value);
-
-				if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
-					global $blog_id;
-
-					$blog_path .= $blog_id."/";
-				}
-
 				$user_login = $profileuser->user_login;
 				
 				if ($type == "picture") {
 					$value_thumb = cimy_get_thumb_path($value);
-					$file_thumb = $blog_path.$user_login."/".cimy_get_thumb_path(basename($value));
-					$file_on_server = $blog_path.$user_login."/".basename($value);
+					$file_on_server = cimy_uef_get_dir_or_filename($user_login, $value, false);
+					$file_thumb = cimy_uef_get_dir_or_filename($user_login, $value, true);
+					if (($advanced_options["no-thumb"]) && (is_file($file_thumb)))
+						rename($file_thumb, $file_on_server);
 					
 					echo "\n\t\t";
 					if (is_file($file_thumb)) {
@@ -671,17 +663,8 @@ function cimy_update_ExtraFields() {
 				else
 					$prev_value = $value;
 
-				global $cimy_uef_plugins_dir, $cuef_upload_path;
-
-				$blog_path = $cuef_upload_path;
 				$old_value = basename($old_value);
-
-				if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
-					global $blog_id;
-
-					$blog_path .= $blog_id."/";
-				}
-				$file_on_server = $blog_path.$user_login."/".basename($old_file);
+				$file_on_server = cimy_uef_get_dir_or_filename($user_login, $old_file, false);
 				if (($type == "picture") || ($type == "avatar"))
 					cimy_uef_crop_image($file_on_server, $field_id_data);
 			}

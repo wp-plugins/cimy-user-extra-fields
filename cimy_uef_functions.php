@@ -531,14 +531,6 @@ function cimy_uef_is_field_disabled($type, $edit_rule, $old_value) {
 
 function cimy_uef_crop_image($file, $field_id_data) {
 	if (!empty($_POST[$field_id_data."_button"]) && (!empty($_POST[$field_id_data.'_w'])) && (!empty($_POST[$field_id_data.'_h']))) {
-		global $cimy_uef_plugins_dir, $cuef_upload_path;
-
-		$blog_path = $cuef_upload_path;
-		if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
-			global $blog_id;
-			$blog_path .= $blog_id."/";
-		}
-
 		$targ_w = $_POST[$field_id_data.'_w'];
 		$targ_h = $_POST[$field_id_data.'_h'];
 		$jpeg_quality = 100;

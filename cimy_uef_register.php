@@ -167,19 +167,11 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 				$user_login_sanitized = sanitize_user($_POST['user_login']);
 				if ((isset($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
 					$temp_user_login = $_POST["temp_user_login"];
-					global $cimy_uef_plugins_dir, $cuef_upload_path;
-
-					$blog_path = $cuef_upload_path;
-					if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
-						global $blog_id;
-
-						$blog_path .= $blog_id."/";
-					}
-					$temp_dir = $blog_path.$temp_user_login;
-					$final_dir = $blog_path.$user_login_sanitized;
+					$temp_dir = cimy_uef_get_dir_or_filename($temp_user_login);
+					$final_dir = cimy_uef_get_dir_or_filename($user_login_sanitized);
 					rename($temp_dir, $final_dir);
 					$data = str_replace("/".$temp_user_login."/", "/".$user_login_sanitized."/", $data);
-					$file_on_server = $blog_path.$user_login_sanitized."/".basename($data);
+					$file_on_server = cimy_uef_get_dir_or_filename($user_login_sanitized, $data, false);
 
 					if (($type == "picture") || ($type == "avatar"))
 						cimy_uef_crop_image($file_on_server, $field_id_data);
@@ -920,6 +912,12 @@ function cimy_registration_form($errors=null, $show_type=0) {
 						case 'avatar':
 						case 'file':
 							$value = cimy_manage_upload($input_name, $temp_user_login, $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
+							$file_on_server = cimy_uef_get_dir_or_filename($temp_user_login, $value, false);
+							$file_thumb = cimy_uef_get_dir_or_filename($temp_user_login, $value, true);
+							if (($advanced_options["no-thumb"]) && (is_file($file_thumb)))
+								rename($file_thumb, $file_on_server);
+
+							// yea little trick
 							$obj_value2 = "&nbsp;";
 							break;
 					}

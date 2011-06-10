@@ -417,7 +417,7 @@ function cimy_extract_ExtraFields() {
 // 					echo "\n\t\t";
 				}
 
-				if ((($type == "picture") || ($type == "avatar")) && (empty($rules["equal_to"]))) {
+				if ((($type == "picture") || ($type == "avatar")) && ((empty($rules["equal_to"])) || ($advanced_options["no-thumb"]))) {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_x1\" id=\"".$field_id_data."_x1\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_y1\" id=\"".$field_id_data."_y1\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_x2\" id=\"".$field_id_data."_x2\" value=\"\" />";

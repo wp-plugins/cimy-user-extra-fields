@@ -612,7 +612,23 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	$upload_file_function = false;
 	$is_jquery_added = false;
 	$crop_image_function = false;
+
+	// confirmation page, all fields are plain text + hidden fields to carry over values
 	if ($show_type == 2) {
+		$upload_dir = cimy_uef_get_dir_or_filename("");
+		$dirs = glob($upload_dir.".cimytemp_*.tmp");
+		if (is_array($dirs)) {
+			foreach ($dirs as $dir) {
+				$diff = current_time('timestamp', true) - (filemtime($dir));
+				// If older than two days delete!
+				if ($diff > 172800) {
+					cimy_rfr($dir."/", "*");
+					if (is_dir($dir))
+						rmdir($dir);
+				}
+			}
+		}
+
 		$temp_user_login = ".cimytemp_".sanitize_user($_POST['user_login']).'_'.rand().'.tmp';
 ?>
 	<input type="hidden" name="temp_user_login" value="<?php echo esc_attr($temp_user_login); ?>" />

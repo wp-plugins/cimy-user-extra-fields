@@ -894,8 +894,8 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		if ($file_size > (intval($rules['max_length'])))
 			$file_error = 1;
 
-	// if there are no errors and filename is empty
-	if (($file_error == 0) && ($file_name != "")) {
+	// if there are no errors and filename is NOT empty
+	if (($file_error == 0) && (!empty($file_name))) {
 		if (move_uploaded_file($file_tmp_name, $file_full_path)) {
 			// change file permissions for broken servers
 			if (defined("FS_CHMOD_FILE"))
@@ -934,7 +934,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	}
 	else
 		$data = "";
-	
+
 	return $data;
 }
 

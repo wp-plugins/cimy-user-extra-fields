@@ -425,7 +425,7 @@ function cimy_extract_ExtraFields() {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
 // 					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_button\" value=\"1\"  />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_button\" id=\"".$field_id_data."_button\" value=\"1\" />";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
 					if ((isset($advanced_options["crop_x1"])) && (isset($advanced_options["crop_y1"])) && (isset($advanced_options["crop_x2"])) && (isset($advanced_options["crop_y2"]))) {
 						$imgarea_options.= ", x1: ".intval($advanced_options["crop_x1"]);
@@ -660,13 +660,13 @@ function cimy_update_ExtraFields() {
 					$query.= " WHEN ".$field_id." THEN ";
 					$query.= $value;
 				}
-				else
+				else {
 					$prev_value = $value;
 
-				$old_value = basename($old_value);
-				$file_on_server = cimy_uef_get_dir_or_filename($user_login, $old_file, false);
-				if (($type == "picture") || ($type == "avatar"))
-					cimy_uef_crop_image($file_on_server, $field_id_data);
+					$file_on_server = cimy_uef_get_dir_or_filename($user_login, $old_file, false);
+					if (($type == "picture") || ($type == "avatar"))
+						cimy_uef_crop_image($file_on_server, $field_id_data);
+				}
 			}
 
 			if ($type == 'checkbox') {

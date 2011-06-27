@@ -383,7 +383,7 @@ function cimy_extract_ExtraFields() {
 					$value_thumb = cimy_get_thumb_path($value);
 					$file_on_server = cimy_uef_get_dir_or_filename($user_login, $value, false);
 					$file_thumb = cimy_uef_get_dir_or_filename($user_login, $value, true);
-					if (($advanced_options["no-thumb"]) && (is_file($file_thumb)))
+					if ((!empty($advanced_options["no-thumb"])) && (is_file($file_thumb)))
 						rename($file_thumb, $file_on_server);
 					
 					echo "\n\t\t";

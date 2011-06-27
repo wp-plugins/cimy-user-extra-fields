@@ -4,8 +4,8 @@ Donate link: http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy
 Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar, recaptcha, captcha
 Requires at least: 3.0
-Tested up to: 3.1
-Stable tag: 2.0.5
+Tested up to: 3.2
+Stable tag: 2.1.0
 
 Add some useful fields to registration and user's info
 
@@ -44,8 +44,11 @@ future versions can have more.
 
 = Other features: =
  * reCAPTCHA
+ * custom welcome email (non MS installations)
  * custom registration logo (non MS installations)
  * email confirmation (non MS installations)
+ * form confirmation (non MS installations)
+ * image upload with crop/resize functions
  * much more!
 
 The plug-in adds two new menu voices in the admin for the administrator and two for users.

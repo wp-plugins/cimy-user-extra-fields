@@ -751,8 +751,11 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			}
 			else
 				$value = "";
-			
-			$value = esc_attr($value);
+
+			if ($show_type == 2)
+				$value = cimy_uef_sanitize_content($value);
+			else
+				$value = esc_attr($value);
 
 			if (($i != 1) && ($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset]))) {
 				$current_fieldset = $fieldset;

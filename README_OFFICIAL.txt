@@ -583,7 +583,7 @@ A: Sure, visit the donation page or contact me via e-mail.
 Q: Can I hack this plug-in and hope to see my code in the next release?
 
 A: For sure, this is just happened and can happen again if you write useful new features and good code. Try to see how I maintain the code and try to do the same (or even better of course), I have rules on how I write it, don't want "spaghetti code", I'm Italian and I want spaghetti only on my plate.
-There is no guarantee that your patch will reach Cimy User Extra Fields, but feel free to do a fork of this project and distribuite it, this is GPL!
+There is no guarantee that your patch will hit an official upcoming release of the plug-in, but feel free to do a fork of this project and distribute it, this is GPL!
 
 
 Q1: I have found a bug what can I do?
@@ -604,8 +604,8 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 CHANGELOG:
 v2.1.0 - 28/06/2011
-- Added confirmation registration (thanks to Marcello Foglia for sponsoring it)
-- Added custom welcome email (thanks to Marcello Foglia for sponsoring it)
+- Added confirmation registration (non MS only) (thanks to Marcello Foglia for sponsoring it)
+- Added custom welcome email (non MS only) (thanks to Marcello Foglia for sponsoring it)
 - Added crop functionalities for picture and avatar fields (thanks to Marcello Foglia for sponsoring it)
 - Added advanced options (thanks to Marcello Foglia for sponsoring it)
 - Code cleanup

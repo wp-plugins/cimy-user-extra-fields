@@ -44,11 +44,11 @@ future versions can have more.
 
 = Other features: =
  * reCAPTCHA
+ * image upload with crop/resize functions
  * custom welcome email (non MS installations)
  * custom registration logo (non MS installations)
  * email confirmation (non MS installations)
  * form confirmation (non MS installations)
- * image upload with crop/resize functions
  * much more!
 
 The plug-in adds two new menu voices in the admin for the administrator and two for users.

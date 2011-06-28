@@ -50,6 +50,7 @@ function cimy_extract_ExtraFields() {
 
 		$radio_checked = array();
 		$upload_file_function = false;
+		$crop_image_function = false;
 		$current_fieldset = -1;
 		$tiny_mce_objects = "";
 		
@@ -74,6 +75,8 @@ function cimy_extract_ExtraFields() {
 			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = $thisField['FIELDSET'];
 			$input_name = $fields_name_prefix.esc_attr($name);
+			$field_id_data = $input_name."_".$field_id."_data";
+			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
 			// apply only for EXTRA FIELDS
@@ -275,10 +278,11 @@ function cimy_extract_ExtraFields() {
 
 				case "avatar":
 				case "picture":
+					$crop_image_function = true;
 				case "file":
 					$allowed_exts = '';
 					if (isset($rules['equal_to']))
-						if ($rules['equal_to'] != "")
+						if (!empty($rules['equal_to']))
 							$allowed_exts = "'".implode("', '", explode(",", $rules['equal_to']))."'";
 
 					// javascript will be added later
@@ -357,7 +361,7 @@ function cimy_extract_ExtraFields() {
 			
 			echo "\t\t<td>";
 			
-			if (($description != "") && (($type == "picture") || ($type == "picture-url")))
+			if ((!empty($description)) && (($type == "picture") || ($type == "picture-url")))
 				echo $description."<br />";
 
 			if (in_array($type, $cimy_uef_file_types)) {
@@ -366,35 +370,29 @@ function cimy_extract_ExtraFields() {
 
 			if ($type == "avatar") {
 				$user_email = $profileuser->user_email;
-				echo '<div id="profpic">'.get_avatar($user_email, $size = '128')."</div>\n\t\t";
+				$img_avatar = get_avatar($user_email, $size = '128');
+				$img_avatar = str_replace("<img", "<img id='$field_id_data'", $img_avatar);
+				echo '<div id="profpic">'.$img_avatar."</div>\n\t\t";
 			}
 
-			if ((in_array($type, $cimy_uef_file_types)) && ($value != "")) {
-				global $cimy_uef_plugins_dir;
-
-				$blog_path = $cuef_upload_path;
+			if ((in_array($type, $cimy_uef_file_types)) && (!empty($value))) {
 				$old_value = basename($old_value);
-
-				if (($cimy_uef_plugins_dir == "plugins") && (is_multisite())) {
-					global $blog_id;
-
-					$blog_path .= $blog_id."/";
-				}
-
 				$user_login = $profileuser->user_login;
 				
 				if ($type == "picture") {
 					$value_thumb = cimy_get_thumb_path($value);
-					$file_thumb = $blog_path.$user_login."/".cimy_get_thumb_path(basename($value));
-					$file_on_server = $blog_path.$user_login."/".basename($value);
+					$file_on_server = cimy_uef_get_dir_or_filename($user_login, $value, false);
+					$file_thumb = cimy_uef_get_dir_or_filename($user_login, $value, true);
+					if ((!empty($advanced_options["no-thumb"])) && (is_file($file_thumb)))
+						rename($file_thumb, $file_on_server);
 					
 					echo "\n\t\t";
 					if (is_file($file_thumb)) {
-						echo '<a target="_blank" href="'.$value.'"><img src="'.$value_thumb.'" alt="picture" /></a><br />';
+						echo '<a target="_blank" href="'.$value.'"><img id="'.$field_id_data.'" src="'.$value_thumb.'" alt="picture" /></a><br />';
 						echo "\n\t\t";
 					}
 					else if (is_file($file_on_server)) {
-						echo '<img src="'.$value.'" alt="picture" /><br />';
+						echo '<img id="'.$field_id_data.'" src="'.$value.'" alt="picture" /><br />';
 						echo "\n\t\t";
 					}
 				}
@@ -418,7 +416,30 @@ function cimy_extract_ExtraFields() {
 // 					echo '<input type="hidden" name="'.$input_name.'_oldfile" value="'.basename($value).'" />';
 // 					echo "\n\t\t";
 				}
-				
+
+				if ((($type == "picture") || ($type == "avatar")) && ((empty($rules["equal_to"])) || ($advanced_options["no-thumb"]))) {
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_x1\" id=\"".$field_id_data."_x1\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_y1\" id=\"".$field_id_data."_y1\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_x2\" id=\"".$field_id_data."_x2\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_y2\" id=\"".$field_id_data."_y2\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
+// 					echo "<p class=\"submit\"><input type=\"submit\" name=\"".$field_id_data."_button\" class=\"button-primary\" value=\"".__("Edit Image")."\"  /></p>";
+					echo "<input type=\"hidden\" name=\"".$field_id_data."_button\" id=\"".$field_id_data."_button\" value=\"1\" />";
+					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
+					if ((isset($advanced_options["crop_x1"])) && (isset($advanced_options["crop_y1"])) && (isset($advanced_options["crop_x2"])) && (isset($advanced_options["crop_y2"]))) {
+						$imgarea_options.= ", x1: ".intval($advanced_options["crop_x1"]);
+						$imgarea_options.= ", y1: ".intval($advanced_options["crop_y1"]);
+						$imgarea_options.= ", x2: ".intval($advanced_options["crop_x2"]);
+						$imgarea_options.= ", y2: ".intval($advanced_options["crop_y2"]);
+					}
+
+					if (!empty($advanced_options["crop_ratio"]))
+						$imgarea_options.= ", aspectRatio: '".esc_js($advanced_options["crop_ratio"])."'";
+					else if ($type == "avatar")
+						$imgarea_options.= ", aspectRatio: '1:1'";
+					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#".esc_js($field_id_data)."').imgAreaSelect({ ".$imgarea_options." }); });</script>";
+				}
 				echo '<input type="checkbox" name="'.$input_name.'_del" value="1" style="width:auto; border:0; background:white;"'.$dis_delete_img.' />';
 
 				if ($type == "file") {
@@ -458,7 +479,7 @@ function cimy_extract_ExtraFields() {
 			else
 				echo $obj_value;
 			
-			if (($description != "") && ($type != "picture") && ($type != "picture-url")) {
+			if ((!empty($description)) && ($type != "picture") && ($type != "picture-url")) {
 				if (($type == "textarea") || ($type == "textarea-rich"))
 					echo "<br />";
 				else
@@ -473,8 +494,13 @@ function cimy_extract_ExtraFields() {
 		
 		echo "</table>";
 		
-		if ($tiny_mce_objects != "") {
+		if (!empty($tiny_mce_objects)) {
 			require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
+		}
+		if ($crop_image_function) {
+			wp_print_scripts('imgareaselect');
+			wp_print_styles('imgareaselect');
+			wp_print_scripts('cimy_uef_img_selection');
 		}
 
 		if ($upload_file_function)
@@ -519,6 +545,8 @@ function cimy_update_ExtraFields() {
 		$label = $thisField["LABEL"];
 		$rules = $thisField["RULES"];
 		$input_name = $fields_name_prefix.$wpdb->escape($name);
+		$field_id_data = $input_name."_".$field_id."_data";
+		$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
 		cimy_insert_ExtraFields_if_not_exist($get_user_id, $field_id);
 
@@ -616,9 +644,9 @@ function cimy_update_ExtraFields() {
 				else
 					$old_file = false;
 				
-				$field_value = cimy_manage_upload($input_name, $user_login, $rules, $old_file, $delete_file, $type);
+				$field_value = cimy_manage_upload($input_name, $user_login, $rules, $old_file, $delete_file, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 
-				if (($field_value != "") || ($delete_file)) {
+				if ((!empty($field_value)) || ($delete_file)) {
 					if ($i > 0)
 						$field_ids.= ", ";
 					else
@@ -632,8 +660,13 @@ function cimy_update_ExtraFields() {
 					$query.= " WHEN ".$field_id." THEN ";
 					$query.= $value;
 				}
-				else
+				else {
 					$prev_value = $value;
+
+					$file_on_server = cimy_uef_get_dir_or_filename($user_login, $old_file, false);
+					if (($type == "picture") || ($type == "avatar"))
+						cimy_uef_crop_image($file_on_server, $field_id_data);
+				}
 			}
 
 			if ($type == 'checkbox') {

@@ -4,8 +4,8 @@ Donate link: http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy
 Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar, recaptcha, captcha
 Requires at least: 3.0
-Tested up to: 3.1
-Stable tag: 2.0.4
+Tested up to: 3.2
+Stable tag: 2.1.0
 
 Add some useful fields to registration and user's info
 
@@ -44,19 +44,22 @@ future versions can have more.
 
 = Other features: =
  * reCAPTCHA
+ * custom welcome email (non MS installations)
  * custom registration logo (non MS installations)
  * email confirmation (non MS installations)
+ * form confirmation (non MS installations)
+ * image upload with crop/resize functions
  * much more!
 
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
 
 = Two new menus are: =
 
-WordPress and WordPress MultiSite per-blog registration:
-    1. "Users -> A&U Extended" - lets you show users lists with the new fields that are created
+= WordPress and WordPress MultiSite per-blog registration: =
+    1. "Users -> Users Extended" - lets you show users lists with the new fields that are created
     2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
-Wordpress MultiSite unique registration:
+= Wordpress MultiSite unique registration: =
     1. "Super Admin -> Users Extended" - lets you show users lists with the new fields that are created
     2. "Super Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
@@ -88,7 +91,7 @@ Wordpress MultiSite unique registration:
     * field can be hidden in user's profile
 	[all]
 
-    * field can be hidden in A&U Extended page
+    * field can be hidden in Users Extended page
 	[all]
 
     * field can be hidden in Search Engine (only if you installed the template)

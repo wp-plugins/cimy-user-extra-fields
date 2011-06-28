@@ -246,13 +246,13 @@ function cimy_admin_define_extra_fields() {
 			$maxLen = $max_length_value;
 		/* end overwrite previous values */
 		
-		if ($minlen != "")
+		if (!empty($minlen))
 			$store_rule['min_length'] = intval($_POST['minlength'][$field_order]);
 		
-		if ($exactlen != "")
+		if (!empty($exactlen))
 			$store_rule['exact_length'] = intval($_POST['exactlength'][$field_order]);
 
-		if ($maxlen != "")
+		if (!empty($maxlen))
 			$store_rule['max_length'] = intval($_POST['maxlength'][$field_order]);
 		
 		$empty = $_POST['empty'][$field_order];
@@ -264,14 +264,15 @@ function cimy_admin_define_extra_fields() {
 		$email == "1" ? $store_rule['email'] = true : $store_rule['email'] = false;
 		$equal = $_POST['equal'][$field_order];
 		
-		if ($equal != "") {
+		if (!empty($equal)) {
 			$store_rule['equal_to'] = stripslashes($_POST['equalto'][$field_order]);
 			
 			$equalto_casesens = $_POST['equalto_casesens'][$field_order];
 
 			$equalto_regex = $_POST['equalto_regex'][$field_order];
 		}
-		
+
+		$store_rule["advanced_options"] = stripslashes($_POST['advanced_options'][$field_order]);
 		$show_in_reg = $_POST['show_in_reg'][$field_order];
 		$show_in_reg == "1" ? $store_rule['show_in_reg'] = true : $store_rule['show_in_reg'] = false;
 		
@@ -334,10 +335,8 @@ function cimy_admin_define_extra_fields() {
 			$maxlen = "";
 		}
 
-		if ($equal != "") {
-			if (!isset($store_rule['equal_to']))
-				$errors['equalTo'] = __("Equal TO not specified", $cimy_uef_domain);
-			else if ($store_rule['equal_to'] == "")
+		if (!empty($equal)) {
+			if (empty($store_rule['equal_to']))
 				$errors['equalTo'] = __("Equal TO not specified", $cimy_uef_domain);
 			else if ((strtoupper($store_rule['equal_to']) != "YES") && (strtoupper($store_rule['equal_to']) != "NO")) {
 				if ($type == "checkbox")
@@ -347,7 +346,7 @@ function cimy_admin_define_extra_fields() {
 					$errors['equalTo2'] = __("With radio type Equal TO can only be", $cimy_uef_domain).": [Yes, No]";
 			}
 			
-			if (($equalto_casesens != "") && (in_array($type, $rule_equalto_case_sensitive)))
+			if ((!empty($equalto_casesens)) && (in_array($type, $rule_equalto_case_sensitive)))
 				$store_rule['equal_to_case_sensitive'] = true;
 			else
 				$store_rule['equal_to_case_sensitive'] = false;
@@ -358,7 +357,7 @@ function cimy_admin_define_extra_fields() {
 				$store_rule['equal_to_regex'] = false;
 		}
 
-		if (($value != "") && (strtoupper($value) != "YES") && (strtoupper($value) != "NO")) {
+		if ((!empty($value)) && (strtoupper($value) != "YES") && (strtoupper($value) != "NO")) {
 			if ($type == "checkbox")
 				$errors['value'] = __("With checkbox type Value can only be", $cimy_uef_domain).": [Yes, No]";
 
@@ -483,6 +482,7 @@ function cimy_admin_define_extra_fields() {
 	$selected_input["minlen"] = '';
 	$selected_input["exactlen"] = '';
 	$selected_input["maxlen"] = '';
+	$selected_input["advanced_options"] = '';
 
 	if ($action == "add") {
 		// CAN BE MODIFIED OR NOT
@@ -537,6 +537,10 @@ function cimy_admin_define_extra_fields() {
 		// CHECK EMAIL SYNTAX
 		if ($store_rule['email'] == true)
 			$selected_input["email"] = ' checked="checked"';
+
+		// ADVANCED OPTIONS
+		if (isset($store_rule['advanced_options']))
+			$selected_input["advanced_options"] = $store_rule['advanced_options'];
 
 		// SHOW LEVEL
 		switch ($store_rule['show_level']) {
@@ -693,7 +697,7 @@ function cimy_admin_define_extra_fields() {
 			</select>
 			<br />
 			<!-- EQUAL TO -->
-			<input type="checkbox" name="equal[0]" value="1"<?php echo $selected_input["equal"]; ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[0]" maxlength="100" value="<?php echo $selected_input["equal_to"]; ?>"/><br />
+			<input type="checkbox" name="equal[0]" value="1"<?php echo $selected_input["equal"]; ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[0]" maxlength="500" value="<?php echo $selected_input["equal_to"]; ?>"/><br />
 			<!-- CASE SENSITIVE -->
 			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens[0]" value="1"<?php echo $selected_input["equal_to_case_sensitive"]; ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
 
@@ -707,7 +711,7 @@ function cimy_admin_define_extra_fields() {
 			<input type="checkbox" name="show_in_profile[0]" value="1"<?php echo $selected_input["show_in_profile"]; ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
 			
 			<!-- SHOW IN A&U EXTENDED -->
-			<input type="checkbox" name="show_in_aeu[0]" value="1"<?php echo $selected_input["show_in_aeu"]; ?> /> <?php _e("Show the field in A&amp;U Extended menu", $cimy_uef_domain); ?><br />
+			<input type="checkbox" name="show_in_aeu[0]" value="1"<?php echo $selected_input["show_in_aeu"]; ?> /> <?php _e("Show the field in Users Extended menu", $cimy_uef_domain); ?><br />
 
 			<!-- SHOW IN THE SEARCH ENGINE -->
 			<input type="checkbox" name="show_in_search[0]" value="1"<?php echo $selected_input["show_in_search"]; ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
@@ -730,6 +734,8 @@ function cimy_admin_define_extra_fields() {
 
 			<!-- EMAIL ADMIN -->
 			<input type="checkbox" name="email_admin[0]" value="1"<?php echo $selected_input["email_admin"]; ?> /> <?php _e("Send an email to the admin if the user changes its value", $cimy_uef_domain); ?><br />
+			<!-- ADVANCED OPTIONS -->
+			<?php _e("Advanced options", $cimy_uef_domain); ?>: <input type="text" name="advanced_options[0]" maxlength="500" value="<?php echo $selected_input["advanced_options"]; ?>"/><br />
 
 		</td>
 		<td align="center" style="vertical-align: middle;">
@@ -1011,6 +1017,8 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			else
 				$email_admin = "";
 
+			$advanced_options = $rules['advanced_options'];
+
 			// SHOW LEVEL
 			$show_anonymous = '';
 			$show_subscriber = '';
@@ -1136,7 +1144,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<br />
 				
 				<!-- EQUAL TO -->
-				<input type="checkbox" name="equal[<?php echo $order ?>]" value="1"<?php echo $equal.$dis_equalto ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[<?php echo $order ?>]" maxlength="100" value="<?php echo $equalTo ?>"<?php echo $dis_equalto ?> /><br />
+				<input type="checkbox" name="equal[<?php echo $order ?>]" value="1"<?php echo $equal.$dis_equalto ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[<?php echo $order ?>]" maxlength="500" value="<?php echo $equalTo ?>"<?php echo $dis_equalto ?> /><br />
 				<!-- CASE SENSITIVE -->
 				&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens[<?php echo $order ?>]" value="1"<?php echo $equalto_casesens.$dis_equalto_casesens; ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
 				<!-- REGEX -->
@@ -1156,7 +1164,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				}
 				?>
 				<!-- SHOW IN A&U EXTENDED -->
-				<input type="checkbox" name="show_in_aeu[<?php echo $order ?>]" value="1"<?php echo $show_in_aeu ?> /> <?php _e("Show the field in A&amp;U Extended menu", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="show_in_aeu[<?php echo $order ?>]" value="1"<?php echo $show_in_aeu ?> /> <?php _e("Show the field in Users Extended menu", $cimy_uef_domain); ?><br />
 
 				<!-- SHOW IN THE SEARCH -->
 				<input type="checkbox" name="show_in_search[<?php echo $order ?>]" value="1"<?php echo $show_in_search ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
@@ -1185,6 +1193,8 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<?php
 				}
 				?>
+				<!-- ADVANCED OPTIONS -->
+				<?php _e("Advanced options", $cimy_uef_domain); ?>: <input type="text" name="advanced_options[<?php echo $order ?>]" maxlength="500" value="<?php echo $advanced_options; ?>"/><br />
 			</td>
 			<td align="center" style="vertical-align: middle;">
 				<p class="submit" style="border-width: 0px;">

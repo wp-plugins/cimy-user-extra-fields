@@ -37,8 +37,11 @@ Following WordPress hidden fields can be enabled during registration:
 
 Other features:
  * reCAPTCHA
+ * custom welcome email (non MS installations)
  * custom registration logo (non MS installations)
  * email confirmation (non MS installations)
+ * form confirmation (non MS installations)
+ * image upload with crop/resize functions
  * much more!
 
 The plug-in adds two new menu voices in the admin for the administrator and two for users.
@@ -458,6 +461,19 @@ HOW TO USE AVATAR SUPPORT:
 Create the same directory needed for PICTURE support, avatars will be stored in a subdirectory and will not interfere with other pictures uploaded by the same plug-in
 
 
+ADVANCED OPTIONS:
+Advanced options have been introduced in v2.1.0 to accommodate some extra options per field.
+Multiple options should be comma separated ','
+
+[AVATAR, PICTURE]
+no-thumb=1 - do not crate the thumbnail (if equalTO rule is set it will resize the original image)
+crop_ratio=4:3 - fix cropping ratio
+crop_x1=0,crop_y1=0,crop_x2=80,crop_y2=90 - pre-select cropping window
+
+[AVATAR, PICTURE, FILE]
+filename=default.pdf - rename the uploaded file to the given file name
+
+
 KNOWN ISSUES:
 - if you add too many fields in the "Users Extended" menu they will go out of frame
 - some rules are never applied if you are using PHP 4.x please update to PHP 5.x as stated in the REQUIREMENTS
@@ -538,7 +554,7 @@ A: Because you missed to move cimy_uef_mu_activation.php file please check caref
 
 Q: I'm using your plug-in on WordPress MultiSite per-blog installation, I'm registering users on one blog but they appear on the main blog too, why?
 
-A: Because WordPress MultiSite is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
+A: Because WordPress MS is designed like that and I can't do anything about, however all extra fields and relative data are saved per-blog.
 Since I had already a long discussion with an user that didn't believe this, don't bother me to insist on this topic until you prove I'm wrong.
 
 
@@ -587,9 +603,18 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.0.5 - /05/2011
+v2.1.0 - 28/06/2011
+- Added confirmation registration (thanks to Marcello Foglia for sponsoring it)
+- Added custom welcome email (thanks to Marcello Foglia for sponsoring it)
+- Added crop functionalities for picture and avatar fields (thanks to Marcello Foglia for sponsoring it)
+- Added advanced options (thanks to Marcello Foglia for sponsoring it)
+- Code cleanup
+
+v2.0.5 - 11/05/2011
+- Added 'view_cimy_extra_fields' capability and rule to Show field if user has this cap (thanks to Matt)
 - A&U Extended is now renamed to Users Extended
 - Updated Users Extended page to use newer functions and to show # of search results
+- Updated equalTo field can now accommodate up to 500 characters string
 - Fixed several html bugs in Users Extended page
 - Fixed several (but minor) security issues
 

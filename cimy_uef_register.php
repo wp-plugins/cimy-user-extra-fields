@@ -752,11 +752,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			else
 				$value = "";
 
-			if ($show_type == 2)
-				$value = cimy_uef_sanitize_content($value);
-			else
-				$value = esc_attr($value);
-
 			if (($i != 1) && ($fieldset > $current_fieldset) && (isset($fieldset_titles[$fieldset]))) {
 				$current_fieldset = $fieldset;
 
@@ -787,7 +782,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					else
 						$obj_type = ' type="'.$type.'"';
 
-					$obj_value = ' value="'.$value.'"';
+					$obj_value = ' value="'.esc_attr($value).'"';
 					$obj_value2 = "";
 					$obj_checked = "";
 					$obj_tag = "input";
@@ -796,7 +791,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 				case "dropdown":
 				case "dropdown-multi":
-					$ret = cimy_dropDownOptions($label, $value);
+					$ret = cimy_dropDownOptions($label, esc_attr($value));
 					$label = $ret['label'];
 					$html = $ret['html'];
 
@@ -823,7 +818,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = "";
 					$obj_value = "";
-					$obj_value2 = $value;
+					$obj_value2 = esc_html($value);
 					$obj_checked = "";
 					$obj_tag = "textarea";
 					$obj_closing_tag = true;
@@ -840,7 +835,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = "";
 					$obj_value = "";
-					$obj_value2 = $value;
+					$obj_value2 = esc_html($value);
 					$obj_checked = "";
 					$obj_tag = "textarea";
 					$obj_closing_tag = true;
@@ -906,7 +901,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$obj_class = ' class="cimy_uef_picture"';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="file"';
-					$obj_value = ' value="'.$value.'"';
+					$obj_value = ' value="'.esc_attr($value).'"';
 					$obj_value2 = "";
 					$obj_tag = "input";
 					$obj_closing_tag = false;
@@ -924,7 +919,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 							break;
 						case 'dropdown':
 						case 'dropdown-multi':
-							$ret = cimy_dropDownOptions($label, $value);
+							$ret = cimy_dropDownOptions($label, esc_attr($value));
 							$label = $ret['label'];
 							break;
 						case 'picture':
@@ -943,12 +938,12 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					if ($old_type != "password") {
 						$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
 						if (empty($obj_value2))
-							$obj_value2 = $value;
+							$obj_value2 = cimy_uef_sanitize_content($value);
 					}
 					$obj_class = '';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="hidden"';
-					$obj_value = ' value="'.$value.'"';
+					$obj_value = ' value="'.esc_attr($value).'"';
 					$obj_checked = "";
 					$obj_tag = "input";
 					$obj_closing_tag = false;
@@ -959,7 +954,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$obj_class = '';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="hidden"';
-					$obj_value = ' value="'.$value.'"';
+					$obj_value = ' value="'.esc_attr($value).'"';
 					$obj_value2 = "";
 					$obj_checked = "";
 					$obj_tag = "input";
@@ -1009,7 +1004,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 						$is_jquery_added = true;
 					}
 					$crop_image_function = true;
-					echo '<img id="'.$field_id_data.'" src="'.$value.'" alt="picture" /><br />';
+					echo '<img id="'.$field_id_data.'" src="'.esc_attr($value).'" alt="picture" /><br />';
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_button\" id=\"".$field_id_data."_button\" value=\"1\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_x1\" id=\"".$field_id_data."_x1\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_y1\" id=\"".$field_id_data."_y1\" value=\"\" />";

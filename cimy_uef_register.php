@@ -995,8 +995,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			else if ($type == "hidden") {
 				$form_object.= " />".$obj_value2;
 				if (in_array($old_type, $cimy_uef_file_types)) {
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_size\" id=\"".$field_id_data."_size\" value=\"".strval($_FILES[$input_name]['size'] / 1024)."\" />";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_type\" id=\"".$field_id_data."_type\" value=\"".strval($_FILES[$input_name]['type'])."\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_size\" id=\"".esc_attr($field_id_data)."_size\" value=\"".strval($_FILES[$input_name]['size'] / 1024)."\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_type\" id=\"".esc_attr($field_id_data)."_type\" value=\"".strval($_FILES[$input_name]['type'])."\" />";
 				}
 				if (($old_type == "picture") || ($old_type == "avatar")) {
 					if (!$is_jquery_added) {
@@ -1004,14 +1004,14 @@ function cimy_registration_form($errors=null, $show_type=0) {
 						$is_jquery_added = true;
 					}
 					$crop_image_function = true;
-					echo '<img id="'.$field_id_data.'" src="'.esc_attr($value).'" alt="picture" /><br />';
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_button\" id=\"".$field_id_data."_button\" value=\"1\" />";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_x1\" id=\"".$field_id_data."_x1\" value=\"\" />";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_y1\" id=\"".$field_id_data."_y1\" value=\"\" />";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_x2\" id=\"".$field_id_data."_x2\" value=\"\" />";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_y2\" id=\"".$field_id_data."_y2\" value=\"\" />";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_w\" id=\"".$field_id_data."_w\" value=\"\" />";
-					echo "<input type=\"hidden\" name=\"".$field_id_data."_h\" id=\"".$field_id_data."_h\" value=\"\" />";
+					echo '<img id="'.esc_attr($field_id_data).'" src="'.esc_attr($value).'" alt="picture" /><br />';
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_button\" id=\"".esc_attr($field_id_data)."_button\" value=\"1\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_x1\" id=\"".esc_attr($field_id_data)."_x1\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_y1\" id=\"".esc_attr($field_id_data)."_y1\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_x2\" id=\"".esc_attr($field_id_data)."_x2\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_y2\" id=\"".esc_attr($field_id_data)."_y2\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_w\" id=\"".esc_attr($field_id_data)."_w\" value=\"\" />";
+					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_h\" id=\"".esc_attr($field_id_data)."_h\" value=\"\" />";
 					$imgarea_options = "handles: true, fadeSpeed: 200, onSelectChange: preview";
 					if ((isset($advanced_options["crop_x1"])) && (isset($advanced_options["crop_y1"])) && (isset($advanced_options["crop_x2"])) && (isset($advanced_options["crop_y2"]))) {
 						$imgarea_options.= ", x1: ".intval($advanced_options["crop_x1"]);

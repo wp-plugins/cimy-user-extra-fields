@@ -1143,7 +1143,12 @@ function cimy_confirmation_form() {
 	if ($http_post) {
 		$user_login = $_POST['user_login'];
 		$user_email = $_POST['user_email'];
-		$errors = register_new_user($user_login, $user_email);
+
+		// Might be Theme My Login, they have its own register_new_user but they don't have login_header seems so, so let's return for now!
+		if (function_exists("register_new_user"))
+			$errors = register_new_user($user_login, $user_email);
+		else
+			return;
 
 		if (!is_wp_error($errors)) {
 			$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';

@@ -483,6 +483,7 @@ KNOWN ISSUES:
 - dropdown issues:
   - custom value is not supported
   - comma is not allowed as it is the delimiter
+- registration confirmation does not work if you use Theme My Login plug-in
 
 
 FAQ:
@@ -603,6 +604,10 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.1.1 - 11/07/2011
+- Fixed compatibility with Theme My Login plug-in (introduced with v2.1.0) (thanks to Michele and Mark)
+- Fixed compatibility with WP-reCAPTCHA plug-in (thanks to des for the patch)
+
 v2.1.0 - 28/06/2011
 - Added confirmation registration (non MS only) (thanks to Marcello Foglia for sponsoring it)
 - Added custom welcome email (non MS only) (thanks to Marcello Foglia for sponsoring it)

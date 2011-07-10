@@ -5,7 +5,7 @@ Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar, recaptcha, captcha
 Requires at least: 3.0
 Tested up to: 3.2
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 
 Add some useful fields to registration and user's info
 

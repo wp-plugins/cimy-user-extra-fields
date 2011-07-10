@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Plugin Description: Add some useful fields to registration and user's info
-Version: 2.0.5
+Version: 2.1.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 */
@@ -170,6 +170,7 @@ $cuef_js_webpath = plugins_url($cimy_uef_plugins_dirprefix."js", __FILE__);
 $cuef_securimage_webpath = plugins_url($cimy_uef_plugins_dirprefix."securimage", __FILE__);
 
 wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."/upload_file.js", false, false);
+wp_register_script("cimy_uef_img_selection", $cuef_js_webpath."/img_selection.js", false, false);
 wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 
 function cimy_uef_admin_init() {
@@ -189,7 +190,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.0.4";
+$cimy_uef_version = "2.1.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -528,6 +529,9 @@ else {
 	// add custom login/registration logo
 	add_action('login_head', 'cimy_change_login_registration_logo');
 
+	// add confirmation form
+	add_action('login_form_register', 'cimy_confirmation_form');
+
 	// add filter for email activation
 	add_filter('login_message', 'cimy_uef_activate');
 
@@ -620,7 +624,7 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 	if (!isset($field_id))
 		return $avatar;
 
-	if ($overwrite_default != "")
+	if (!empty($overwrite_default))
 		$overwrite_default = "<img alt='{$safe_alt}' src='{$overwrite_default}' class='avatar avatar-{$size} photo avatar-default' height='{$size}' width='{$size}' />";
 
 	$email = '';
@@ -765,7 +769,7 @@ function cimy_admin_menu_custom() {
 		add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
 }
 
-function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="") {
+function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="", $new_filename="") {
 	global $cuef_upload_path, $cuef_upload_webpath, $cuef_plugin_dir, $cimy_uef_plugins_dir;
 
 	$type_path = "";
@@ -800,7 +804,10 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		$user_path = $blog_path;
 		$file_path = $blog_path.$type_path."/";
 	}
-	$file_name = $_FILES[$input_name]['name'];
+	if (!empty($new_filename))
+		$file_name = $new_filename;
+	else
+		$file_name = $_FILES[$input_name]['name'];
 
 	// protect from site traversing
 	$file_name = str_replace('../', '', $file_name);
@@ -887,8 +894,8 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		if ($file_size > (intval($rules['max_length'])))
 			$file_error = 1;
 
-	// if there are no errors and filename is empty
-	if (($file_error == 0) && ($file_name != "")) {
+	// if there are no errors and filename is NOT empty
+	if (($file_error == 0) && (!empty($file_name))) {
 		if (move_uploaded_file($file_tmp_name, $file_full_path)) {
 			// change file permissions for broken servers
 			if (defined("FS_CHMOD_FILE"))
@@ -927,7 +934,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	}
 	else
 		$data = "";
-	
+
 	return $data;
 }
 

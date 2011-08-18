@@ -767,7 +767,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 
 	$type_path = "";
 	if (($type == "file") || ($type == "avatar"))
-		$type_path.= $type;
+		$type_path.= $type."/";
 
 	$blog_path = $cuef_upload_path;
 
@@ -791,11 +791,11 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 
 	if (!empty($user_login)) {
 		$user_path = $blog_path.$user_login."/";
-		$file_path = $blog_path.$user_login."/".$type_path."/";
+		$file_path = $blog_path.$user_login."/".$type_path;
 	}
 	else {
 		$user_path = $blog_path;
-		$file_path = $blog_path.$type_path."/";
+		$file_path = $blog_path.$type_path;
 	}
 	if (!empty($new_filename))
 		$file_name = $new_filename;
@@ -858,9 +858,9 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		$data.= $blog_id."/";
 
 	if (empty($user_login))
-		$data .= $type_path."/".$file_name;
+		$data .= $type_path.$file_name;
 	else
-		$data .= $user_login."/".$type_path."/".$file_name;
+		$data .= $user_login."/".$type_path.$file_name;
 	
 	// filesize in Byte transformed in KiloByte
 	$file_size = $_FILES[$input_name]['size'] / 1024;

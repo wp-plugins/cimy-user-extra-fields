@@ -130,16 +130,13 @@ TYPE can be:
 */
 
 // pre 2.6 compatibility or if not defined
-if (!defined("WP_CONTENT_URL"))
-	define("WP_CONTENT_URL", get_option("siteurl")."/wp_content");
-	
 if (!defined("WP_CONTENT_DIR"))
 	define("WP_CONTENT_DIR", ABSPATH."/wp_content");
 
 $cuef_plugin_name = basename(__FILE__);
 $cuef_plugin_path = plugin_basename(dirname(__FILE__))."/";
 $cuef_upload_path = WP_CONTENT_DIR."/Cimy_User_Extra_Fields/";
-$cuef_upload_webpath = WP_CONTENT_URL."/Cimy_User_Extra_Fields/";
+$cuef_upload_webpath = content_url("Cimy_User_Extra_Fields/");
 
 if (is_multisite()) {
 	$cuef_plugin_path = "Cimy_User_Extra_Fields/";
@@ -149,15 +146,9 @@ if (is_multisite()) {
 		$cuef_plugin_path = "cimy-user-extra-fields/";
 
 	$cuef_plugin_dir.= $cuef_plugin_path;
-// 	$cuef_css_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."css/";
-// 	$cuef_js_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."js/";
-// 	$cuef_securimage_webpath = WP_CONTENT_URL."/".$cimy_uef_plugins_dir."/".$cuef_plugin_path."securimage/";
 }
 else {
 	$cuef_plugin_dir = WP_CONTENT_DIR."/plugins/".$cuef_plugin_path;
-// 	$cuef_css_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."css/";
-// 	$cuef_js_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."js/";
-// 	$cuef_securimage_webpath = WP_CONTENT_URL."/plugins/".$cuef_plugin_path."securimage/";
 }
 
 // let's use plugins_url to build urls, take in account https too

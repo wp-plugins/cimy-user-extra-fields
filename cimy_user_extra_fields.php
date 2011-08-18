@@ -172,15 +172,6 @@ $cuef_securimage_webpath = plugins_url($cimy_uef_plugins_dirprefix."securimage",
 wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."/upload_file.js", false, false);
 wp_register_script("cimy_uef_img_selection", $cuef_js_webpath."/img_selection.js", false, false);
 
-function cimy_uef_register_init_css() {
-	global $cuef_css_webpath;
-	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
-	wp_enqueue_style("cimy_uef_register");
-	wp_print_styles();
-}
-
-add_action('login_head', 'cimy_uef_register_init_css');
-
 function cimy_uef_admin_init() {
 	global $cuef_js_webpath;
 	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."/invert_sel.js", false, false);
@@ -491,7 +482,7 @@ if (is_multisite()) {
 	add_filter('wpmu_validate_user_signup', 'cimy_registration_check_mu_wrapper');
 
 	// add custom login/registration css
-// 	add_action('signup_header', 'cimy_uef_register_css');
+	add_action('signup_header', 'cimy_uef_register_css');
 
 	// FIXME seems not needed
 	//add_action('signup_finished', 'cimy_register_user_extra_fields');
@@ -532,7 +523,7 @@ else {
 	add_action('register_form', 'cimy_registration_form', 1);
 
 	// add custom login/registration css
-// 	add_action('login_head', 'cimy_uef_register_css');
+	add_action('login_head', 'cimy_uef_register_css');
 
 	// add custom login/registration logo
 	add_action('login_head', 'cimy_change_login_registration_logo');
@@ -714,9 +705,12 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 	return $avatar;
 }
 
-// function cimy_uef_register_css() {
-// 	wp_print_styles("cimy_uef_register");
-// }
+function cimy_uef_register_css() {
+	global $cuef_css_webpath;
+	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
+	wp_enqueue_style("cimy_uef_register");
+	wp_print_styles();
+}
 
 function cimy_change_login_registration_logo() {
 	$options = cimy_get_options();

@@ -171,7 +171,8 @@ function cimy_extract_ExtraFields() {
 					$obj_tag = "textarea";
 					$obj_closing_tag = true;
 					$obj_style = "";
-					
+					$obj_class = ' class="cimy_uef_textarea"';
+
 					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
 					else
@@ -194,7 +195,7 @@ function cimy_extract_ExtraFields() {
 					$obj_tag = "textarea";
 					$obj_closing_tag = true;
 					$obj_style = "";
-					$obj_class = '';
+					$obj_class = ' class="cimy_uef_textarea"';
 					
 					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';

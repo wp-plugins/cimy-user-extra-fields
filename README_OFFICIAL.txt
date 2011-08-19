@@ -523,7 +523,9 @@ do_action('register_post');
 Q1: I got "Fatal error: Allowed memory size of 8388608 bytes exhausted [..]", why?
 Q2: I got blank pages after activating this plug-in, why?
 
-A: Because your memory limit is too low, to fix it edit your php.ini and search memory_limit key and put at least to 12M
+A1: Because your memory limit is too low, to fix it edit your php.ini and search memory_limit key and put at least to 12M
+A2: If you do not have access to your php.ini you can try this workaround (might not work)
+http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP
 
 
 Q: Your plug-in is great, but when you will add support to add more than one choice in radio and dropdown fields?
@@ -604,6 +606,13 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.1.2 - /08/2011
+- Added textarea and textarea-rich class in the profile area (thanks to Evaluator)
+- Fixed CSS file inclusion, should fix RTL admin layout mess (thanks to Moti Nisim)
+- Fixed extra slash present into image uris (thanks to zyrq)
+- Fixed dropdown selection when illegal characters are present (introduced with v2.0.5) (thanks to Jared)
+- Fixed some URLs still were not caring about https when used
+
 v2.1.1 - 11/07/2011
 - Fixed compatibility with Theme My Login plug-in (introduced with v2.1.0) (thanks to Michele and Mark)
 - Fixed compatibility with WP-reCAPTCHA plug-in (thanks to des for the patch)

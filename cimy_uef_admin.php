@@ -944,15 +944,10 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			
 			$equalTo = esc_attr($equalTo);
 
-			if ($rules['show_in_reg'])
-				$show_in_reg = ' checked="checked"';
-			else
-				$show_in_reg = "";
-
 			if (is_multisite()) {
 				// uploading files not supported with WordPress MU
 				if (in_array($type, $cimy_uef_file_types)) {
-					$show_in_reg = ' disabled="disabled"';
+					$show_in_reg_disabled = ' disabled="disabled"';
 				}
 			}
 
@@ -1058,7 +1053,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 
 				
 				<!-- SHOW IN REGISTRATION -->
-				<input type="checkbox" name="show_in_reg[<?php echo $order ?>]" value="1"<?php echo $show_in_reg ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="show_in_reg[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_reg'], true); ?><?php echo $show_in_reg_disabled; ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />
 				
 				<!-- SHOW IN PROFILE -->
 				<input type="checkbox" name="show_in_profile[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_profile'], true); ?><?php echo $disable_it; ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />

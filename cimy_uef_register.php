@@ -667,7 +667,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
 			$old_type = $type;
-			$label = cimy_uef_sanitize_content($thisField['LABEL']);
+			$label = $thisField['LABEL'];
 			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$input_name = $prefix.esc_attr($name);
@@ -773,7 +773,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 				case "picture-url":
 				case "password":
 				case "text":
-					$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_class = ' class="'.$input_class.'"';
 					$obj_name = ' name="'.$input_name.'"';
 
@@ -791,7 +791,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 				case "dropdown":
 				case "dropdown-multi":
-					$ret = cimy_dropDownOptions($label, esc_attr($value));
+					// cimy_dropDownOptions uses cimy_uef_sanitize_content and esc_attr by itself
+					$ret = cimy_dropDownOptions($label, $value);
 					$label = $ret['label'];
 					$html = $ret['html'];
 
@@ -813,7 +814,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					break;
 
 				case "textarea":
-					$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_class = ' class="'.$input_class.'"';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = "";
@@ -830,7 +831,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					else
 						$tiny_mce_objects .= ",".$fields_name_prefix.$field_id;
 
-					$obj_label = '<label for="'.$unique_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_class = ' class="'.$input_class.'"';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = "";
@@ -842,7 +843,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					break;
 
 				case "checkbox":
-					$obj_label = '<label class="cimy_uef_label_checkbox" for="'.$unique_id.'"> '.$label.'</label><br />';
+					$obj_label = '<label class="cimy_uef_label_checkbox" for="'.$unique_id.'"> '.cimy_uef_sanitize_content($label).'</label><br />';
 					$obj_class = ' class="cimy_uef_checkbox"';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="'.$type.'"';
@@ -854,7 +855,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					break;
 		
 				case "radio":
-					$obj_label = '<label class="cimy_uef_label_radio" for="'.$unique_id.'"> '.$label.'</label>';
+					$obj_label = '<label class="cimy_uef_label_radio" for="'.$unique_id.'"> '.cimy_uef_sanitize_content($label).'</label>';
 					$obj_class = ' class="cimy_uef_radio"';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="'.$type.'"';
@@ -897,7 +898,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 					// javascript will be added later
 					$upload_file_function = true;
-					$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
+					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).' </label>';
 					$obj_class = ' class="cimy_uef_picture"';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="file"';
@@ -919,7 +920,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 							break;
 						case 'dropdown':
 						case 'dropdown-multi':
-							$ret = cimy_dropDownOptions($label, esc_attr($value));
+							$ret = cimy_dropDownOptions($label, $value);
 							$label = $ret['label'];
 							break;
 						case 'picture':
@@ -936,7 +937,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 							break;
 					}
 					if ($old_type != "password") {
-						$obj_label = '<label for="'.$unique_id.'">'.$label.' </label>';
+						$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).' </label>';
 						if (empty($obj_value2))
 							$obj_value2 = cimy_uef_sanitize_content($value);
 					}

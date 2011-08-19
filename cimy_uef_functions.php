@@ -348,26 +348,27 @@ function cimy_dropDownOptions($values, $selected) {
 	$sel_items = explode(",", $selected);
 	$html_options = "";
 	$sel_i = 0;
-	
+
 	foreach ($items as $item) {
 		$item_clean = trim($item, "\t\n\r");
 
 		$html_options.= "\n\t\t\t";
-		$html_options.= '<option value="'.$item_clean.'"';
-	
-		if  (isset($sel_items[$sel_i])) {
-			if ($sel_items[$sel_i] == $item_clean) {
+		$html_options.= '<option value="'.esc_attr($item_clean).'"';
+
+		if (isset($sel_items[$sel_i])) {
+			$is_selected = selected($item_clean, $sel_items[$sel_i]);
+			if (!empty($is_selected)) {
 				$sel_i++;
-				$html_options.= ' selected="selected"';
+				$html_options.= $is_selected;
 			}
 		}
 
-		$html_options.= ">".$item_clean."</option>";
+		$html_options.= ">".cimy_uef_sanitize_content($item_clean)."</option>";
 	}
-	
+
 	$ret = array();
 	$ret['html'] = $html_options;
-	$ret['label'] = $label;
+	$ret['label'] = cimy_uef_sanitize_content($label);
 	
 	return $ret;
 }
@@ -424,24 +425,14 @@ function cimy_fieldsetOptions($selected=0, $order="", $select_all=false) {
 		$html.= "\t<option value=\"$i\" selected=\"selected\">".__("no fieldset", $cimy_uef_domain)."</option>\n";
 	}
 	else {
-		if ($select_all) {
-			if (-1 == $selected)
-				$selected_txt = " selected=\"selected\"";
-			else
-				$selected_txt = "";
-			$html.= "\t<option value=\"-1\"".$selected_txt.">".__("All")."</option>\n";
-		}
+		if ($select_all)
+			$html.= "\t<option value=\"-1\"".selected(-1, $selected).">".__("All")."</option>\n";
 
 		if (!empty($options['fieldset_title'])) {
 			$fieldset_titles = explode(',', $options['fieldset_title']);
 
 			foreach ($fieldset_titles as $fieldset) {
-				if ($i == $selected)
-					$selected_txt = " selected=\"selected\"";
-				else
-					$selected_txt = "";
-		
-				$html.= "\t<option value=\"$i\"".$selected_txt.">".$fieldset."</option>\n";
+				$html.= "\t<option value=\"$i\"".selected($i, $selected).">".$fieldset."</option>\n";
 				$i++;
 			}
 		}

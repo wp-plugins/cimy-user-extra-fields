@@ -71,7 +71,7 @@ function cimy_extract_ExtraFields() {
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
-			$label = cimy_uef_sanitize_content($thisField['LABEL']);
+			$label = $thisField['LABEL'];
 			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = $thisField['FIELDSET'];
 			$input_name = $fields_name_prefix.esc_attr($name);
@@ -130,7 +130,9 @@ function cimy_extract_ExtraFields() {
 			echo "\t";
 			echo "<tr>";
 			echo "\n\t";
-			
+
+			// if you use it you need to escape it!
+			$non_escaped_value = $value;
 			$value = esc_attr($value);
 			$old_value = esc_attr($old_value);
 			$obj_class = '';
@@ -139,7 +141,7 @@ function cimy_extract_ExtraFields() {
 				case "picture-url":
 				case "password":
 				case "text":
-					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_name = ' name="'.$input_name.'"';
 					
 					if ($type == "picture-url")
@@ -162,7 +164,7 @@ function cimy_extract_ExtraFields() {
 					break;
 					
 				case "textarea":
-					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = "";
 					$obj_value = "";
@@ -186,7 +188,7 @@ function cimy_extract_ExtraFields() {
 					else
 						$tiny_mce_objects .= ",".$fields_name_prefix.$field_id;
 
-					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = "";
 					$obj_value = "";
@@ -205,7 +207,8 @@ function cimy_extract_ExtraFields() {
 
 				case "dropdown-multi":
 				case "dropdown":
-					$ret = cimy_dropDownOptions($label, $value);
+					// cimy_dropDownOptions uses cimy_uef_sanitize_content and esc_attr by itself
+					$ret = cimy_dropDownOptions($label, $non_escaped_value);
 					$label = $ret['label'];
 					$html = $ret['html'];
 					
@@ -236,7 +239,7 @@ function cimy_extract_ExtraFields() {
 					break;
 					
 				case "checkbox":
-					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="'.$type.'"';
 					$obj_value = ' value="1"';
@@ -254,7 +257,7 @@ function cimy_extract_ExtraFields() {
 					break;
 	
 				case "radio":
-					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'"> '.$label.'</label>';
+					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'"> '.cimy_uef_sanitize_content($label).'</label>';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="'.$type.'"';
 					$obj_value = ' value="'.$field_id.'"';
@@ -288,7 +291,7 @@ function cimy_extract_ExtraFields() {
 
 					// javascript will be added later
 					$upload_file_function = true;
-					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.$label.'</label>';
+					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_class = '';
 					$obj_name = ' name="'.$input_name.'"';
 					$obj_type = ' type="file"';
@@ -325,7 +328,7 @@ function cimy_extract_ExtraFields() {
 					else
 						$obj_value = cimy_get_formatted_date($value);
 				
-					$obj_label = '<label>'.$label.'</label>';
+					$obj_label = '<label>'.cimy_uef_sanitize_content($label).'</label>';
 
 					break;
 			}

@@ -356,7 +356,7 @@ function cimy_dropDownOptions($values, $selected) {
 		$html_options.= '<option value="'.esc_attr($item_clean).'"';
 
 		if (isset($sel_items[$sel_i])) {
-			$is_selected = selected($item_clean, $sel_items[$sel_i]);
+			$is_selected = selected($item_clean, $sel_items[$sel_i], false);
 			if (!empty($is_selected)) {
 				$sel_i++;
 				$html_options.= $is_selected;
@@ -426,13 +426,13 @@ function cimy_fieldsetOptions($selected=0, $order="", $select_all=false) {
 	}
 	else {
 		if ($select_all)
-			$html.= "\t<option value=\"-1\"".selected(-1, $selected).">".__("All")."</option>\n";
+			$html.= "\t<option value=\"-1\"".selected(-1, $selected, false).">".__("All")."</option>\n";
 
 		if (!empty($options['fieldset_title'])) {
 			$fieldset_titles = explode(',', $options['fieldset_title']);
 
 			foreach ($fieldset_titles as $fieldset) {
-				$html.= "\t<option value=\"$i\"".selected($i, $selected).">".$fieldset."</option>\n";
+				$html.= "\t<option value=\"$i\"".selected($i, $selected, false).">".esc_html($fieldset)."</option>\n";
 				$i++;
 			}
 		}

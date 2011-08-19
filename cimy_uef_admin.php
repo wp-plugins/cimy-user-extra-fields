@@ -851,7 +851,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		$style = "";
 		
 		foreach ($allFields as $field) {
-
 			$id = $field['ID'];
 			$order = $field['F_ORDER'];
 			$name = esc_attr($field['NAME']);
@@ -926,41 +925,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				$maxLength = "";
 			}
 	
-			if ($rules['can_be_empty'])
-				$emp = ' checked="checked"';
-			else
-				$emp = "";
-	
-			if ($rules['email'])
-				$email = ' checked="checked"';
-			else
-				$email = "";
-	
-			if ($rules['edit'] == 'ok_edit')
-				$okedit = ' selected="selected"';
-			else
-				$okedit = "";
-	
-			if ($rules['edit'] == 'edit_only_if_empty')
-				$editonlyifempty = ' selected="selected"';
-			else
-				$editonlyifempty = "";
-			
-			if ($rules['edit'] == 'edit_only_by_admin')
-				$editonlybyadmin = ' selected="selected"';
-			else
-				$editonlybyadmin = "";
-			
-			if ($rules['edit'] == 'edit_only_by_admin_or_if_empty')
-				$editonlybyadminorifempty = ' selected="selected"';
-			else
-				$editonlybyadminorifempty = "";
-	
-			if ($rules['edit'] == 'no_edit')
-				$noedit = ' selected="selected"';
-			else
-				$noedit = "";
-			
 			if (isset($rules['equal_to'])) {
 				$equal = ' checked="checked"';
 				$equalTo = $rules['equal_to'];
@@ -1011,11 +975,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				$show_in_blog = ' checked="checked"';
 			else
 				$show_in_blog = "";
-
-			if ($rules['email_admin'])
-				$email_admin = ' checked="checked"';
-			else
-				$email_admin = "";
 
 			$advanced_options = $rules['advanced_options'];
 
@@ -1131,15 +1090,15 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<!-- MAX LENGTH -->
 				<input type="checkbox" name="maxlen[<?php echo $order ?>]" value="1"<?php echo $maxlen.$dis_maxlength ?> /> <?php echo $max_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]: &nbsp;&nbsp;<input type="text" name="maxlength[<?php echo $order ?>]" value="<?php echo $maxLength ?>" maxlength="5" size="5"<?php echo $dis_maxlength ?> /><br />
 				
-				<input type="checkbox" name="empty[<?php echo $order ?>]" value="1"<?php echo $emp.$dis_canbeempty ?> /> <?php _e("Can be empty", $cimy_uef_domain); ?><br />
-				<input type="checkbox" name="email[<?php echo $order ?>]" value="1"<?php echo $email.$dis_checkemail ?> /> <?php _e("Check for E-mail syntax", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="empty[<?php echo $order ?>]" value="1"<?php echo checked(true, $rules['can_be_empty'], false).$dis_canbeempty ?> /> <?php _e("Can be empty", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="email[<?php echo $order ?>]" value="1"<?php echo checked(true, $rules['email'], false).$dis_checkemail ?> /> <?php _e("Check for E-mail syntax", $cimy_uef_domain); ?><br />
 
 				<select name="edit[<?php echo $order ?>]">
-				<option value="ok_edit"<?php echo $okedit ?>><?php _e("Can be modified", $cimy_uef_domain); ?></option>
-				<option value="edit_only_if_empty"<?php echo $editonlyifempty ?>><?php _e("Can be modified only if empty", $cimy_uef_domain); ?></option>
-				<option value="edit_only_by_admin"<?php echo $editonlybyadmin ?>><?php _e("Can be modified only by admin", $cimy_uef_domain); ?></option>
-				<option value="edit_only_by_admin_or_if_empty"<?php echo $editonlybyadminorifempty ?>><?php _e("Can be modified only by admin or if empty", $cimy_uef_domain); ?></option>
-				<option value="no_edit"<?php echo $noedit ?>><?php _e("Cannot be modified", $cimy_uef_domain); ?></option>
+				<option value="ok_edit"<?php selected('ok_edit', $rules['edit'], true); ?>><?php _e("Can be modified", $cimy_uef_domain); ?></option>
+				<option value="edit_only_if_empty"<?php selected('edit_only_if_empty', $rules['edit'], true); ?>><?php _e("Can be modified only if empty", $cimy_uef_domain); ?></option>
+				<option value="edit_only_by_admin"<?php selected('edit_only_by_admin', $rules['edit'], true); ?>><?php _e("Can be modified only by admin", $cimy_uef_domain); ?></option>
+				<option value="edit_only_by_admin_or_if_empty"<?php selected('edit_only_by_admin_or_if_empty', $rules['edit'], true); ?>><?php _e("Can be modified only by admin or if empty", $cimy_uef_domain); ?></option>
+				<option value="no_edit"<?php selected('no_edit', $rules['edit'], true); ?>><?php _e("Cannot be modified", $cimy_uef_domain); ?></option>
 				</select>
 				<br />
 				
@@ -1189,7 +1148,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				if (!$wp_fields) {
 				?>
 					<!-- EMAIL ADMIN -->
-					<input type="checkbox" name="email_admin[<?php echo $order ?>]" value="1"<?php echo $email_admin ?> /> <?php _e("Send an email to the admin if the user changes its value", $cimy_uef_domain); ?><br />
+					<input type="checkbox" name="email_admin[<?php echo $order ?>]" value="1"<?php checked(true, $rules['email_admin'], true); ?> /> <?php _e("Send an email to the admin if the user changes its value", $cimy_uef_domain); ?><br />
 				<?php
 				}
 				?>

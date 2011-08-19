@@ -363,7 +363,7 @@ function cimy_dropDownOptions($values, $selected) {
 			}
 		}
 
-		$html_options.= ">".cimy_uef_sanitize_content($item_clean)."</option>";
+		$html_options.= ">".esc_html($item_clean)."</option>";
 	}
 
 	$ret = array();

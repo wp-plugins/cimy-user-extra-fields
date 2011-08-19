@@ -381,14 +381,7 @@ function cimy_show_options($results, $embedded) {
 		}
 
 		$options['fieldset_title'] = esc_attr($options['fieldset_title']);
-		$options['mail_include_fields'] ? $mail_include_fields = ' checked="checked"' : $mail_include_fields = '';
-		$options['confirm_email'] ? $confirm_email = ' checked="checked"' : $confirm_email = '';
-		$options['confirm_form'] ? $confirm_form = ' checked="checked"' : $confirm_form = '';
 		$welcome_email = $options['welcome_email'];
-		$options['redirect_to'] == "source" ? $redirect_to_source = ' checked="checked"' : $redirect_to_source = '';
-		($options['captcha'] == "recaptcha") ? $recaptcha = ' checked="checked"' : $recaptcha = '';
-		($options['captcha'] == "securimage") ? $securimage = ' checked="checked"' : $securimage = '';
-		($options['captcha'] == "none") ? $no_captcha = ' checked="checked"' : $no_captcha = '';
 		isset($options['recaptcha_public_key']) ? $recaptcha_public_key = $options['recaptcha_public_key'] : $recaptcha_public_key = '';
 		isset($options['recaptcha_private_key']) ? $recaptcha_private_key = $options['recaptcha_private_key'] : $recaptcha_private_key = '';
 
@@ -401,7 +394,6 @@ function cimy_show_options($results, $embedded) {
 		
 		in_array('password', $options['wp_hidden_fields']) ? $show_wp_password = ' checked="checked"' : $show_wp_password = '';
 		in_array('password2', $options['wp_hidden_fields']) ? $show_wp_password2 = ' checked="checked"' : $show_wp_password2 = '';
-		$options['password_meter'] ? $show_wp_password_meter = ' checked="checked"' : $show_wp_password_meter = '';
 
 		in_array('firstname', $options['wp_hidden_fields']) ? $show_wp_firstname = ' checked="checked"' : $show_wp_firstname = '';
 		in_array('lastname', $options['wp_hidden_fields']) ? $show_wp_lastname = ' checked="checked"' : $show_wp_lastname = '';
@@ -417,16 +409,9 @@ function cimy_show_options($results, $embedded) {
 	else {
 		$db_options = false;
 		$options['fieldset_title'] = "";
-		$mail_include_fields= '';
 		$welcome_email = '';
-		$confirm_email = '';
-		$confirm_form = '';
-		$redirect_to_source = '';
-		$recaptcha = '';
 		$recaptcha_public_key = '';
 		$recaptcha_private_key = '';
-		$securimage = '';
-		$no_captcha = ' checked="checked"';
 
 		$aue_hide_username = '';
 		$aue_hide_name = '';
@@ -437,7 +422,6 @@ function cimy_show_options($results, $embedded) {
 		
 		$show_wp_password = '';
 		$show_wp_password2 = '';
-		$show_wp_password_meter = '';
 		$show_wp_firstname = '';
 		$show_wp_secondname = '';
 		$show_wp_nickname = '';
@@ -566,7 +550,7 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="mail_include_fields" value="1"<?php echo $mail_include_fields; ?> />
+				<input type="checkbox" name="mail_include_fields" value="1"<?php checked(true, $options['mail_include_fields'], true); ?> />
 				<?php _e("Show all fields in the welcome email", $cimy_uef_domain); ?>
 			</th>
 			<td>
@@ -578,7 +562,7 @@ function cimy_show_options($results, $embedded) {
 <?php if (!is_multisite()) { ?>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="confirm_email" value="1"<?php echo $confirm_email; ?> />
+				<input type="checkbox" name="confirm_email" value="1"<?php checked(true, $options['confirm_email'], true); ?> />
 				<?php _e("Enable email confirmation", $cimy_uef_domain); ?>
 			</th>
 			<td>
@@ -591,7 +575,7 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="confirm_form" value="1"<?php echo $confirm_form; ?> />
+				<input type="checkbox" name="confirm_form" value="1"<?php checked(true, $options['confirm_form'], true); ?> />
 				<?php _e("Enable form confirmation", $cimy_uef_domain); ?>
 			</th>
 			<td>
@@ -611,7 +595,7 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="redirect_to" value="source"<?php echo $redirect_to_source; ?> />
+				<input type="checkbox" name="redirect_to" value="source"<?php checked("source", $options['redirect_to'], true); ?> />
 				<?php _e("Redirect to the source", $cimy_uef_domain); ?>
 			</th>
 			<td>
@@ -623,7 +607,7 @@ function cimy_show_options($results, $embedded) {
 <?php } ?>
 		<tr>
 			<th scope="row">
-				<input type="radio" name="captcha" value="none"<?php echo $no_captcha; ?> />
+				<input type="radio" name="captcha" value="none"<?php checked("none", $options['captcha'], true); ?> />
 				<?php _e('No captcha', $cimy_uef_domain); ?></a>
 			</th>
 			<td>
@@ -631,7 +615,7 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="radio" name="captcha" value="recaptcha"<?php echo $recaptcha; ?> />
+				<input type="radio" name="captcha" value="recaptcha"<?php checked("recaptcha", $options['captcha'], true); ?> />
 				<?php _e('Enable <a href="http://www.google.com/recaptcha" target="_blank">reCAPTCHA</a>', $cimy_uef_domain); ?></a>
 			</th>
 			<td>
@@ -647,7 +631,7 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="radio" name="captcha" value="securimage"<?php echo $securimage; ?> />
+				<input type="radio" name="captcha" value="securimage"<?php checked("securimage", $options['captcha'], true); ?> />
 				<?php _e('Enable <a href="http://www.phpcaptcha.org/" target="_blank">Securimage Captcha</a>', $cimy_uef_domain); ?></a>
 			</th>
 			<td>
@@ -816,7 +800,7 @@ function cimy_show_options($results, $embedded) {
 			<td></td>
 		</tr>
 		<tr>
-			<th>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password_meter" value="1"<?php echo $show_wp_password_meter.$dis_wp_fields; ?> /> <?php _e("Show password strength meter", $cimy_uef_domain); ?></th>
+			<th>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password_meter" value="1"<?php echo checked(true, $options['password_meter']).$dis_wp_fields; ?> /> <?php _e("Show password strength meter", $cimy_uef_domain); ?></th>
 			<td></td>
 		</tr>
 		<tr>

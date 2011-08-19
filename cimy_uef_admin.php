@@ -711,7 +711,7 @@ function cimy_admin_define_extra_fields() {
 			<input type="checkbox" name="show_in_profile[0]" value="1"<?php echo $selected_input["show_in_profile"]; ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
 			
 			<!-- SHOW IN A&U EXTENDED -->
-			<input type="checkbox" name="show_in_aeu[0]" value="1"<?php echo $selected_input["show_in_aeu"]; ?> /> <?php _e("Show the field in Users Extended menu", $cimy_uef_domain); ?><br />
+			<input type="checkbox" name="show_in_aeu[0]" value="1"<?php echo $selected_input["show_in_aeu"]; ?> /> <?php _e("Show the field in Users Extended section", $cimy_uef_domain); ?><br />
 
 			<!-- SHOW IN THE SEARCH ENGINE -->
 			<input type="checkbox" name="show_in_search[0]" value="1"<?php echo $selected_input["show_in_search"]; ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
@@ -978,39 +978,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 
 			$advanced_options = $rules['advanced_options'];
 
-			// SHOW LEVEL
-			$show_anonymous = '';
-			$show_subscriber = '';
-			$show_contributor = '';
-			$show_author = '';
-			$show_editor = '';
-			$show_admin = '';
-			$show_view_cimy_extra_fields = '';
-
-			switch ($rules['show_level']) {
-				case '-1':
-					$show_anonymous = ' selected="selected"';
-					break;
-				case '0':
-					$show_subscriber = ' selected="selected"';
-					break;
-				case '1':
-					$show_contributor = ' selected="selected"';
-					break;
-				case '2':
-					$show_author = ' selected="selected"';
-					break;
-				case '5':
-					$show_editor = ' selected="selected"';
-					break;
-				case '8':
-					$show_admin = ' selected="selected"';
-					break;
-				case 'view_cimy_extra_fields':
-					$show_view_cimy_extra_fields = ' selected="selected"';
-					break;
-			}
-
 			if (in_array($type, $cimy_uef_file_types)) {
 				$min_length_caption = __("Min size", $cimy_uef_domain)." (KB)";
 				$exact_length_caption = __("Exact size", $cimy_uef_domain)." (KB)";
@@ -1123,7 +1090,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				}
 				?>
 				<!-- SHOW IN A&U EXTENDED -->
-				<input type="checkbox" name="show_in_aeu[<?php echo $order ?>]" value="1"<?php echo $show_in_aeu ?> /> <?php _e("Show the field in Users Extended menu", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="show_in_aeu[<?php echo $order ?>]" value="1"<?php echo $show_in_aeu ?> /> <?php _e("Show the field in Users Extended section", $cimy_uef_domain); ?><br />
 
 				<!-- SHOW IN THE SEARCH -->
 				<input type="checkbox" name="show_in_search[<?php echo $order ?>]" value="1"<?php echo $show_in_search ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
@@ -1134,13 +1101,13 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<!-- SHOW SECURITY LEVEL -->
 				<?php _e("Show the field if the role is at least:", $cimy_uef_domain)." "; ?>
 				<select name="show_level[<?php echo $order ?>]">
-				<option value="-1"<?php echo $show_anonymous ?>><?php _e("Anonymous"); ?></option>
-				<option value="0"<?php echo $show_subscriber ?>><?php echo translate_user_role("Subscriber"); ?></option>
-				<option value="1"<?php echo $show_contributor ?>><?php echo translate_user_role("Contributor"); ?></option>
-				<option value="2"<?php echo $show_author ?>><?php echo translate_user_role("Author"); ?></option>
-				<option value="5"<?php echo $show_editor ?>><?php echo translate_user_role("Editor"); ?></option>
-				<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
-				<option value="view_cimy_extra_fields"<?php echo $show_view_cimy_extra_fields ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
+				<option value="-1"<?php selected("-1", $rules['show_level'], true); ?>><?php _e("Anonymous"); ?></option>
+				<option value="0"<?php selected("0", $rules['show_level'], true); ?>><?php echo translate_user_role("Subscriber"); ?></option>
+				<option value="1"<?php selected("1", $rules['show_level'], true); ?>><?php echo translate_user_role("Contributor"); ?></option>
+				<option value="2"<?php selected("2", $rules['show_level'], true); ?>><?php echo translate_user_role("Author"); ?></option>
+				<option value="5"<?php selected("5", $rules['show_level'], true); ?>><?php echo translate_user_role("Editor"); ?></option>
+				<option value="8"<?php selected("8", $rules['show_level'], true); ?>><?php echo translate_user_role("Administrator"); ?></option>
+				<option value="view_cimy_extra_fields"<?php selected("view_cimy_extra_fields", $rules['show_level'], true); ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
 				</select>
 				<br />
 

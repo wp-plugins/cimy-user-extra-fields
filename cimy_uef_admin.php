@@ -1449,22 +1449,12 @@ function cimy_admin_users_list_page() {
 							$search_input = '<input type="text" name="ef_search['.$name_esc_attr.']" value="'.$search_value.'" size="6" />';
 							break;
 						case "checkbox":
-							if ($search_value != "")
-								$checkbox_selected = ' checked="checked"';
-							else
-								$checkbox_selected = "";
-							
-							$search_input = '<input type="checkbox" name="ef_search['.$name_esc_attr.']" value="1"'.$checkbox_selected.' />';
+							$search_input = '<input type="checkbox" name="ef_search['.$name_esc_attr.']" value="1"'.checked(false, empty($search_value), false).' />';
 							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name_esc_attr.'"><input type="checkbox" name="ef_write['.$name_esc_attr.']" value="1" />';
 							break;
 							
 						case "radio":
-							if ($search_value == $id)
-								$radio_selected = ' checked="checked"';
-							else
-								$radio_selected = "";
-							
-							$search_input = '<input type="radio" name="ef_search['.$name_esc_attr.']" value="'.$id.'"'.$radio_selected.' />';
+							$search_input = '<input type="radio" name="ef_search['.$name_esc_attr.']" value="'.$id.'"'.checked($search_value, $id, false).' />';
 							$write_input[$i] = '<td>'.$label.'</td><td><input type="radio" name="ef_write['.$name_esc_attr.']" value="'.$label.'" />';
 							break;
 					}

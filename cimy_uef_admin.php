@@ -891,14 +891,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			}
 			
 			$equalTo = esc_attr($equalTo);
-
-			if (is_multisite()) {
-				// uploading files not supported with WordPress MU
-				if (in_array($type, $cimy_uef_file_types)) {
-					$show_in_reg_disabled = ' disabled="disabled"';
-				}
-			}
-
 			$advanced_options = $rules['advanced_options'];
 
 			if (in_array($type, $cimy_uef_file_types)) {
@@ -996,10 +988,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 
 				
 				<!-- SHOW IN REGISTRATION -->
-				<input type="checkbox" name="show_in_reg[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_reg'], true); ?><?php echo $show_in_reg_disabled; ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />
+				<!-- uploading files not supported with WordPress MS during registration due to email confirmation -->
+				<input type="checkbox" name="show_in_reg[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_reg'], true); disabled(true, is_multisite() && in_array($type, $cimy_uef_file_types), true); ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />
 				
 				<!-- SHOW IN PROFILE -->
-				<input type="checkbox" name="show_in_profile[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_profile'], true); ?><?php disabled(true, $wp_fields, true); ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="show_in_profile[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_profile'], true); disabled(true, $wp_fields, true); ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
 				<?php
 				if ($wp_fields) {
 				?>

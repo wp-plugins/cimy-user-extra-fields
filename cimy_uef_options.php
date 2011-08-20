@@ -169,120 +169,19 @@ function cimy_save_options() {
 		else
 			$options['password_meter'] = false;
 
-		if (isset($_POST['show_wp_firstname'])) {
-			array_push($options['wp_hidden_fields'], 'firstname');
-			
-			if (!in_array("firstname", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['firstname'];
+		$db_wp_fields_independent = array("firstname", "lastname", "nickname", "website", "aim", "yahoo", "jgt", "bio-info");
+		foreach ($db_wp_fields_independent as $wp_field_independent) {
+			if (isset($_POST['show_wp_'.$wp_field_independent])) {
+				array_push($options['wp_hidden_fields'], $wp_field_independent);
 				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-		
-		if (isset($_POST['show_wp_lastname'])) {
-			array_push($options['wp_hidden_fields'], 'lastname');
-			
-			if (!in_array("lastname", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['lastname'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-	
-		if (isset($_POST['show_wp_nickname'])) {
-			array_push($options['wp_hidden_fields'], 'nickname');
-			
-			if (!in_array("nickname", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['nickname'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-		
-		if (isset($_POST['show_wp_email'])) {
-			array_push($options['wp_hidden_fields'], 'email');
-			
-			if (!in_array("email", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['email'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-		
-		if (isset($_POST['show_wp_website'])) {
-			array_push($options['wp_hidden_fields'], 'website');
-			
-			if (!in_array("website", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['website'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-		
-		if (isset($_POST['show_wp_aim'])) {
-			array_push($options['wp_hidden_fields'], 'aim');
-			
-			if (!in_array("aim", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['aim'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-		
-		if (isset($_POST['show_wp_yahoo'])) {
-			array_push($options['wp_hidden_fields'], 'yahoo');
-			
-			if (!in_array("yahoo", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['yahoo'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-		
-		if (isset($_POST['show_wp_jgt'])) {
-			array_push($options['wp_hidden_fields'], 'jgt');
-			
-			if (!in_array("jgt", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['jgt'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
-			}
-		}
-
-		if (isset($_POST['show_wp_bio-info'])) {
-			array_push($options['wp_hidden_fields'], 'bio-info');
-			
-			if (!in_array("bio-info", $old_wp_hidden_fields)) {
-				$data = $wp_hidden_fields['bio-info'];
-				
-				$data['num_fields'] = $tot_wp_hidden_fields;
-				$tot_wp_hidden_fields++;
-				
-				cimy_save_field($action, $wpdb_wp_fields_table, $data);
+				if (!in_array($wp_field_independent, $old_wp_hidden_fields)) {
+					$data = $wp_hidden_fields[$wp_field_independent];
+					
+					$data['num_fields'] = $tot_wp_hidden_fields;
+					$tot_wp_hidden_fields++;
+					
+					cimy_save_field($action, $wpdb_wp_fields_table, $data);
+				}
 			}
 		}
 	}

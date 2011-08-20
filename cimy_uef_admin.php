@@ -860,36 +860,28 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$fieldset = $field["FIELDSET"];
 
 			// MIN LEN
-			if (isset($rules['min_length'])) {
+			if (isset($rules['min_length']))
 				$minLength = $rules['min_length'];
-			}
-			else {
+			else
 				$minLength = "";
-			}
-			
+
 			// EXACT LEN
-			if (isset($rules['exact_length'])) {
+			if (isset($rules['exact_length']))
 				$exactLength = $rules['exact_length'];
-			}
-			else {
+			else
 				$exactLength = "";
-			}
-			
+
 			// MAX LEN
-			if (isset($rules['max_length'])) {
+			if (isset($rules['max_length']))
 				$maxLength = $rules['max_length'];
-			}
-			else {
+			else
 				$maxLength = "";
-			}
-	
-			if (isset($rules['equal_to'])) {
+
+			if (isset($rules['equal_to']))
 				$equalTo = $rules['equal_to'];
-			}
-			else {
+			else
 				$equalTo = "";
-			}
-			
+
 			$equalTo = esc_attr($equalTo);
 			$advanced_options = $rules['advanced_options'];
 

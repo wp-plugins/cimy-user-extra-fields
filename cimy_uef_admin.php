@@ -858,14 +858,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$type = $field['TYPE'];
 			$rules = $field['RULES'];
 			$fieldset = $field["FIELDSET"];
-			
-			$text = "";
-			$checkbox = "";
-			$radio = "";
 
-			// set selected type for every field
-			$selected_type[$type] = ' selected="selected"';
-	
 			// MIN LEN
 			if (isset($rules['min_length'])) {
 				$minLength = $rules['min_length'];
@@ -951,13 +944,8 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<label><strong><?php _e("Type", $cimy_uef_domain); ?></strong><br />
 				<select name="type[<?php echo $order ?>]"<?php disabled(true, $wp_fields, true); ?>>
 				<?php 
-					foreach($available_types as $this_type) {
-						echo '<option value="'.$this_type.'"'.$selected_type[$this_type].'>'.$this_type.'</option>';
-						
-						if (isset($selected_type[$this_type]))
-							unset($selected_type[$this_type]);
-						echo "\n";
-					}
+					foreach($available_types as $this_type)
+						echo "<option value=\"".$this_type."\"".selected($type, $this_type, false).">".$this_type."</option>\n";
 				?>
 				</select>
 				</label>

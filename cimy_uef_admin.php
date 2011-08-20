@@ -780,7 +780,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 	
 	if ($wp_fields) {
 		$field_anchor = "field_wp_";
-		$disable_it = ' disabled="disabled"';
 		$div_id = "wp_extrafields";
 		$form_id = "form_wp_fields";
 	}
@@ -788,7 +787,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		$field_anchor = "field_";
 		$div_id = "extrafields";
 		$form_id = "form_extra_fields";
-		$disable_it = '';
 	}
 	
 	$add_caption = $submit_msgs['add_caption'];
@@ -945,13 +943,13 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			}
 			?>
 				<label><strong><?php _e("Name"); ?></strong><br />
-				<input name="name[<?php echo $order ?>]" type="text" value="<?php echo $name ?>" maxlength="<?php echo $max_length_name ?>"<?php echo $disable_it; ?> /></label><br /><br />
+				<input name="name[<?php echo $order ?>]" type="text" value="<?php echo $name ?>" maxlength="<?php echo $max_length_name ?>"<?php disabled(true, $wp_fields, true); ?> /></label><br /><br />
 				<input name="oldname[<?php echo $order ?>]" type="hidden" value="<?php echo $name ?>" />
 				<label><strong><?php _e("Value"); ?></strong><br />
 				<textarea name="value[<?php echo $order ?>]" rows="2" cols="17"><?php echo $value; ?></textarea></label>
 				<br /><br />
 				<label><strong><?php _e("Type", $cimy_uef_domain); ?></strong><br />
-				<select name="type[<?php echo $order ?>]"<?php echo $disable_it; ?>>
+				<select name="type[<?php echo $order ?>]"<?php disabled(true, $wp_fields, true); ?>>
 				<?php 
 					foreach($available_types as $this_type) {
 						echo '<option value="'.$this_type.'"'.$selected_type[$this_type].'>'.$this_type.'</option>';
@@ -1013,7 +1011,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<input type="checkbox" name="show_in_reg[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_reg'], true); ?><?php echo $show_in_reg_disabled; ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />
 				
 				<!-- SHOW IN PROFILE -->
-				<input type="checkbox" name="show_in_profile[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_profile'], true); ?><?php echo $disable_it; ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="show_in_profile[<?php echo $order ?>]" value="1"<?php checked(true, $rules['show_in_profile'], true); ?><?php disabled(true, $wp_fields, true); ?> /> <?php _e("Show the field in User's profile", $cimy_uef_domain); ?><br />
 				<?php
 				if ($wp_fields) {
 				?>

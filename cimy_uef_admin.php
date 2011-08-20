@@ -865,8 +865,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$checkbox = "";
 			$radio = "";
 
-			$dis_value = "";
-
 			// set selected type for every field
 			$selected_type[$type] = ' selected="selected"';
 	

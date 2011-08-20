@@ -865,32 +865,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$checkbox = "";
 			$radio = "";
 
-			$dis_maxlength = "";
-			$dis_canbeempty = "";
-			$dis_checkemail = "";
-			$dis_equalto = "";
-			$dis_equalto_casesens = "";
-			$dis_equalto_regex = "";
 			$dis_value = "";
-
-			// disable rules for certain fields
-			if (!in_array($type, $rule_maxlen))
-				$dis_maxlength = ' disabled="disabled"';
-			
-			if (!in_array($type, $rule_email))
-				$dis_checkemail = ' disabled="disabled"';
-			
-			if (!in_array($type, $rule_canbeempty))
-				$dis_canbeempty = ' disabled="disabled"';
-			
-			if (!in_array($type, $rule_equalto))
-				$dis_equalto = ' disabled="disabled"';
-
-			if (!in_array($type, $rule_equalto_case_sensitive))
-				$dis_equalto_casesens = ' disabled="disabled"';
-
-			if (!in_array($type, $rule_equalto_regex))
-				$dis_equalto_regex = ' disabled="disabled"';
 
 			// set selected type for every field
 			$selected_type[$type] = ' selected="selected"';
@@ -1024,16 +999,16 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			</td>
 			<td style="vertical-align: middle;">
 				<!-- MIN LENGTH -->
-				<input type="checkbox" name="minlen[<?php echo $order ?>]" value="1"<?php echo $minlen.$dis_maxlength ?> /> <?php echo $min_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]: &nbsp;&nbsp;&nbsp;<input type="text" name="minlength[<?php echo $order ?>]" value="<?php echo $minLength ?>" maxlength="5" size="5"<?php echo $dis_maxlength ?> /><br />
+				<input type="checkbox" name="minlen[<?php echo $order ?>]" value="1"<?php echo $minlen; disabled(false, in_array($type, $rule_maxlen), true); ?> /> <?php echo $min_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]: &nbsp;&nbsp;&nbsp;<input type="text" name="minlength[<?php echo $order ?>]" value="<?php echo $minLength ?>" maxlength="5" size="5"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
 
 				<!-- EXACT LENGTH -->
-				<input type="checkbox" name="exactlen[<?php echo $order ?>]" value="1"<?php echo $exactlen.$dis_maxlength ?> /> <?php echo $exact_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]: <input type="text" name="exactlength[<?php echo $order ?>]" value="<?php echo $exactLength ?>" maxlength="5" size="5"<?php echo $dis_maxlength ?> /><br />
+				<input type="checkbox" name="exactlen[<?php echo $order ?>]" value="1"<?php echo $exactlen; disabled(false, in_array($type, $rule_maxlen), true); ?> /> <?php echo $exact_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]: <input type="text" name="exactlength[<?php echo $order ?>]" value="<?php echo $exactLength ?>" maxlength="5" size="5"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
 				
 				<!-- MAX LENGTH -->
-				<input type="checkbox" name="maxlen[<?php echo $order ?>]" value="1"<?php echo $maxlen.$dis_maxlength ?> /> <?php echo $max_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]: &nbsp;&nbsp;<input type="text" name="maxlength[<?php echo $order ?>]" value="<?php echo $maxLength ?>" maxlength="5" size="5"<?php echo $dis_maxlength ?> /><br />
+				<input type="checkbox" name="maxlen[<?php echo $order ?>]" value="1"<?php echo $maxlen; disabled(false, in_array($type, $rule_maxlen), true); ?> /> <?php echo $max_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]: &nbsp;&nbsp;<input type="text" name="maxlength[<?php echo $order ?>]" value="<?php echo $maxLength ?>" maxlength="5" size="5"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
 				
-				<input type="checkbox" name="empty[<?php echo $order ?>]" value="1"<?php echo checked(true, $rules['can_be_empty'], false).$dis_canbeempty ?> /> <?php _e("Can be empty", $cimy_uef_domain); ?><br />
-				<input type="checkbox" name="email[<?php echo $order ?>]" value="1"<?php echo checked(true, $rules['email'], false).$dis_checkemail ?> /> <?php _e("Check for E-mail syntax", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="empty[<?php echo $order ?>]" value="1"<?php checked(true, $rules['can_be_empty'], true); disabled(false, in_array($type, $rule_canbeempty), true); ?> /> <?php _e("Can be empty", $cimy_uef_domain); ?><br />
+				<input type="checkbox" name="email[<?php echo $order ?>]" value="1"<?php checked(true, $rules['email'], true); disabled(false, in_array($type, $rule_email), true); ?> /> <?php _e("Check for E-mail syntax", $cimy_uef_domain); ?><br />
 
 				<select name="edit[<?php echo $order ?>]">
 				<option value="ok_edit"<?php selected('ok_edit', $rules['edit'], true); ?>><?php _e("Can be modified", $cimy_uef_domain); ?></option>
@@ -1045,11 +1020,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				<br />
 				
 				<!-- EQUAL TO -->
-				<input type="checkbox" name="equal[<?php echo $order ?>]" value="1"<?php echo $equal.$dis_equalto ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[<?php echo $order ?>]" maxlength="500" value="<?php echo $equalTo ?>"<?php echo $dis_equalto ?> /><br />
+				<input type="checkbox" name="equal[<?php echo $order ?>]" value="1"<?php echo $equal; disabled(false, in_array($type, $rule_equalto), true); ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[<?php echo $order ?>]" maxlength="500" value="<?php echo $equalTo ?>"<?php disabled(false, in_array($type, $rule_equalto), true); ?> /><br />
 				<!-- CASE SENSITIVE -->
-				&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens[<?php echo $order ?>]" value="1"<?php echo $equalto_casesens.$dis_equalto_casesens; ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
+				&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens[<?php echo $order ?>]" value="1"<?php echo $equalto_casesens; disabled(false, in_array($type, $rule_equalto_case_sensitive), true); ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
 				<!-- REGEX -->
-				&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_regex[<?php echo $order ?>]" value="1"<?php echo $equalto_regex.$dis_equalto_regex; ?> /> <?php _e("Regular Expression", $cimy_uef_domain); ?><br />
+				&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_regex[<?php echo $order ?>]" value="1"<?php echo $equalto_regex; disabled(false, in_array($type, $rule_equalto_regex), true); ?> /> <?php _e("Regular Expression", $cimy_uef_domain); ?><br />
 
 				
 				<!-- SHOW IN REGISTRATION -->

@@ -2,13 +2,10 @@
 /*
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
-Plugin Description: Add some useful fields to registration and user's info
+Description: Add some useful fields to registration and user's info
 Version: 2.1.2
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
-*/
-
-/*
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
 Copyright (c) 2006-2011 Marco Cimmino

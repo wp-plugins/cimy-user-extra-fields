@@ -3,9 +3,10 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.1.2
+Version: 2.2.0
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
+License: GPL2
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
 Copyright (c) 2006-2011 Marco Cimmino
@@ -177,7 +178,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.1.2";
+$cimy_uef_version = "2.2.0";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -457,6 +458,15 @@ $wp_fields_name_prefix = "cimy_uef_wp_";
 
 // added for WordPress MU support
 if (is_multisite()) {
+	if ($cimy_uef_plugins_dir == "mu-plugins") {
+		// since WP 3.1 this is how is called the super admin menu
+		add_action('network_admin_menu', 'cimy_admin_menu_custom');
+	}
+	else {
+		// function that add all submenus
+		add_action('admin_menu', 'cimy_admin_menu_custom');
+	}
+
 	// add action to delete all files/images when deleting a blog
 	add_action('delete_blog', 'cimy_delete_blog_info', 10, 2);
 
@@ -504,6 +514,9 @@ if (is_multisite()) {
 }
 // if is NOT multisite
 else {
+	// function that add all submenus
+	add_action('admin_menu', 'cimy_admin_menu_custom');
+
 	// add checks for extra fields in the registration form
 	add_action('register_post', 'cimy_registration_check', 10, 3);
 	
@@ -584,7 +597,7 @@ add_action('profile_update', 'cimy_update_ExtraFields');
 add_action('activate_'.$cuef_plugin_path.$cuef_plugin_name,'cimy_plugin_install');
 
 // function that add all submenus
-add_action('admin_menu', 'cimy_admin_menu_custom');
+// add_action('admin_menu', 'cimy_admin_menu_custom');
 
 // delete user extra fields data when a user is deleted
 add_action('delete_user', 'cimy_delete_user_info');
@@ -743,16 +756,20 @@ function cimy_admin_menu_custom() {
 	if (isset($cimy_top_menu) && (!is_multisite())) {
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Options"), "UEF: ".__("Options"), 'manage_options', "user_extra_fields_options", 'cimy_show_options_notembedded');
 		add_submenu_page('cimy_series.php', $cimy_uef_name.": ".__("Fields", $cimy_uef_domain), "UEF: ".__("Fields", $cimy_uef_domain), 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
-		$aue_page = add_submenu_page('profile.php', __('Users Extended', $cimy_uef_domain), __('Users Extended', $cimy_uef_domain), 'list_users', "au_extended", 'cimy_admin_users_list_page');
+		$aue_page = add_submenu_page('profile.php', __('Users Extended', $cimy_uef_domain), __('Users Extended', $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
 	}
 	else {
 		if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins")) {
-			$aue_page = add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
-			add_submenu_page('wpmu-admin.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
+// 			$aue_page = add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
+// 			add_submenu_page('wpmu-admin.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
+
+			// Since WP 3.1 we have network admin and everything seems changed
+			$aue_page = add_submenu_page('users.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
+			add_submenu_page('settings.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
 		}
 		else {
 			add_options_page($cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
-			$aue_page = add_submenu_page('profile.php', __('Users Extended', $cimy_uef_domain), __('Users Extended', $cimy_uef_domain), 'list_users', "au_extended", 'cimy_admin_users_list_page');
+			$aue_page = add_submenu_page('profile.php', __('Users Extended', $cimy_uef_domain), __('Users Extended', $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
 		}
 	}
 	if (!empty($aue_page))

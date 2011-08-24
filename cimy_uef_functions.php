@@ -284,8 +284,12 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 
 	$field_data = cimy_change_radio_labels($field_data, $user_id);
 
-	if (($field_name) && ($user_id))
-		$field_data = $field_data[0]['VALUE'];
+	if (($field_name) && ($user_id)) {
+		if (isset($field_data[0]['VALUE']))
+			$field_data = $field_data[0]['VALUE'];
+		else
+			$field_data = "";
+	}
 
 	return $field_data;
 }

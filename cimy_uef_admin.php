@@ -1160,7 +1160,7 @@ function cimy_admin_users_list_page() {
 		class WP_Cimy_Users_List_Table extends WP_MS_Users_List_Table {
 			var $old_args = array();
 			function prepare_items() {
-				global $role, $usersearch;
+				global $role, $usersearch, $wpdb;
 
 				$usersearch = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
 				$role = isset($_REQUEST['role']) ? $_REQUEST['role'] : '';
@@ -1203,12 +1203,14 @@ function cimy_admin_users_list_page() {
 			}
 
 			function prepare_items2($include, $exclude) {
+				global $wpdb;
 				$users_per_page = $this->get_items_per_page('users_network_per_page');
 				$paged = $this->get_pagenum();
+				$role = isset( $_REQUEST['role'] ) ? $_REQUEST['role'] : '';
 
 				if ($role == 'super') {
 					$logins = implode("', '", get_super_admins());
-					$include = array_merge($include, $wpdb->get_col("SELECT ID FROM $wpdb->users WHERE user_login IN ('$logins')"));
+					$include = array_diff($include, $wpdb->get_col("SELECT ID FROM $wpdb->users WHERE user_login IN ('$logins')"));
 				}
 
 				$args = array_merge($this->old_args, array(

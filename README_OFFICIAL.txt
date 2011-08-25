@@ -53,8 +53,8 @@ WordPress and WordPress MultiSite per-blog registration:
     2. "Settings -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Wordpress MultiSite unique registration:
-    1. "Super Admin -> Users Extended" - lets you show users lists with the new fields that are created
-    2. "Super Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
+    1. "Network Admin -> Users Extended" - lets you show users lists with the new fields that are created
+    2. "Network Admin -> Cimy User Extra Fields" - lets administrators add as many new fields as are needed to the users' profile, giving the possibility to set some interesting rules.
 
 Rules are:
 
@@ -119,7 +119,7 @@ If you want that ALL Blogs on your MultiSite installation follow the same regist
 Every blog will have shared registration page and only the Super Admin can change it.
  - unpack the package under 'wp-content/mu-plugins' directory (if this directory does not exist, create it);
  - be sure that cimy_user_extra_fields.php is outside Cimy folder (move it if necessary);
- - go to "Super Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm.
+ - go to "Network Admin -> Cimy User Extra Fields", press "Fix the problem" button and confirm.
 
 2) Per-Blog registration
 If you want that every single Blog can define its own Extra Fields then you should choose this installation.

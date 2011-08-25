@@ -77,7 +77,8 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 		cimy_switch_to_blog($meta);
 
 	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
-	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
+	// avoid to save stuff if user created from wp_create_user function
+	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser") || (empty($meta) && empty($_POST)))
 		return;
 
 	$my_user_level = $user_level;
@@ -999,7 +1000,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_size\" id=\"".esc_attr($field_id_data)."_size\" value=\"".strval($_FILES[$input_name]['size'] / 1024)."\" />";
 					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_type\" id=\"".esc_attr($field_id_data)."_type\" value=\"".strval($_FILES[$input_name]['type'])."\" />";
 				}
-				if (($old_type == "picture") || ($old_type == "avatar")) {
+				if ((($old_type == "picture") || ($old_type == "avatar")) && (is_file($file_on_server))) {
 					if (!$is_jquery_added) {
 						wp_print_scripts("jquery");
 						$is_jquery_added = true;
@@ -1088,7 +1089,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		wp_print_scripts('cimy_uef_img_selection');
 	}
 
-	if ($options['captcha'] == "securimage") {
+	if (($show_type != 2) && ($options['captcha'] == "securimage")) {
 		global $cuef_securimage_webpath;
 ?>
 		<div style="width: 278px; float: left; height: 80px; vertical-align: text-top;">
@@ -1103,7 +1104,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 <?php
 	}
 
-	if (($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
+	if (($show_type != 2) && ($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
 		require_once($cuef_plugin_dir.'/recaptcha/recaptchalib.php');
 
 	?>

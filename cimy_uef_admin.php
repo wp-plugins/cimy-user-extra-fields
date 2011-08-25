@@ -1351,7 +1351,6 @@ function cimy_admin_users_list_page() {
 			if (!empty($ef_search)) {
 				$remove = false;
 				$ef_value = get_cimyFieldValue($user_object->ID, $ef_name);
-				
 
 				if (($ef_type == "text") || ($ef_type == "textarea") || ($ef_type == "textarea-rich") || ($ef_type == "picture") || ($ef_type == "picture-url") || ($ef_type == "file")) {
 					if (stristr($ef_value, $ef_search) === FALSE) {

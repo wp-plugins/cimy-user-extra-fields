@@ -229,7 +229,8 @@ function cimy_uef_activate($message) {
 function cimy_uef_activate_signup($key) {
 	global $wpdb, $current_site, $cimy_uef_domain;
 
-	require_once( ABSPATH . WPINC . '/registration.php');
+	// seems no more required since WP 3.1
+// 	require_once( ABSPATH . WPINC . '/registration.php');
 	$signup = $wpdb->get_row( $wpdb->prepare("SELECT * FROM ".$wpdb->prefix."signups WHERE activation_key = %s", $key) );
 
 	if ( empty($signup) )

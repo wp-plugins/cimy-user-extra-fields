@@ -104,8 +104,8 @@ Bugs or suggestions can be mailed at: cimmino.marco@gmail.com
 
 REQUIREMENTS:
  * PHP >= 5.0.0
- * WORDPRESS >= 3.0.x
- * WORDPRESS MultiSite >= 3.0.x
+ * WORDPRESS >= 3.1.x
+ * WORDPRESS MultiSite >= 3.1.x
  * MYSQL >= 4.1.2
 
 INSTALLATION:
@@ -606,12 +606,15 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.1.2 - /08/2011
+v2.2.0 - /08/2011
 - Added textarea and textarea-rich class in the profile area (thanks to Evaluator)
+- Fixed WordPress MS unique installation was broken since WP 3.1 (thanks to RaSo0l)
 - Fixed CSS file inclusion, should fix RTL admin layout mess (thanks to Moti Nisim)
 - Fixed extra slash present into image uris (thanks to zyrq)
 - Fixed dropdown selection when illegal characters are present (introduced with v2.0.5) (thanks to Jared)
 - Fixed some URLs still were not caring about https when used
+- Fixed plug-in description
+- Code cleanup
 
 v2.1.1 - 11/07/2011
 - Fixed compatibility with Theme My Login plug-in (introduced with v2.1.0) (thanks to Michele and Mark)

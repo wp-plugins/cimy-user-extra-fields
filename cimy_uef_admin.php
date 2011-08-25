@@ -1102,7 +1102,7 @@ function cimy_admin_users_list_page() {
 
 	if (!cimy_check_admin('list_users'))
 		return;
-	
+
 	$options = cimy_get_options();
 
 	if (isset($_POST["cimy_uef_users_per_page"])) {
@@ -1150,61 +1150,228 @@ function cimy_admin_users_list_page() {
 	else
 		$fieldset_selection = -1;
 
-	// yes stupid WP_User_Search doesn't support custom $users_per_page support, lets add it!
-	class Cimy_User_Search extends WP_User_Search {
-		function Cimy_User_Search ($search_term = '', $page = '', $role = '', $users_per_page = 50) {
-			$this->search_term = $search_term;
-			$this->raw_page = ( '' == $page ) ? false : (int) $page;
-			$this->page = (int) ( '' == $page ) ? 1 : $page;
-			$this->role = $role;
-			$this->users_per_page = intval($users_per_page);
+	$usersearch = empty($_REQUEST['s']) ? "" : $_REQUEST['s'];
+	$role = empty($_REQUEST['role']) ? "" : $_REQUEST['role'];
+	$paged = intval(empty($_GET['userspage']) ? "1" : $_GET['userspage']);
+	$users_per_page = intval($users_per_page);
 
-			$this->prepare_query();
-			$this->query();
-			$this->prepare_vars_for_template_usage();
+	if (is_network_admin()) {
+		require_once(ABSPATH . 'wp-admin/includes/class-wp-ms-users-list-table.php');
+		class WP_Cimy_Users_List_Table extends WP_MS_Users_List_Table {
+			var $old_args = array();
+			function prepare_items() {
+				global $role, $usersearch;
 
-			// paging will be done after Cimy search has filtered out items
-			//$this->do_paging();
-		}
+				$usersearch = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
+				$role = isset($_REQUEST['role']) ? $_REQUEST['role'] : '';
 
-		function page_links() {
-			echo str_replace("?", "?page=au_extended&amp;", $this->paging_text);
+				$args = array(
+					'role' => $role,
+					'search' => $usersearch,
+					'fields' => 'all_with_meta',
+					'blog_id' => 0,
+				);
+
+				if ($role == 'super') {
+					$logins = implode("', '", get_super_admins());
+					$args['include'] = $wpdb->get_col("SELECT ID FROM $wpdb->users WHERE user_login IN ('$logins')");
+				}
+
+				// If the network is large and a search is not being performed, show only the latest users with no paging in order
+				// to avoid expensive count queries.
+				if (!$usersearch && (get_blog_count() >= 10000)) {
+					if (!isset($_REQUEST['orderby']))
+						$_GET['orderby'] = $_REQUEST['orderby'] = 'id';
+					if (!isset($_REQUEST['order']))
+						$_GET['order'] = $_REQUEST['order'] = 'DESC';
+					$args['count_total'] = false;
+				}
+
+				$args['search'] = ltrim($args['search'], '*');
+
+				if (isset($_REQUEST['orderby']))
+					$args['orderby'] = $_REQUEST['orderby'];
+
+				if (isset($_REQUEST['order']))
+					$args['order'] = $_REQUEST['order'];
+
+				// Query the user IDs for this page
+				$wp_user_search = new WP_User_Query($args);
+
+				$this->items = $wp_user_search->get_results();
+				$this->old_args = $args;
+			}
+
+			function prepare_items2($include, $exclude) {
+				$users_per_page = $this->get_items_per_page('users_network_per_page');
+				$paged = $this->get_pagenum();
+
+				if ($role == 'super') {
+					$logins = implode("', '", get_super_admins());
+					$include = array_merge($include, $wpdb->get_col("SELECT ID FROM $wpdb->users WHERE user_login IN ('$logins')"));
+				}
+
+				$args = array_merge($this->old_args, array(
+					'number' => $users_per_page,
+					'offset' => ($paged-1) * $users_per_page,
+					'include' => $include,
+					'exclude' => $exclude,
+				));
+				// Query the user IDs for this page
+				$wp_user_search = new WP_User_Query($args);
+
+				$this->items = $wp_user_search->get_results();
+
+				$this->set_pagination_args(array(
+					'total_items' => $wp_user_search->get_total(),
+					'per_page' => $users_per_page,
+				));
+			}
+			function bulk_actions($which) {}
+			function extra_tablenav($which) {
+				if ('top' != $which)
+					return;
+
+				global $cimy_uef_domain;
+				if (isset($_POST["fieldset"][0]))
+					$fieldset_selection = $_POST["fieldset"][0];
+				else
+					$fieldset_selection = -1;
+?>
+				<label><?php _e("Fieldset", $cimy_uef_domain); ?>
+				<?php echo cimy_fieldsetOptions($fieldset_selection, 0, true); ?>
+				</label>
+
+				<?php _e("Users per page", $cimy_uef_domain); ?> 
+				<select name="cimy_uef_users_per_page">
+				<?php
+					$users_per_page_list = array(10, 50, 100, 500, 1000, 5000);
+					foreach ($users_per_page_list as $item)
+						echo "<option".selected($item, $users_per_page, false).">".$item."</option>";
+				?>
+				</select>
+				<input class="button" type="submit" name="submit" value="<?php _e("Apply"); ?>" />
+<?php
+			}
+			function get_total() { return $this->_pagination_args['total_items']; }
 		}
 	}
+	else {
+		require_once(ABSPATH . 'wp-admin/includes/class-wp-users-list-table.php');
+		class WP_Cimy_Users_List_Table extends WP_Users_List_Table {
+			var $old_args = array();
+			function prepare_items() {
+				global $role, $usersearch;
 
-	// Query the users
-	$wp_user_search = new Cimy_User_Search(empty($_POST['usersearch']) ? "" : $_POST['usersearch'], empty($_GET['userspage']) ? "" : $_GET['userspage'], empty($_GET['role']) ? "" : $_GET['role'], $users_per_page);
-	$search_result = $wp_user_search->get_results();
+				$usersearch = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
+				$role = isset($_REQUEST['role']) ? $_REQUEST['role'] : '';
 
+				$args = array(
+					'role' => $role,
+					'search' => $usersearch,
+					'fields' => 'all_with_meta'
+				);
+
+				if ('' !== $args['search'])
+					$args['search'] = '*' . $args['search'] . '*';
+
+				if ($this->is_site_users)
+					$args['blog_id'] = $this->site_id;
+
+				if (isset($_REQUEST['orderby']))
+					$args['orderby'] = $_REQUEST['orderby'];
+
+				if (isset($_REQUEST['order']))
+					$args['order'] = $_REQUEST['order'];
+
+				// Query the user IDs for this page
+				$wp_user_search = new WP_User_Query($args);
+
+				$this->items = $wp_user_search->get_results();
+				$this->old_args = $args;
+			}
+
+			function prepare_items2($include, $exclude) {
+				$per_page = ($this->is_site_users) ? 'site_users_network_per_page' : 'users_per_page';
+				$users_per_page = $this->get_items_per_page($per_page);
+				$paged = $this->get_pagenum();
+				$args = array_merge($this->old_args, array(
+					'number' => $users_per_page,
+					'offset' => ($paged-1) * $users_per_page,
+					'include' => $include,
+					'exclude' => $exclude,
+				));
+				// Query the user IDs for this page
+				$wp_user_search = new WP_User_Query($args);
+
+				$this->items = $wp_user_search->get_results();
+
+				$this->set_pagination_args(array(
+					'total_items' => $wp_user_search->get_total(),
+					'per_page' => $users_per_page,
+				));
+			}
+			function bulk_actions($which) {}
+			function extra_tablenav($which) {
+				if ('top' != $which)
+					return;
+
+				global $cimy_uef_domain;
+				if (isset($_POST["fieldset"][0]))
+					$fieldset_selection = $_POST["fieldset"][0];
+				else
+					$fieldset_selection = -1;
+?>
+				<label><?php _e("Fieldset", $cimy_uef_domain); ?>
+				<?php echo cimy_fieldsetOptions($fieldset_selection, 0, true); ?>
+				</label>
+
+				<?php _e("Users per page", $cimy_uef_domain); ?> 
+				<select name="cimy_uef_users_per_page">
+				<?php
+					$users_per_page_list = array(10, 50, 100, 500, 1000, 5000);
+					foreach ($users_per_page_list as $item)
+						echo "<option".selected($item, $users_per_page, false).">".$item."</option>";
+				?>
+				</select>
+				<input class="button" type="submit" name="submit" value="<?php _e("Apply"); ?>" />
+<?php
+			}
+			function get_total() { return $this->_pagination_args['total_items']; }
+		}
+	}
+	$cimy_users_table = new WP_Cimy_Users_List_Table();
+	$cimy_users_table->prepare_items();
+	$search_result = $cimy_users_table->items;
+
+	$excluded_users = array();
 	// search into extra field engine
-	$i = 0;
-
-	foreach ($search_result as $userid) {
+	foreach ($search_result as $key=>$user_object) {
 		foreach ($extra_fields as $ef) {
 			$ef_id = $ef["ID"];
 			$ef_type = $ef["TYPE"];
 			$ef_name = $ef["NAME"];
 
 			$ef_search = "";
-			
 			if (isset($_POST["ef_search"][$ef_name])) {
 				$ef_search = $_POST["ef_search"][$ef_name];
 			}
 
-			if ($ef_search != "") {
+			if (!empty($ef_search)) {
 				$remove = false;
-				$ef_value = $wpdb->get_var("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$userid." AND FIELD_ID=".$ef_id);
+				$ef_value = get_cimyFieldValue($user_object->ID, $ef_name);
+				
 
 				if (($ef_type == "text") || ($ef_type == "textarea") || ($ef_type == "textarea-rich") || ($ef_type == "picture") || ($ef_type == "picture-url") || ($ef_type == "file")) {
 					if (stristr($ef_value, $ef_search) === FALSE) {
 						$remove = true;
 					}
 				} else if ($ef_type == "checkbox") {
-					if (($ef_search == "1") AND ($ef_value != "YES")) {
+					if (($ef_search == "1") && ($ef_value != "YES")) {
 						$remove = true;
 					}
 				} else if ($ef_type == "radio") {
-					if (($ef_search == $ef_id) AND ($ef_value != "selected")) {
+					if (($ef_search == $ef_id) && ($ef_value != "selected")) {
 						$remove = true;
 					}
 				} else if ($ef_type == "dropdown") {
@@ -1225,20 +1392,14 @@ function cimy_admin_users_list_page() {
 				}
 				
 				if ($remove) {
-					unset($wp_user_search->results[$i]);
-					$wp_user_search->total_users_for_query--;
+					$excluded_users[] = $user_object->ID;
 					break;
 				}
 			}
 		}
-		
-		$i++;
 	}
-
-	$wp_user_search->paging_text = "";
-	// oh yeah baby, now it's time for paging!
-	$wp_user_search->do_paging();
-
+	$cimy_users_table->prepare_items2(array(), $excluded_users);
+	$users_found = $cimy_users_table->get_total();
 	?>
 	<div class="wrap">
 	
@@ -1249,28 +1410,40 @@ function cimy_admin_users_list_page() {
 	<h2><?php
 	_e("Users Extended", $cimy_uef_domain);
 
-	if ( current_user_can( 'create_users' ) ) { ?>
-		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>
-	<?php } elseif ( is_multisite() && current_user_can( 'promote_users' ) ) { ?>
-		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x( 'Add Existing', 'user' ); ?></a>
+	if (current_user_can('create_users')) { ?>
+		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x('Add New', 'user'); ?></a>
+	<?php } elseif (is_multisite() && current_user_can('promote_users')) { ?>
+		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x('Add Existing', 'user'); ?></a>
 	<?php }
-	if ( $wp_user_search->is_search() )
-		printf('<span class="subtitle">'.__('Search results for &#8220;%s&#8221;')." (%s)</span>", esc_html($wp_user_search->search_term), $wp_user_search->total_users_for_query);
+	if (!empty($usersearch))
+		printf('<span class="subtitle">'.__('Search results for &#8220;%s&#8221;')." (%s)</span>", esc_html($usersearch), $users_found);
 	?></h2>
 	<form id="posts-filter" action="" method="post"><?php
 	wp_nonce_field('extrafieldnewvalue', 'extrafieldnewvaluenonce', false);
 	$role_links = array();
-	$users_of_blog = count_users();
-	$total_users = $users_of_blog['total_users'];
-	$avail_roles =& $users_of_blog['avail_roles'];
-	unset($users_of_blog);
+	if (is_network_admin()) {
+		$super_admins = get_super_admins();
+		$total_admins = count($super_admins);
+		$total_users = get_user_count();
+	}
+	else {
+		$super_admins = array();
+		$users_of_blog = count_users();
+		$total_users = $users_of_blog['total_users'];
+		$avail_roles =& $users_of_blog['avail_roles'];
+		unset($users_of_blog);
+	}
 
 	$current_role = false;
-	$class = empty($_GET['role']) ? ' class="current"' : '';
-	$role_links[] = "<li><a href='users.php?page=au_extended'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users' ), number_format_i18n( $total_users ) ) . '</a>';
+	$class = empty($role) ? ' class="current"' : '';
+	$role_links['all'] = "<li><a href='users.php?page=users_extended'$class>" . sprintf(_nx('All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users, 'users'), number_format_i18n($total_users)) . '</a>';
+	if (is_network_admin()) {
+		$class = $role == 'super' ? ' class="current"' : '';
+		$role_links['super'] = "<li><a href='" . network_admin_url('users.php?page=users_extended&role=super') . "'$class>" . sprintf(_n('Super Admin <span class="count">(%s)</span>', 'Super Admins <span class="count">(%s)</span>', $total_admins), number_format_i18n($total_admins)) . '</a>';
+	}
 
-	foreach ( $wp_roles->get_names() as $this_role => $name ) {
-		if ( !isset($avail_roles[$this_role]) )
+	foreach ($wp_roles->get_names() as $this_role => $name) {
+		if (!isset($avail_roles[$this_role]))
 			continue;
 
 		$class = '';
@@ -1280,71 +1453,30 @@ function cimy_admin_users_list_page() {
 			$class = ' class="current"';
 		}
 
-		$name = translate_user_role( $name );
-		$name = sprintf( __('%1$s <span class="count">(%2$s)</span>'), $name, $avail_roles[$this_role] );
+		$name = translate_user_role($name);
+		$name = sprintf(__('%1$s <span class="count">(%2$s)</span>'), $name, $avail_roles[$this_role]);
 		$tmp_link = esc_url(add_query_arg('role', $this_role));
 		$role_links[] = "<li><a href=\"$tmp_link\"$class>" . $name . '</a>';
 	}
 	
-	echo '<ul class="subsubsub">'.implode(' |</li>', $role_links) . '</li></ul>';
+	echo '<ul class="subsubsub">'.implode(' | </li>', $role_links) . '</li></ul>';
 	unset($role_links);
 ?>
-	<p id="post-search" class="search-box">
-	<input type="text" class="search-input" id="post-search-input" name="usersearch" value="<?php echo esc_attr($wp_user_search->search_term); ?>" />
-	<input type="submit" value="<?php _e( 'Search Users' ); ?>" class="button" />
-	</p>
-	
-	<div class="tablenav">
-		<?php if ( $wp_user_search->results_are_paged() ) : ?>
-			<div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
-		<?php endif; ?>
-	
-		<br class="clear" />
-	
-	<br class="clear" />
-	<?php if ( is_wp_error( $wp_user_search->search_errors ) ) : ?>
+	<?php
+		$cimy_users_table->search_box(__('Search Users'), 'user');
+		$cimy_users_table->display_tablenav("top");
+	?>
+	<?php if (isset($errors) && is_wp_error($errors)) : ?>
 		<div class="error">
 			<ul>
 			<?php
-				foreach ( $wp_user_search->search_errors->get_error_messages() as $message )
-					echo "<li>$message</li>";
+				foreach ($errors->get_error_messages() as $err)
+					echo "<li>$err</li>\n";
 			?>
 			</ul>
 		</div>
-	
 	<?php endif; ?>
-	
-
-		<?php if ( $wp_user_search->is_search() ) : ?>
-			<p><a href="users.php?page=au_extended"><?php _e('&laquo; Back to All Users'); ?></a></p>
-		<?php endif; ?>
-	</div>
-	<?php if ( $wp_user_search->get_results() ) :
-		wp_print_scripts('admin-forms');
-		?>
-		<div class="alignleft actions">
-			<label><?php _e("Fieldset", $cimy_uef_domain); ?>
-			<?php echo cimy_fieldsetOptions($fieldset_selection, 0, true); ?>
-			</label>
-
-			<?php _e("Users per page", $cimy_uef_domain); ?> 
-			<select name="cimy_uef_users_per_page">
-			<?php
-				$users_per_page_list = array(10, 50, 100, 500, 1000, 5000);
-		
-				foreach ($users_per_page_list as $item) {
-					echo "<option";
-		
-					if ($item == $users_per_page)
-						echo ' selected="selected"';
-		
-					echo ">".$item."</option>";
-				}
-			?>
-			</select>
-			<input class="button" type="submit" name="submit" value="<?php _e("Apply"); ?>" />
-		</div>
-
+	<?php if ($cimy_users_table->items) : ?>
 		<table class="widefat" cellpadding="3" cellspacing="3" width="100%">
 		<?php
 		$thead_str = '<tr class="thead">';
@@ -1487,10 +1619,7 @@ function cimy_admin_users_list_page() {
 		</tfoot>
 		<?php
 		$style = '';
-	
-		foreach ($wp_user_search->get_results() as $userid) {
-			$user_object = new WP_User($userid);
-
+		foreach ($cimy_users_table->items as $user_object) {
 			$roles = $user_object->roles;
 			$role = array_shift($roles);
 			$email = $user_object->user_email;
@@ -1507,7 +1636,7 @@ function cimy_admin_users_list_page() {
 			$style = ('class="alternate"' == $style) ? '' : 'class="alternate"';
 			$numposts = count_user_posts($user_object->ID);
 				
-			if (0 < $numposts) $numposts = "<a href='edit.php?author=$user_object->ID' title='" . __( 'View posts by this author' ) . "'>$numposts</a>";
+			if (0 < $numposts) $numposts = "<a href='edit.php?author=".$user_object->ID."' title='" . __('View posts by this author') . "'>$numposts</a>";
 			echo "
 			<tr $style>
 			
@@ -1517,22 +1646,24 @@ function cimy_admin_users_list_page() {
 			echo "</th>";
 			
 			if (!in_array("username", $options['aue_hidden_fields'])) {
-				
 				// produce username clickable
-				if ( current_user_can( 'edit_user', $user_object->ID ) ) {
+				if (current_user_can('edit_user', $user_object->ID)) {
 					$current_user = wp_get_current_user();
 					
 					if ($current_user->ID == $user_object->ID) {
 						$edit = 'profile.php';
 					} else {
-						$edit = esc_url( add_query_arg( 'wp_http_referer', urlencode( esc_url( stripslashes( $_SERVER['REQUEST_URI'] ) ) ), "user-edit.php?user_id=$user_object->ID" ) );
+						$edit = esc_url(add_query_arg('wp_http_referer', urlencode(esc_url(stripslashes($_SERVER['REQUEST_URI']))), "user-edit.php?user_id=$user_object->ID"));
 					}
 					$edit = "<a href=\"$edit\">$user_object->user_login</a>";
 				} else {
 					$edit = $user_object->user_login;
 				}
 
-				$avatar = get_avatar( $user_object->user_email, 32 );
+				if (in_array($user_object->user_login, $super_admins))
+					$edit.= ' - ' . __('Super Admin');
+
+				$avatar = get_avatar($user_object->user_email, 32);
 				echo "<td class=\"username column-username\"><strong>$avatar $edit</strong></td>";
 			}
 	
@@ -1545,7 +1676,9 @@ function cimy_admin_users_list_page() {
 			}
 			
 			if (!in_array("role", $options['aue_hidden_fields'])) {
-				$role_name = translate_user_role($wp_roles->role_names[$role]);
+				$role_name = "";
+				if (!empty($wp_roles->role_names[$role]))
+					$role_name = translate_user_role($wp_roles->role_names[$role]);
 				
 				echo "<td class=\"role column-role\">";
 				echo $role_name;
@@ -1569,9 +1702,6 @@ function cimy_admin_users_list_page() {
 					cimy_insert_ExtraFields_if_not_exist($user_object->ID, $field_id);
 				}
 
-				// retrieve extra fields data from DB
-				$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$user_object->ID, ARRAY_A);
-
 				foreach ($extra_fields as $thisField) {
 					$name = $thisField['NAME'];
 					$name_esc_attr = esc_attr($thisField['NAME']);
@@ -1588,30 +1718,24 @@ function cimy_admin_users_list_page() {
 
 					if ($rules['show_in_aeu']) {
 						$field_id = $thisField['ID'];
-	
-						foreach ($ef_db as $d_field) {
-							if ($d_field['FIELD_ID'] == $field_id) {
-								$field = cimy_uef_sanitize_content($d_field['VALUE']);
-								//$field = esc_attr($d_field['VALUE']);
-							}
-						}
+						$field = get_cimyFieldValue($user_object->ID, $name);
 
 						echo "<td>";
 						echo "<div id=\"edit-".$user_object->ID."-".$name_esc_attr."\">";
 						echo "<div id=\"value-".$user_object->ID."-".$name_esc_attr."\">";
 
 						if ($type == "picture-url") {
-							if ($field == "")
+							if (empty($field))
 								$field = $value;
 								
-							if ($field != "") {
+							if (!empty($field)) {
 								if (intval($rules['equal_to'])) {
-									echo '<a target="_blank" href="'.$field.'">';
-									echo '<img src="'.$field.'" alt="picture"'.$size.' width="'.intval($rules['equal_to']).'" height="*" />';
+									echo '<a target="_blank" href="'.esc_attr($field).'">';
+									echo '<img src="'.esc_attr($field).'" alt="picture"'.$size.' width="'.intval($rules['equal_to']).'" height="*" />';
 									echo "</a>";
 								}
 								else {
-									echo '<img src="'.$field.'" alt="picture" />';
+									echo '<img src="'.esc_attr($field).'" alt="picture" />';
 								}
 							
 								echo "<br />";
@@ -1619,34 +1743,30 @@ function cimy_admin_users_list_page() {
 							}
 						}
 						else if ($type == "picture") {
-							if ($field == "")
+							if (empty($field))
 								$field = $value;
 							
-							if ($field != "") {
-								//$profileuser = get_user_to_edit($user_object->ID);
-								//$user_login = $profileuser->user_login;
-								
+							if (!empty($field)) {
 								$user_login = $user_object->user_login;
-							
+
 								$value_thumb = cimy_get_thumb_path($field);
 								$file_thumb = $cuef_upload_path.$user_login."/".cimy_get_thumb_path(basename($field));
 								$file_on_server = $cuef_upload_path.$user_login."/".basename($field);
 
 								echo "\n\t\t";
-							
 								if (is_file($file_thumb)) {
-									echo '<a target="_blank" href="'.$field.'"><img src="'.$value_thumb.'" alt="picture" /></a><br />';
+									echo '<a target="_blank" href="'.esc_attr($field).'"><img src="'.esc_attr($value_thumb).'" alt="picture" /></a><br />';
 									echo "\n\t\t";
 								}
 								else if (is_file($file_on_server)) {
-									echo '<img src="'.$field.'" alt="picture" /><br />';
+									echo '<img src="'.esc_attr($field).'" alt="picture" /><br />';
 									echo "\n\t\t";
 								}
 							}
 						}
 						else if ($type == "file") {
-							echo '<a target="_blank" href="'.$field.'">';
-							echo basename($field);
+							echo '<a target="_blank" href="'.esc_attr($field).'">';
+							echo esc_html(basename($field));
 							echo '</a>';
 						}
 						else if ($type == "registration-date") {
@@ -1656,10 +1776,10 @@ function cimy_admin_users_list_page() {
 							else
 								$registration_date = cimy_get_formatted_date($field);
 								
-							echo $registration_date;
+							echo esc_html($registration_date);
 						}
 						else
-							echo $field;
+							echo cimy_uef_sanitize_content($field);
 
 						echo "</div>";
 						if ((!in_array($type, $cimy_uef_file_types)) && ($type != "radio") && ($type != "registration-date") && (current_user_can('edit_user', $user_object->ID)))
@@ -1675,16 +1795,7 @@ function cimy_admin_users_list_page() {
 	
 		?>
 		</table>
-				
-		<div class="tablenav">
-		
-			<?php if ( $wp_user_search->results_are_paged() ) : ?>
-				<div class="tablenav-pages"><?php $wp_user_search->page_links(); ?></div>
-			<?php endif; ?>
-		
-			<br class="clear" />
-		</div>
-	
+		<?php $cimy_users_table->display_tablenav("bottom"); ?>
 	<?php endif; ?>
 
 	<?php if (!empty($write_input)) : ?>
@@ -1725,7 +1836,7 @@ function cimy_uef_admin_ajax_edit() {
 /* <![CDATA[ */
 	var postL10n = {
 		ok: "<?php echo esc_js(__('OK')); ?>",
-		cancel: "<?php echo esc_js( __('Cancel')); ?>",
+		cancel: "<?php echo esc_js(__('Cancel')); ?>",
 		dropdown_first_item: "<?php echo esc_js($dropdown_first_item); ?>"
 	};
 	try{convertEntities(postL10n);}catch(e){};

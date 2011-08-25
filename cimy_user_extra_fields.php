@@ -107,7 +107,7 @@ RULES (stored into an associative array and serialized):
 - 'show_in_profile':		[true | false]	=> field is visible or not in user's profile
 [all]
 
-- 'show_in_aeu':		[true | false]	=> field is visible or not in A&U Extended page
+- 'show_in_aeu':		[true | false]	=> field is visible or not in Users Extended page
 [all]
 
 TYPE can be:

@@ -1104,16 +1104,6 @@ function cimy_admin_users_list_page() {
 		return;
 
 	$options = cimy_get_options();
-
-	if (isset($_POST["cimy_uef_users_per_page"])) {
-		$users_per_page = $_POST["cimy_uef_users_per_page"];
-		$options["users_per_page"] = $users_per_page;
-
-		cimy_set_options($options);
-	}
-	else
-		$users_per_page = $options["users_per_page"];
-
 	$dropdown_first_item = '--- '.__("select", $cimy_uef_domain).' ---';
 
 	$extra_fields = get_cimyFields();
@@ -1153,7 +1143,6 @@ function cimy_admin_users_list_page() {
 	$usersearch = empty($_REQUEST['s']) ? "" : $_REQUEST['s'];
 	$role = empty($_REQUEST['role']) ? "" : $_REQUEST['role'];
 	$paged = intval(empty($_GET['userspage']) ? "1" : $_GET['userspage']);
-	$users_per_page = intval($users_per_page);
 
 	if (is_network_admin()) {
 		require_once(ABSPATH . 'wp-admin/includes/class-wp-ms-users-list-table.php');
@@ -1204,6 +1193,11 @@ function cimy_admin_users_list_page() {
 
 			function prepare_items2($include, $exclude) {
 				global $wpdb;
+				if (isset($_POST["cimy_uef_users_per_page"])) {
+					$users_per_page = intval($_POST["cimy_uef_users_per_page"]);
+					if ($user = wp_get_current_user())
+						update_user_meta($user->ID, 'users_network_per_page', $users_per_page);
+				}
 				$users_per_page = $this->get_items_per_page('users_network_per_page');
 				$paged = $this->get_pagenum();
 				$role = isset( $_REQUEST['role'] ) ? $_REQUEST['role'] : '';
@@ -1245,17 +1239,12 @@ function cimy_admin_users_list_page() {
 				</label>
 
 				<?php _e("Users per page", $cimy_uef_domain); ?> 
-				<select name="cimy_uef_users_per_page">
-				<?php
-					$users_per_page_list = array(10, 50, 100, 500, 1000, 5000);
-					foreach ($users_per_page_list as $item)
-						echo "<option".selected($item, $users_per_page, false).">".$item."</option>";
-				?>
-				</select>
+				<input type="text" name="cimy_uef_users_per_page" value="<?php echo $this->get_users_per_page(); ?>" size="4" />
 				<input class="button" type="submit" name="submit" value="<?php _e("Apply"); ?>" />
 <?php
 			}
 			function get_total() { return $this->_pagination_args['total_items']; }
+			function get_users_per_page() { return $this->_pagination_args['per_page']; }
 		}
 	}
 	else {
@@ -1295,6 +1284,11 @@ function cimy_admin_users_list_page() {
 
 			function prepare_items2($include, $exclude) {
 				$per_page = ($this->is_site_users) ? 'site_users_network_per_page' : 'users_per_page';
+				if (isset($_POST["cimy_uef_users_per_page"])) {
+					$users_per_page = intval($_POST["cimy_uef_users_per_page"]);
+					if ($user = wp_get_current_user())
+						update_user_meta($user->ID, $per_page, $users_per_page);
+				}
 				$users_per_page = $this->get_items_per_page($per_page);
 				$paged = $this->get_pagenum();
 				$args = array_merge($this->old_args, array(
@@ -1329,17 +1323,12 @@ function cimy_admin_users_list_page() {
 				</label>
 
 				<?php _e("Users per page", $cimy_uef_domain); ?> 
-				<select name="cimy_uef_users_per_page">
-				<?php
-					$users_per_page_list = array(10, 50, 100, 500, 1000, 5000);
-					foreach ($users_per_page_list as $item)
-						echo "<option".selected($item, $users_per_page, false).">".$item."</option>";
-				?>
-				</select>
+				<input type="text" name="cimy_uef_users_per_page" value="<?php echo $this->get_users_per_page(); ?>" size="4" />
 				<input class="button" type="submit" name="submit" value="<?php _e("Apply"); ?>" />
 <?php
 			}
 			function get_total() { return $this->_pagination_args['total_items']; }
+			function get_users_per_page() { return $this->_pagination_args['per_page']; }
 		}
 	}
 	$cimy_users_table = new WP_Cimy_Users_List_Table();

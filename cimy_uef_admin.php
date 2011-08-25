@@ -1210,7 +1210,7 @@ function cimy_admin_users_list_page() {
 
 				if ($role == 'super') {
 					$logins = implode("', '", get_super_admins());
-					$include = array_diff($include, $wpdb->get_col("SELECT ID FROM $wpdb->users WHERE user_login IN ('$logins')"));
+					$include = array_diff($wpdb->get_col("SELECT ID FROM $wpdb->users WHERE user_login IN ('$logins')"), $exclude);
 				}
 
 				$args = array_merge($this->old_args, array(

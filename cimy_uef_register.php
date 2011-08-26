@@ -154,7 +154,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			if (isset($meta[$input_name]))
 				$data = stripslashes($meta[$input_name]);
 			else if (isset($_POST[$input_name])) {
-				// if form confirmation is enabled then the is no more an array but a string!
+				// if form confirmation is enabled then there is no more an array but a string!
 				if (($type == "dropdown-multi") && (is_array($_POST[$input_name])))
 					$data = stripslashes(implode(",", $_POST[$input_name]));
 				else

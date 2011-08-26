@@ -613,6 +613,9 @@ v2.2.0 - /08/2011
 - Fixed extra slash present into image uris (thanks to zyrq)
 - Fixed dropdown selection when illegal characters are present (introduced with v2.0.5) (thanks to Jared)
 - Fixed some URLs still were not caring about https when used
+- Fixed captcha shouldn't show on form confirmation only
+- Fixed dropdown-multi were not saved when form confirmation is turned on
+- Fixed images shouldn't be shows if not present on the disk (form confirmation only)
 - Fixed plug-in description
 - Code cleanup
 

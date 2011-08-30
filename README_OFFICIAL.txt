@@ -608,6 +608,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.2.0 - /08/2011
 - Added textarea and textarea-rich class in the profile area (thanks to Evaluator)
+- Added case sensitive check for regex equalTo rules (thanks to Juliette for the patch)
 - Fixed WordPress MS unique installation was broken since WP 3.1 (thanks to RaSo0l)
 - Fixed CSS file inclusion, should fix RTL admin layout mess (thanks to Moti Nisim)
 - Fixed extra slash present into image uris (thanks to zyrq)

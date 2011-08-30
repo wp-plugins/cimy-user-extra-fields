@@ -447,12 +447,12 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 					// 	OR if regex rule is not set
 					// THEN switch to uppercase
 					if (((!in_array($type, $rule_equalto_case_sensitive)) || (!$rules['equal_to_case_sensitive'])) && ((!in_array($type, $rule_equalto_regex)) || (!$rules['equal_to_regex']))) {
-
 						$value = strtoupper($value);
 						$equalTo = strtoupper($equalTo);
 					}
 
 					if ($rules['equal_to_regex']) {
+						$equalTo = (($rules['equal_to_case_sensitive']) ? $equalTo.'u' : $equalTo.'iu');
 						if (!preg_match($equalTo, $value)) {
 							$equalmsg = " ".__("isn&#8217;t correct", $cimy_uef_domain);
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.$equalmsg.'.');

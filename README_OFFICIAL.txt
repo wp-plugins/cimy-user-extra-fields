@@ -606,7 +606,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.2.0 - /08/2011
+v2.2.0 - /09/2011
 - Added textarea and textarea-rich class in the profile area (thanks to Evaluator)
 - Added case sensitive check for regex equalTo rules (thanks to Juliette for the patch)
 - Fixed WordPress MS unique installation was broken since WP 3.1 (thanks to RaSo0l)
@@ -615,6 +615,7 @@ v2.2.0 - /08/2011
 - Fixed dropdown selection when illegal characters are present (introduced with v2.0.5) (thanks to Jared)
 - Fixed some URLs still were not caring about https when used
 - Fixed captcha shouldn't show on form confirmation only
+- Fixed textarea-rich pictures had relative instead of absolute urls (thanks to David Alexander)
 - Fixed dropdown-multi were not saved when form confirmation is turned on
 - Fixed images shouldn't be shows if not present on the disk (form confirmation only)
 - Fixed plug-in description

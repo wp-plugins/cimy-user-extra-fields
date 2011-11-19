@@ -548,7 +548,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	if (($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_private_key']))) {
 		$recaptcha_code_ok = false;
 
-		if ($_POST["recaptcha_response_field"]) {
+		if (!empty($_POST["recaptcha_response_field"])) {
 			global $cuef_plugin_dir;
 			require_once($cuef_plugin_dir.'/recaptcha/recaptchalib.php');
 

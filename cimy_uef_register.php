@@ -545,7 +545,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		}
 	}
 
-	if ((isset($_POST["recaptcha_response_field"])) && ($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_private_key']))) {
+	if (($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_private_key']))) {
 		$recaptcha_code_ok = false;
 
 		if ($_POST["recaptcha_response_field"]) {

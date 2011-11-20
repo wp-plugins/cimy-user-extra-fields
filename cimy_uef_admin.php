@@ -599,18 +599,6 @@ function cimy_admin_define_extra_fields() {
 	else
 		$selected_input["show_in_aeu"] = '';
 
-	// SHOW IN THE SEARCH
-	if ((!isset($store_rule['show_in_search'])) || ($store_rule['show_in_search'] == true) || ($action != "add"))
-		$selected_input["show_in_search"] = ' checked="checked"';
-	else
-		$selected_input["show_in_search"] = '';
-
-	// SHOW IN THE BLOG
-	if ((!isset($store_rule['show_in_blog'])) || ($store_rule['show_in_blog'] == true) || ($action != "add"))
-		$selected_input["show_in_blog"] = ' checked="checked"';
-	else
-		$selected_input["show_in_blog"] = '';
-
 	$selected_input["name"] = esc_attr($selected_input["name"]);
 	$selected_input["value"] = esc_attr($selected_input["value"]);
 	$selected_input["label"] = esc_attr($selected_input["label"]);
@@ -714,10 +702,10 @@ function cimy_admin_define_extra_fields() {
 			<input type="checkbox" name="show_in_aeu[0]" value="1"<?php echo $selected_input["show_in_aeu"]; ?> /> <?php _e("Show the field in Users Extended section", $cimy_uef_domain); ?><br />
 
 			<!-- SHOW IN THE SEARCH ENGINE -->
-			<input type="checkbox" name="show_in_search[0]" value="1"<?php echo $selected_input["show_in_search"]; ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
+			<input type="checkbox" name="show_in_search[0]" value="1"<?php checked(empty($store_rule['show_in_search']), false, true); ?> /> <?php _e("Show the field in the search engine", $cimy_uef_domain); ?><br />
 
 			<!-- SHOW IN THE BLOG -->
-			<input type="checkbox" name="show_in_blog[0]" value="1"<?php echo $selected_input["show_in_blog"]; ?> /> <?php _e("Show the field in the blog", $cimy_uef_domain); ?><br />
+			<input type="checkbox" name="show_in_blog[0]" value="1"<?php checked(empty($store_rule['show_in_blog']), false, true); ?> /> <?php _e("Show the field in the blog", $cimy_uef_domain); ?><br />
 
 			<!-- SHOW SECURITY LEVEL -->
 			<?php _e("Show the field if the role is at least:", $cimy_uef_domain)." "; ?>

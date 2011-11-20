@@ -458,11 +458,16 @@ function cimy_admin_define_extra_fields() {
 	if (!isset($store_rule['show_level']))
 		$store_rule['show_level'] = "-1";
 
+	if (!isset($store_rule['edit']))
+		$store_rule['edit'] = "ok_edit";
+
+	if (empty($type))
+		$type = "text";
+
 	(empty($label)) ? $selected_input["label"] = '' : $selected_input["label"] = $label;
 	(empty($value)) ? $selected_input["value"] = '' : $selected_input["value"] = $value;
 	$selected_input["name"] = '';
 	$selected_input["desc"] = '';
-	$selected_input["text"] = ' selected="selected"';
 	$selected_input["min_length"] = '';
 	$selected_input["exact_length"] = '';
 	$selected_input["max_length"] = '';
@@ -472,16 +477,12 @@ function cimy_admin_define_extra_fields() {
 	$selected_input["equal_to_regex"] = '';
 	$selected_input["email"] = '';
 	$selected_input["email_admin"] = '';
-	$selected_input["ok_edit"] = ' selected="selected"';
 	$selected_input["minlen"] = '';
 	$selected_input["exactlen"] = '';
 	$selected_input["maxlen"] = '';
 	$selected_input["advanced_options"] = '';
 
 	if ($action == "add") {
-		// CAN BE MODIFIED OR NOT
-		$selected_input[$store_rule['edit']] = ' selected="selected"';
-
 		// NAME
 		if (!empty($name))
 			$selected_input["name"] = $name;
@@ -489,10 +490,6 @@ function cimy_admin_define_extra_fields() {
 		// DESCRIPTION
 		if (!empty($desc))
 			$selected_input["desc"] = $desc;
-
-		// TYPE
-		if (!empty($type))
-			$selected_input[$type] = ' selected="selected"';
 
 		// MIN LEN
 		if (!empty($minlen))
@@ -610,11 +607,8 @@ function cimy_admin_define_extra_fields() {
 			<select name="type[0]">
 			<?php
 				foreach($available_types as $this_type) {
-					echo '<option value="'.$this_type.'"'.$selected_input[$this_type].'>'.$this_type.'</option>';
+					echo '<option value="'.$this_type.'"'.selected($this_type, $type, false).'>'.$this_type.'</option>';
 					echo "\n";
-					
-					if (isset($selected_input[$this_type]))
-						unset($selected_input[$this_type]);
 				}
 			?>
 			</select>
@@ -642,15 +636,11 @@ function cimy_admin_define_extra_fields() {
 			<input type="checkbox" name="email[0]" value="1"<?php echo $selected_input["email"]; ?> /> <?php _e("Check for E-mail syntax", $cimy_uef_domain); ?><br />
 			
 			<select name="edit[0]">
-				<option value="ok_edit"<?php echo $selected_input["ok_edit"]; ?>><?php _e("Can be modified", $cimy_uef_domain); ?></option>
-				<option value="edit_only_if_empty"<?php echo $selected_input["edit_only_if_empty"]; ?>><?php _e("Can be modified only if empty", $cimy_uef_domain); ?></option>
-				<option value="edit_only_by_admin"<?php echo $selected_input["edit_only_by_admin"]; ?>><?php _e("Can be modified only by admin", $cimy_uef_domain); ?></option>
-				<option value="edit_only_by_admin_or_if_empty"<?php echo $selected_input["edit_only_by_admin_or_if_empty"]; ?>><?php _e("Can be modified only by admin or if empty", $cimy_uef_domain); ?></option>
-				<option value="no_edit"<?php echo $selected_input["no_edit"]; ?>><?php _e("Cannot be modified", $cimy_uef_domain); ?></option>
-			<?php
-				if (isset($selected_input[$edit]))
-					unset($selected_input[$edit]);
-			?>
+				<option value="ok_edit"<?php selected('ok_edit', $store_rule['edit'], true); ?>><?php _e("Can be modified", $cimy_uef_domain); ?></option>
+				<option value="edit_only_if_empty"<?php selected('edit_only_if_empty', $store_rule['edit'], true); ?>><?php _e("Can be modified only if empty", $cimy_uef_domain); ?></option>
+				<option value="edit_only_by_admin"<?php selected('edit_only_by_admin', $store_rule['edit'], true); ?>><?php _e("Can be modified only by admin", $cimy_uef_domain); ?></option>
+				<option value="edit_only_by_admin_or_if_empty"<?php selected('edit_only_by_admin_or_if_empty', $store_rule['edit'], true); ?>><?php _e("Can be modified only by admin or if empty", $cimy_uef_domain); ?></option>
+				<option value="no_edit"<?php selected('no_edit', $store_rule['edit'], true); ?>><?php _e("Cannot be modified", $cimy_uef_domain); ?></option>
 			</select>
 			<br />
 			<!-- EQUAL TO -->
@@ -679,13 +669,13 @@ function cimy_admin_define_extra_fields() {
 			<!-- SHOW SECURITY LEVEL -->
 			<?php _e("Show the field if the role is at least:", $cimy_uef_domain)." "; ?>
 			<select name="show_level[0]">
-			<option value="-1"<?php selected(($store_rule['show_level'] == "-1"), true, true); ?>><?php _e("Anonymous"); ?></option>
-			<option value="0"<?php selected(($store_rule['show_level'] == "0"), true, true); ?>><?php echo translate_user_role("Subscriber"); ?></option>
-			<option value="1"<?php selected(($store_rule['show_level'] == "1"), true, true); ?>><?php echo translate_user_role("Contributor"); ?></option>
-			<option value="2"<?php selected(($store_rule['show_level'] == "2"), true, true); ?>><?php echo translate_user_role("Author"); ?></option>
-			<option value="5"<?php selected(($store_rule['show_level'] == "5"), true, true); ?>><?php echo translate_user_role("Editor"); ?></option>
-			<option value="8"<?php selected(($store_rule['show_level'] == "8"), true, true); ?>><?php echo translate_user_role("Administrator"); ?></option>
-			<option value="view_cimy_extra_fields"<?php selected(($store_rule['show_level'] == "view_cimy_extra_fields"), true, true); ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
+			<option value="-1"<?php selected("-1", $store_rule['show_level'], true); ?>><?php _e("Anonymous"); ?></option>
+			<option value="0"<?php selected("0", $store_rule['show_level'], true); ?>><?php echo translate_user_role("Subscriber"); ?></option>
+			<option value="1"<?php selected("1", $store_rule['show_level'], true); ?>><?php echo translate_user_role("Contributor"); ?></option>
+			<option value="2"<?php selected("2", $store_rule['show_level'], true); ?>><?php echo translate_user_role("Author"); ?></option>
+			<option value="5"<?php selected("5", $store_rule['show_level'], true); ?>><?php echo translate_user_role("Editor"); ?></option>
+			<option value="8"<?php selected("8", $store_rule['show_level'], true); ?>><?php echo translate_user_role("Administrator"); ?></option>
+			<option value="view_cimy_extra_fields"<?php selected("view_cimy_extra_fields", $store_rule['show_level'], true); ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
 			</select>
 			<br />
 

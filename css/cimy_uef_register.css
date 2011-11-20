@@ -38,5 +38,6 @@
 	border-right-style: solid;
 	border-bottom-style: solid;
 	border-left-style: solid;
-	display:block;
+	display: block;
+	width: 93%;
 }

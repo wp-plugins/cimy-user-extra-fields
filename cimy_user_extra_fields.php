@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.2.0
+Version: 2.2.0.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -178,7 +178,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.2.0";
+$cimy_uef_version = "2.2.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -440,6 +440,9 @@ $rule_equalto_regex  = array("text", "textarea", "textarea-rich", "password", "d
 // types that are file to be uploaded
 $cimy_uef_file_types = array("picture", "avatar", "file");
 
+// types that are images to be uploaded
+$cimy_uef_file_images_types = array("picture", "avatar");
+
 // types that are textarea and needs rows and cols attributes
 $cimy_uef_textarea_types = array("textarea", "textarea-rich");
 
@@ -524,7 +527,7 @@ else {
 	add_action('register_form', 'cimy_registration_form', 1);
 
 	// add custom login/registration css
-	add_action('login_head', 'cimy_uef_register_css');
+	add_action('login_enqueue_scripts', 'cimy_uef_register_css');
 
 	// add custom login/registration logo
 	add_action('login_head', 'cimy_change_login_registration_logo');
@@ -710,6 +713,7 @@ function cimy_uef_register_css() {
 	global $cuef_css_webpath;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");
+	// needed till they fix this bug: http://core.trac.wordpress.org/ticket/17916#comment:18
 	wp_print_styles();
 }
 

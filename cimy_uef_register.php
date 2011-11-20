@@ -71,7 +71,7 @@ function cimy_register_overwrite_password($password) {
 }
 
 function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) {
-	global $wpdb_data_table, $wpdb, $max_length_value, $fields_name_prefix, $wp_fields_name_prefix, $wp_hidden_fields, $cimy_uef_file_types, $user_level;
+	global $wpdb_data_table, $wpdb, $max_length_value, $fields_name_prefix, $wp_fields_name_prefix, $wp_hidden_fields, $cimy_uef_file_types, $user_level, $cimy_uef_file_images_types;
 
 	if (isset($meta["blog_id"]))
 		cimy_switch_to_blog($meta);
@@ -178,7 +178,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 					$data = str_replace("/".$temp_user_login."/", "/".$user_login_sanitized."/", $data);
 					$file_on_server = cimy_uef_get_dir_or_filename($user_login_sanitized, $data, false);
 
-					if (($type == "picture") || ($type == "avatar"))
+					if (in_array($type, $cimy_uef_file_images_types))
 						cimy_uef_crop_image($file_on_server, $field_id_data);
 				}
 				else
@@ -288,7 +288,7 @@ function cimy_profile_check_wrapper($errors, $update, $user) {
 }
 
 function cimy_registration_check($user_login, $user_email, $errors) {
-	global $wpdb, $rule_canbeempty, $rule_email, $rule_maxlen, $fields_name_prefix, $wp_fields_name_prefix, $rule_equalto_case_sensitive, $apply_equalto_rule, $cimy_uef_domain, $cimy_uef_file_types, $rule_equalto_regex, $user_level;
+	global $wpdb, $rule_canbeempty, $rule_email, $rule_maxlen, $fields_name_prefix, $wp_fields_name_prefix, $rule_equalto_case_sensitive, $apply_equalto_rule, $cimy_uef_domain, $cimy_uef_file_types, $rule_equalto_regex, $user_level, $cimy_uef_file_images_types;
 
 // 	cimy_switch_to_blog();
 	$options = cimy_get_options();
@@ -472,7 +472,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 
 				// CHECK IF IT IS A REAL PICTURE
-				if (($type == "picture") || ($type == "avatar")) {
+				if (in_array($type, $cimy_uef_file_images_types)) {
 					if ((stristr($file_type, "image/") === false) && (!empty($value))) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('should be an image.', $cimy_uef_domain));
 					}
@@ -579,7 +579,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 // show_type == 1 - search form, all fields are text, password fields are skipped
 // show_type == 2 - confirmation form, all fields are plain text, images can be cropped
 function cimy_registration_form($errors=null, $show_type=0) {
-	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level, $cimy_uef_domain;
+	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level, $cimy_uef_domain, $cimy_uef_file_images_types;
 
 // 	cimy_switch_to_blog();
 
@@ -682,12 +682,12 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
-			// showing the search then there is no need to upload buttons
+			// showing the search then there is no need for upload buttons
 			if ($show_type == 1) {
 				if ($type == "password")
 					continue;
 
-				if (($type == "avatar") || ($type == "picture") || ($type == "file"))
+				if (in_array($type, $cimy_uef_file_types))
 					$type = "text";
 			}
 			else if ($show_type == 2) {
@@ -1004,7 +1004,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_size\" id=\"".esc_attr($field_id_data)."_size\" value=\"".strval($_FILES[$input_name]['size'] / 1024)."\" />";
 					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_type\" id=\"".esc_attr($field_id_data)."_type\" value=\"".strval($_FILES[$input_name]['type'])."\" />";
 				}
-				if ((($old_type == "picture") || ($old_type == "avatar")) && (is_file($file_on_server))) {
+				if ((in_array($old_type, $cimy_uef_file_images_types)) && (is_file($file_on_server))) {
 					if (!$is_jquery_added) {
 						wp_print_scripts("jquery");
 						$is_jquery_added = true;

@@ -295,37 +295,37 @@ function cimy_admin_define_extra_fields() {
 		$email_admin == "1" ? $store_rule['email_admin'] = true : $store_rule['email_admin'] = false;
 
 		// START CHECKING FOR ERRORS
-		if ($name == "")
+		if (empty($name))
 			$errors['name'] = __("Name not specified", $cimy_uef_domain);
 		else if (!stristr($name, " ") === false)
 			$errors['name'] = __("Name cannot contains spaces", $cimy_uef_domain);
 
-		if ($label == "")
+		if (empty($label))
 			$errors['label'] = __("Label not specified", $cimy_uef_domain);
 
 		// max or exact length rule is needed for this type
 		if (in_array($type, $rule_maxlen_needed)) {
-			if (($maxlen == "") && ($exactlen == ""))
+			if (empty($maxlen) && empty($exactlen))
 				$errors['maxlength1'] = $exact_or_max_length_capton." ".__("not selected (with this type is necessary)", $cimy_uef_domain);
 		}
 		
 		// max or exact length rule is not needed but it's available for this type
 		if (in_array($type, $rule_maxlen)) {
-			if ((($maxlen != "") || ($minlen != "")) && ($exactlen != ""))
+			if ((!empty($maxlen) || !empty($minlen)) && !empty($exactlen))
 				$errors['exactlength1'] = __("If you select", $cimy_uef_domain)." ".$exact_length_caption." ".__("you cannot select Min or Max", $cimy_uef_domain);
 
 			// MIN LEN
-			if ($minlen != "")
+			if (!empty($minlen))
 				if (($store_rule['min_length'] < $minLen) || ($store_rule['min_length'] > $maxLen))
 					$errors['minlength3'] = $min_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
 			
 			// EXACT LEN
-			if ($exactlen != "")
+			if (!empty($exactlen))
 				if (($store_rule['exact_length'] < $minLen) || ($store_rule['exact_length'] > $maxLen))
 					$errors['exactlength3'] = $exact_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
 
 			// MAX LEN
-			if ($maxlen != "")
+			if (!empty($maxlen))
 				if (($store_rule['max_length'] < $minLen) || ($store_rule['max_length'] > $maxLen))
 					$errors['maxlength3'] = $max_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
 		}
@@ -455,14 +455,8 @@ function cimy_admin_define_extra_fields() {
 	if ($store_rule['max_length'] == 0)
 		unset($store_rule['max_length']);
 
-	// SHOW LEVEL
-	$show_anonymous = ' selected="selected"';
-	$show_subscriber = '';
-	$show_contributor = '';
-	$show_author = '';
-	$show_editor = '';
-	$show_admin = '';
-	$show_view_cimy_extra_fields = '';
+	if (!isset($store_rule['show_level']))
+		$store_rule['show_level'] = "-1";
 
 	(empty($label)) ? $selected_input["label"] = '' : $selected_input["label"] = $label;
 	(empty($value)) ? $selected_input["value"] = '' : $selected_input["value"] = $value;
@@ -541,31 +535,6 @@ function cimy_admin_define_extra_fields() {
 		// ADVANCED OPTIONS
 		if (isset($store_rule['advanced_options']))
 			$selected_input["advanced_options"] = $store_rule['advanced_options'];
-
-		// SHOW LEVEL
-		switch ($store_rule['show_level']) {
-			case '-1':
-				$show_anonymous = ' selected="selected"';
-				break;
-			case '0':
-				$show_subscriber = ' selected="selected"';
-				break;
-			case '1':
-				$show_contributor = ' selected="selected"';
-				break;
-			case '2':
-				$show_author = ' selected="selected"';
-				break;
-			case '5':
-				$show_editor = ' selected="selected"';
-				break;
-			case '8':
-				$show_admin = ' selected="selected"';
-				break;
-			case 'view_cimy_extra_fields':
-				$show_view_cimy_extra_fields = ' selected="selected"';
-				break;
-		}
 
 		// EMAIL ADMIN
 		if ($store_rule['email_admin'] == true)
@@ -710,13 +679,13 @@ function cimy_admin_define_extra_fields() {
 			<!-- SHOW SECURITY LEVEL -->
 			<?php _e("Show the field if the role is at least:", $cimy_uef_domain)." "; ?>
 			<select name="show_level[0]">
-			<option value="-1"<?php echo $show_anonymous ?>><?php _e("Anonymous"); ?></option>
-			<option value="0"<?php echo $show_subscriber ?>><?php echo translate_user_role("Subscriber"); ?></option>
-			<option value="1"<?php echo $show_contributor ?>><?php echo translate_user_role("Contributor"); ?></option>
-			<option value="2"<?php echo $show_author ?>><?php echo translate_user_role("Author"); ?></option>
-			<option value="5"<?php echo $show_editor ?>><?php echo translate_user_role("Editor"); ?></option>
-			<option value="8"<?php echo $show_admin ?>><?php echo translate_user_role("Administrator"); ?></option>
-			<option value="view_cimy_extra_fields"<?php echo $show_view_cimy_extra_fields ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
+			<option value="-1"<?php selected(($store_rule['show_level'] == "-1"), true, true); ?>><?php _e("Anonymous"); ?></option>
+			<option value="0"<?php selected(($store_rule['show_level'] == "0"), true, true); ?>><?php echo translate_user_role("Subscriber"); ?></option>
+			<option value="1"<?php selected(($store_rule['show_level'] == "1"), true, true); ?>><?php echo translate_user_role("Contributor"); ?></option>
+			<option value="2"<?php selected(($store_rule['show_level'] == "2"), true, true); ?>><?php echo translate_user_role("Author"); ?></option>
+			<option value="5"<?php selected(($store_rule['show_level'] == "5"), true, true); ?>><?php echo translate_user_role("Editor"); ?></option>
+			<option value="8"<?php selected(($store_rule['show_level'] == "8"), true, true); ?>><?php echo translate_user_role("Administrator"); ?></option>
+			<option value="view_cimy_extra_fields"<?php selected(($store_rule['show_level'] == "view_cimy_extra_fields"), true, true); ?>><?php _e("User has 'view_cimy_extra_fields' capability", $cimy_uef_domain); ?></option>
 			</select>
 			<br />
 

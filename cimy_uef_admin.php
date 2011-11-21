@@ -1041,7 +1041,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];
 		cimy_set_options($options);
 	}
-
 }
 
 function cimy_uef_print_messages($errors, $results) {

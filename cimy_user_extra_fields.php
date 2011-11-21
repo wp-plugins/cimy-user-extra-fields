@@ -158,13 +158,10 @@ $cuef_css_webpath = plugins_url($cimy_uef_plugins_dirprefix."css", __FILE__);
 $cuef_js_webpath = plugins_url($cimy_uef_plugins_dirprefix."js", __FILE__);
 $cuef_securimage_webpath = plugins_url($cimy_uef_plugins_dirprefix."securimage", __FILE__);
 
-wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."/upload_file.js", false, false);
-wp_register_script("cimy_uef_img_selection", $cuef_js_webpath."/img_selection.js", false, false);
-
 function cimy_uef_admin_init() {
 	global $cuef_js_webpath;
-	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."/invert_sel.js", false, false);
-	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."/ajax_new_value.js", false, false);
+	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."/invert_sel.js", array(), false);
+	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."/ajax_new_value.js", array(), false);
 }
 
 add_action('admin_init', 'cimy_uef_admin_init');
@@ -178,7 +175,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.2.1";
+$cimy_uef_version = "2.2.0.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -709,12 +706,59 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 	return $avatar;
 }
 
+function cimy_uef_admin_init_js() {
+	wp_enqueue_script("cimy_uef_invert_sel");
+	cimy_uef_init_upload_js();
+}
+
+function cimy_uef_init_upload_js() {
+	global $cuef_js_webpath;
+	wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."/upload_file.js", array(), false);
+	wp_enqueue_script('cimy_uef_upload_file');
+}
+
 function cimy_uef_register_css() {
 	global $cuef_css_webpath;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");
+	cimy_uef_init_javascripts("show_in_reg");
 	// needed till they fix this bug: http://core.trac.wordpress.org/ticket/17916#comment:18
 	wp_print_styles();
+}
+
+function cimy_uef_admin_profile_init_js() {
+	cimy_uef_init_javascripts("show_in_profile");
+}
+
+function cimy_uef_init_javascripts($rule_name) {
+	global $cuef_plugin_dir, $cuef_js_webpath;
+
+	$options = cimy_get_options();
+	if ($options['image_fields'][$rule_name] > 0) {
+		wp_enqueue_script('imgareaselect', "", array("jquery"));
+		wp_enqueue_style('imgareaselect');
+		wp_register_script('cimy_uef_img_selection', $cuef_js_webpath."/img_selection.js", array(), false);
+		wp_enqueue_script('cimy_uef_img_selection');
+	}
+
+	if ($options['file_fields'][$rule_name] > 0) {
+		cimy_uef_init_upload_js();
+	}
+
+	// FIXME can we also move tinyMCE init here? Too complicate for now!
+// 	if ($options['tinymce_fields'][$rule_name] > 0)
+// 		require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
+
+	if ($rule_name == "show_in_reg") {
+		if ($options['password_meter']) {
+			wp_register_script("cimy_uef_password_strength_meter", $cuef_js_webpath."/password_strength_meter.js", array("password-strength-meter"), false);
+			wp_enqueue_script('cimy_uef_password_strength_meter');
+		}
+
+		// damn WordPress bugs
+		if (is_multisite())
+			wp_print_scripts();
+	}
 }
 
 function cimy_change_login_registration_logo() {
@@ -769,15 +813,20 @@ function cimy_admin_menu_custom() {
 
 			// Since WP 3.1 we have network admin and everything seems changed
 			$aue_page = add_submenu_page('users.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
-			add_submenu_page('settings.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
+			$admin = add_submenu_page('settings.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
 		}
 		else {
-			add_options_page($cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
+			$admin = add_options_page($cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
 			$aue_page = add_submenu_page('profile.php', __('Users Extended', $cimy_uef_domain), __('Users Extended', $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
 		}
 	}
 	if (!empty($aue_page))
 		add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
+	if (!empty($admin))
+		add_action('admin_print_scripts-'.$admin, 'cimy_uef_admin_init_js');
+
+	add_action('admin_print_scripts-user-edit.php', 'cimy_uef_admin_profile_init_js');
+	add_action('admin_print_scripts-profile.php', 'cimy_uef_admin_profile_init_js');
 }
 
 function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="", $new_filename="") {

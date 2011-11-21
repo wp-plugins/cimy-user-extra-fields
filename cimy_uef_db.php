@@ -216,6 +216,48 @@ function cimy_plugin_install () {
 			$options["welcome_email"] = $welcome_email;
 		}
 
+		if (version_compare($options['version'], "2.2.0", "<=") === true) {
+			$javascripts_dep = array(
+			'file_fields' => array(
+				'show_in_reg' => 0,
+				'show_in_profile' => 0,
+				'show_in_aeu' => 0,
+				'show_in_blog' => 0,
+				'show_in_search' => 0
+			),
+			'image_fields' => array(
+				'show_in_reg' => 0,
+				'show_in_profile' => 0,
+				'show_in_aeu' => 0,
+				'show_in_blog' => 0,
+				'show_in_search' => 0
+			),
+			'tinymce_fields' => array(
+				'show_in_reg' => 0,
+				'show_in_profile' => 0,
+				'show_in_aeu' => 0,
+				'show_in_blog' => 0,
+				'show_in_search' => 0
+			));
+			$sql = "SELECT TYPE, RULES FROM ".$wpdb_fields_table;
+			$all_rules = $wpdb->get_results($sql, ARRAY_A);
+
+			if (isset($all_rules)) {
+				foreach ($all_rules as $rule) {
+					$rules = unserialize($rule["RULES"]);
+					$type = $rule["TYPE"];
+					$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_reg", $rules["show_in_reg"]);
+					$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_profile", $rules["show_in_profile"]);
+					$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_aeu", $rules["show_in_aeu"]);
+					$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_blog", $rules["show_in_blog"]);
+					$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_search", $rules["show_in_search"]);
+				}
+			}
+			$options['file_fields'] = $javascripts_dep['file_fields'];
+			$options['image_fields'] = $javascripts_dep['image_fields'];
+			$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);
@@ -298,6 +340,27 @@ function cimy_manage_db($command) {
 		'fieldset_title' => '',
 		'captcha' => 'none',
 		'welcome_email' => $welcome_email,
+		'file_fields' => array(
+			'show_in_reg' => 0,
+			'show_in_profile' => 0,
+			'show_in_aeu' => 0,
+			'show_in_blog' => 0,
+			'show_in_search' => 0
+		),
+		'image_fields' => array(
+			'show_in_reg' => 0,
+			'show_in_profile' => 0,
+			'show_in_aeu' => 0,
+			'show_in_blog' => 0,
+			'show_in_search' => 0
+		),
+		'tinymce_fields' => array(
+			'show_in_reg' => 0,
+			'show_in_profile' => 0,
+			'show_in_aeu' => 0,
+			'show_in_blog' => 0,
+			'show_in_search' => 0
+		)
 	);
 
 	switch ($command) {

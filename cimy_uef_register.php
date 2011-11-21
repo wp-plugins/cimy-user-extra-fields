@@ -614,9 +614,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	$radio_checked = array();
 
 	$i = 1;
-	$upload_file_function = false;
-	$is_jquery_added = false;
-	$crop_image_function = false;
 
 	// confirmation page, all fields are plain text + hidden fields to carry over values
 	if ($show_type == 2) {
@@ -831,7 +828,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					break;
 
 				case "textarea-rich":
-					if ($tiny_mce_objects == "")
+					if (empty($tiny_mce_objects))
 						$tiny_mce_objects = $fields_name_prefix.$field_id;
 					else
 						$tiny_mce_objects .= ",".$fields_name_prefix.$field_id;
@@ -901,8 +898,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array(\'gif\', \'png\', \'jpg\', \'jpeg\', \'tiff\'));"';
 					}
 
-					// javascript will be added later
-					$upload_file_function = true;
 					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).' </label>';
 					$obj_class = ' class="cimy_uef_picture"';
 					$obj_name = ' name="'.$input_name.'"';
@@ -1005,11 +1000,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_type\" id=\"".esc_attr($field_id_data)."_type\" value=\"".strval($_FILES[$input_name]['type'])."\" />";
 				}
 				if ((in_array($old_type, $cimy_uef_file_images_types)) && (is_file($file_on_server))) {
-					if (!$is_jquery_added) {
-						wp_print_scripts("jquery");
-						$is_jquery_added = true;
-					}
-					$crop_image_function = true;
 					echo '<img id="'.esc_attr($field_id_data).'" src="'.esc_attr($value).'" alt="picture" /><br />';
 					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_button\" id=\"".esc_attr($field_id_data)."_button\" value=\"1\" />";
 					echo "<input type=\"hidden\" name=\"".esc_attr($field_id_data)."_x1\" id=\"".esc_attr($field_id_data)."_x1\" value=\"\" />";
@@ -1076,21 +1066,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		if (!empty($tiny_mce_objects)) {
 			require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 		}
-
-		if ($options['password_meter']) {
-			if (!$is_jquery_added) {
-				wp_print_scripts("jquery");
-				$is_jquery_added = true;
-			}
-
-			require_once($cuef_plugin_dir.'/cimy_uef_init_strength_meter.php');
-		}
-	}
-
-	if ($crop_image_function) {
-		wp_print_scripts('imgareaselect');
-		wp_print_styles('imgareaselect');
-		wp_print_scripts('cimy_uef_img_selection');
 	}
 
 	if (($show_type != 2) && ($options['captcha'] == "securimage")) {
@@ -1121,7 +1096,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	<?php
 
 		// no need if Tiny MCE is present already
-		if ($tiny_mce_objects == "") {
+		if (empty($tiny_mce_objects)) {
 	?>
 			<script type='text/javascript'>
 				var login_div = document.getElementById("login");
@@ -1131,9 +1106,6 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		}
 		echo recaptcha_get_html($options['recaptcha_public_key']);
 	}
-
-	if ($upload_file_function)
-		wp_print_scripts("cimy_uef_upload_file");
 
 	cimy_switch_current_blog(true);
 

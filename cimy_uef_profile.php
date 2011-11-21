@@ -49,8 +49,6 @@ function cimy_extract_ExtraFields() {
 // 		$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$get_user_id, ARRAY_A);
 
 		$radio_checked = array();
-		$upload_file_function = false;
-		$crop_image_function = false;
 		$current_fieldset = -1;
 		$tiny_mce_objects = "";
 		
@@ -282,15 +280,12 @@ function cimy_extract_ExtraFields() {
 
 				case "avatar":
 				case "picture":
-					$crop_image_function = true;
 				case "file":
 					$allowed_exts = '';
 					if (isset($rules['equal_to']))
 						if (!empty($rules['equal_to']))
 							$allowed_exts = "'".implode("', '", explode(",", $rules['equal_to']))."'";
 
-					// javascript will be added later
-					$upload_file_function = true;
 					$obj_label = '<label for="'.$fields_name_prefix.$field_id.'">'.cimy_uef_sanitize_content($label).'</label>';
 					$obj_class = '';
 					$obj_name = ' name="'.$input_name.'"';
@@ -501,15 +496,6 @@ function cimy_extract_ExtraFields() {
 		if (!empty($tiny_mce_objects)) {
 			require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 		}
-		if ($crop_image_function) {
-			wp_print_scripts('imgareaselect');
-			wp_print_styles('imgareaselect');
-			wp_print_scripts('cimy_uef_img_selection');
-		}
-
-		if ($upload_file_function)
-			wp_print_scripts("cimy_uef_upload_file");
-		
 		echo $end_cimy_uef_comment;
 	}
 }

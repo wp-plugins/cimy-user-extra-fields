@@ -607,4 +607,25 @@ function cimy_uef_get_dir_or_filename($user_login, $url="", $is_thumbnail=false)
 		return $blog_path.$user_login."/".basename($url);
 }
 
+function cimy_uef_set_javascript_dependencies($javascripts_dep, $type, $rule_name, $rule) {
+	switch ($type) {
+		case "avatar":
+		case "picture":
+			if ($rule)
+				$javascripts_dep['image_fields'][$rule_name] += 1;
+			// no break we want to count as a file too!
+		case "file":
+			if ($rule)
+				$javascripts_dep['file_fields'][$rule_name] += 1;
+			break;
+		case "textarea-rich":
+			if ($rule)
+				$javascripts_dep['tinymce_fields'][$rule_name] += 1;
+			break;
+		default:
+			break;
+	}
+	return $javascripts_dep;
+}
+
 ?>

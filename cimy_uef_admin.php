@@ -383,7 +383,6 @@ function cimy_admin_define_extra_fields() {
 
 			// SEARCH THE NAME IN THE DATABASE, GO ON ONLY IF DURING EDIT IT WAS THE SAME FIELD
 			if ((count($exist) == 0) || (($action == "edit") && ($oldname == $name))) {
-				
 				// MIN LEN
 				if (!in_array($type, $rule_maxlen))
 					unset($store_rule['min_length']);
@@ -709,7 +708,6 @@ function changeFormAction(form_id, tr_id) {
 </script>
 
 <?php
-	wp_print_scripts("cimy_uef_invert_sel");
 	$wp_fields = get_cimyFields(true);
 
 	cimy_admin_show_extra_fields($wp_fields, $submit_msgs, true, $errors, $results, $wp_fields_post, $field_order);
@@ -724,7 +722,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 	
 	if ((count($allFields) == 0) && ($wp_fields))
 		return;
-	
+
 	if ($wp_fields) {
 		$field_anchor = "field_wp_";
 		$div_id = "wp_extrafields";
@@ -734,6 +732,29 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		$field_anchor = "field_";
 		$div_id = "extrafields";
 		$form_id = "form_extra_fields";
+
+		$javascripts_dep = array(
+		'file_fields' => array(
+			'show_in_reg' => 0,
+			'show_in_profile' => 0,
+			'show_in_aeu' => 0,
+			'show_in_blog' => 0,
+			'show_in_search' => 0
+		),
+		'image_fields' => array(
+			'show_in_reg' => 0,
+			'show_in_profile' => 0,
+			'show_in_aeu' => 0,
+			'show_in_blog' => 0,
+			'show_in_search' => 0
+		),
+		'tinymce_fields' => array(
+			'show_in_reg' => 0,
+			'show_in_profile' => 0,
+			'show_in_aeu' => 0,
+			'show_in_blog' => 0,
+			'show_in_search' => 0
+		));
 	}
 	
 	$add_caption = $submit_msgs['add_caption'];
@@ -794,7 +815,6 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		<?php
 
 		$style = "";
-		
 		foreach ($allFields as $field) {
 			$id = $field['ID'];
 			$order = $field['F_ORDER'];
@@ -805,6 +825,13 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$type = $field['TYPE'];
 			$rules = $field['RULES'];
 			$fieldset = $field["FIELDSET"];
+			if (!$wp_fields) {
+				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_reg", $rules["show_in_reg"]);
+				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_profile", $rules["show_in_profile"]);
+				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_aeu", $rules["show_in_aeu"]);
+				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_blog", $rules["show_in_blog"]);
+				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_search", $rules["show_in_search"]);
+			}
 
 			// MIN LEN
 			if (isset($rules['min_length']))
@@ -984,7 +1011,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			</td>
 			</tr>
 		<?php
-		}
+		} // end of foreach ($allFields as $field)
 		?>
 		</tbody>
 		</table>
@@ -998,7 +1025,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		</p>
 		<br />
 		<?php
-	}
+	} // end of count($allFields) > 0
 
 	?>
 	</form>
@@ -1006,6 +1033,15 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 	</div>
 
 	<?php
+	// this will help me to track down the javascript dependencies without looping through all fields too many times
+	if (!$wp_fields) {
+		$options = cimy_get_options();
+		$options['file_fields'] = $javascripts_dep['file_fields'];
+		$options['image_fields'] = $javascripts_dep['image_fields'];
+		$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];
+		cimy_set_options($options);
+	}
+
 }
 
 function cimy_uef_print_messages($errors, $results) {
@@ -1045,7 +1081,7 @@ function cimy_uef_print_messages($errors, $results) {
 }
 
 function cimy_admin_users_list_page() {
-	global $wpdb, $wp_roles, $wpdb_data_table, $cimy_uef_options, $cuef_upload_path, $cimy_uef_domain, $cimy_uef_file_types;
+	global $wpdb, $wp_roles, $wpdb_data_table, $cuef_upload_path, $cimy_uef_domain, $cimy_uef_file_types;
 
 	if (!cimy_check_admin('list_users'))
 		return;

@@ -745,7 +745,7 @@ function cimy_uef_init_javascripts($rule_name) {
 		cimy_uef_init_upload_js();
 	}
 
-	if ($rule_name == "show_in_reg") {
+	if ($rule_name == "show_in_reg" && (empty($_POST['register_confirmation']) || $_POST['register_confirmation'] != "1")) {
 		// This is needed for registration form on WordPress >= 3.3
 		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor"))
 			wp_enqueue_script('utils');

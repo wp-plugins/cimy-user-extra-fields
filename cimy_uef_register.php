@@ -127,7 +127,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$field_id = $thisField["ID"];
 			$label = $thisField["LABEL"];
 			$rules = $thisField["RULES"];
-			$input_name = $prefix.$wpdb->escape($name);
+			$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -334,7 +334,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$type = $thisField['TYPE'];
 			$label = esc_html($thisField['LABEL']);
 			$description = $thisField['DESCRIPTION'];
-			$input_name = $prefix.$wpdb->escape($name);
+			$input_name = $prefix.esc_attr($name);
 			$unique_id = $prefix.$field_id;
 			$field_id_data = $input_name."_".$field_id."_data";
 
@@ -673,9 +673,12 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$input_name = $prefix.esc_attr($name);
-			$post_input_name = $prefix.$wpdb->escape($name);
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;
+			if ($type == "textarea-rich")
+				$post_input_name = $unique_id;
+			else
+				$post_input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -887,13 +890,13 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 					if ($type == "file") {
 						// if we do not escape then some translations can break
-						$warning_msg = $wpdb->escape(__("Please upload a file with one of the following extensions", $cimy_uef_domain));
+						$warning_msg = esc_js(__("Please upload a file with one of the following extensions", $cimy_uef_domain));
 
 						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array('.$allowed_exts.'));"';
 					}
 					else {
 						// if we do not escape then some translations can break
-						$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
+						$warning_msg = esc_js(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
 
 						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array(\'gif\', \'png\', \'jpg\', \'jpeg\', \'tiff\'));"';
 					}
@@ -1035,8 +1038,29 @@ function cimy_registration_form($errors=null, $show_type=0) {
 				}
 			}
 
+			// TinceMCE needed and we have WordPress >= 3.3 yummy!
+			if ($type == "textarea-rich" && function_exists("wp_editor")) {
+		?>
+				<script type='text/javascript'>
+					var login_div = document.getElementById("login");
+					login_div.style.width = "375px";
+				</script>
+		<?php
+				$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,spell,close' );
+				$editor_settings = array(
+					'teeny' => false,
+					'textarea_rows' => '10',
+					'dfw' => false,
+					'tabindex' => $tabindex,
+					'media_buttons' => true,
+					'tinymce' => true,
+					'quicktags' => $quicktags_settings,
+				);
+				wp_editor($value, $unique_id, $editor_settings);
+			}
 			// write to the html the form object built
-			echo $form_object;
+			else
+				echo $form_object;
 
 			if (($show_type == 0) && ($i == 1) && ($options['password_meter'])) {
 				if ($input_name == ($prefix."PASSWORD"))
@@ -1063,7 +1087,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	echo "\t<br />";
 
 	if ($show_type == 0) {
-		if (!empty($tiny_mce_objects)) {
+		// WP 3.2 or lower (N)
+		if (!empty($tiny_mce_objects) && !function_exists("wp_editor")) {
 			require_once($cuef_plugin_dir.'/cimy_uef_init_mce.php');
 		}
 	}

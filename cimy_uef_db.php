@@ -286,6 +286,7 @@ function cimy_plugin_install () {
 		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
 		dbDelta($sql);
 	}
+	return $options;
 }
 
 function cimy_force_signup_table_creation() {

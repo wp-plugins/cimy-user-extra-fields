@@ -262,12 +262,15 @@ function cimy_show_options($results, $embedded) {
 
 	if (!cimy_check_admin('manage_options'))
 		return;
-		
+
 	// save options engine
 	if ((isset($_POST['cimy_options'])) && (isset($cimy_top_menu)))
 		$results = cimy_save_options();
-	
+
 	$options = cimy_get_options();
+	if (!empty($options['version']) && $cimy_uef_version != $options['version'])
+		$options = cimy_plugin_install();
+
 	wp_print_scripts("cimy_uef_upload_file");
 	$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
 

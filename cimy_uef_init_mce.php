@@ -84,7 +84,6 @@ if (!empty($cimy_uef_register_page)) {
 		'relative_urls' => false,
 		'convert_urls' => false,
 		'remove_script_host' => false,
-		'extended_valid_elements' => 'article[*],aside[*],audio[*],canvas[*],command[*],datalist[*],details[*],embed[*],figcaption[*],figure[*],footer[*],header[*],hgroup[*],keygen[*],mark[*],meter[*],nav[*],output[*],progress[*],section[*],source[*],summary,time[*],video[*],wbr',
 		'plugins' => implode( ',', $plugins ),
 	);
 

@@ -1043,7 +1043,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		?>
 				<script type='text/javascript'>
 					var login_div = document.getElementById("login");
-					login_div.style.width = "375px";
+					login_div.style.width = "535px";
 				</script>
 		<?php
 				$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,spell,close' );

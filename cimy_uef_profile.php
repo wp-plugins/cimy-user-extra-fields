@@ -484,7 +484,6 @@ function cimy_extract_ExtraFields() {
 					'teeny' => false,
 					'textarea_rows' => '10',
 					'dfw' => false,
-					'tabindex' => $tabindex,
 					'media_buttons' => true,
 					'tinymce' => true,
 					'quicktags' => $quicktags_settings,

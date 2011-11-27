@@ -606,6 +606,13 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.0 - 28/11/2011
+- Fixed security issue where reCAPTCHA and Securimage Captcha could be by-passed (thanks to corij)
+- Fixed tinyMCE was not working anymore since WP 3.3
+- Fixed all JavaScripts inclusion to be as requested by WordPress APIs
+- Fixed file, picture and avatar extra fields were not styled on registration page
+- Code cleanup
+
 v2.2.0 - 04/09/2011
 - Added textarea and textarea-rich class in the profile area (thanks to Evaluator)
 - Added case sensitive check for regex equalTo rules (thanks to Juliette for the patch)

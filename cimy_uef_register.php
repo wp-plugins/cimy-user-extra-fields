@@ -127,7 +127,11 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$field_id = $thisField["ID"];
 			$label = $thisField["LABEL"];
 			$rules = $thisField["RULES"];
-			$input_name = $prefix.esc_attr($name);
+			$unique_id = $prefix.$field_id;
+			if ($type == "textarea-rich")
+				$input_name = $unique_id;
+			else
+				$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -334,8 +338,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$type = $thisField['TYPE'];
 			$label = esc_html($thisField['LABEL']);
 			$description = $thisField['DESCRIPTION'];
-			$input_name = $prefix.esc_attr($name);
 			$unique_id = $prefix.$field_id;
+			if ($type == "textarea-rich")
+				$input_name = $unique_id;
+			else
+				$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
@@ -465,7 +472,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 						if ($type == "password")
 							$equalmsg = " ".__("isn&#8217;t correct", $cimy_uef_domain);
 						else
-							$equalmsg = ' '.__("should be", $cimy_uef_domain).' '.$equalTo;
+							$equalmsg = ' '.__("should be", $cimy_uef_domain).' '.esc_html($equalTo);
 
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.$equalmsg.'.');
 					}
@@ -536,7 +543,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		$i++;
 	}
 
-	if (isset($_POST["securimage_response_field"])) {
+	if ($options['captcha'] == "securimage") {
 		global $cuef_plugin_dir;
 		require_once($cuef_plugin_dir.'/securimage/securimage.php');
 		$securimage = new Securimage();
@@ -672,13 +679,12 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$label = $thisField['LABEL'];
 			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
-			$input_name = $prefix.esc_attr($name);
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;
 			if ($type == "textarea-rich")
-				$post_input_name = $unique_id;
+				$input_name = $unique_id;
 			else
-				$post_input_name = $prefix.esc_attr($name);
+				$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -720,11 +726,11 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			if (((is_multisite()) || ($options["confirm_email"])) && (in_array($type, $cimy_uef_file_types)))
 				continue;
 
-			if (isset($_POST[$post_input_name])) {
+			if (isset($_POST[$input_name])) {
 				if (($type == "dropdown-multi") || ($old_type == "dropdown-multi"))
-					$value = stripslashes(implode(",", $_POST[$post_input_name]));
+					$value = stripslashes(implode(",", $_POST[$input_name]));
 				else
-					$value = stripslashes($_POST[$post_input_name]);
+					$value = stripslashes($_POST[$input_name]);
 			}
 			else if (isset($_GET[$name])) {
 				if (($type == "dropdown-multi") || ($old_type == "dropdown-multi"))
@@ -1043,7 +1049,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		?>
 				<script type='text/javascript'>
 					var login_div = document.getElementById("login");
-					login_div.style.width = "375px";
+					login_div.style.width = "535px";
 				</script>
 		<?php
 				$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,spell,close' );
@@ -1051,11 +1057,12 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					'teeny' => false,
 					'textarea_rows' => '10',
 					'dfw' => false,
-					'tabindex' => $tabindex,
 					'media_buttons' => true,
 					'tinymce' => true,
 					'quicktags' => $quicktags_settings,
 				);
+				if (!empty($obj_tabindex))
+					$editor_settings['tabindex'] = $tabindex;
 				wp_editor($value, $unique_id, $editor_settings);
 			}
 			// write to the html the form object built

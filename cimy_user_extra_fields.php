@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.2.0.1
+Version: 2.3.0
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -175,7 +175,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.2.0.1";
+$cimy_uef_version = "2.3.0";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -254,8 +254,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -274,8 +274,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -294,8 +294,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -314,8 +314,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -334,8 +334,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -354,8 +354,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -374,8 +374,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -394,8 +394,8 @@ $wp_hidden_fields = array(
 								'show_in_reg' => true,
 								'show_in_profile' => true,
 								'show_in_aeu' => true,
-								'show_in_search' => true,
-								'show_in_blog' => true,
+								'show_in_search' => false,
+								'show_in_blog' => false,
 								'show_level' => -1,
 								),
 					),
@@ -731,7 +731,7 @@ function cimy_uef_admin_profile_init_js() {
 }
 
 function cimy_uef_init_javascripts($rule_name) {
-	global $cuef_plugin_dir, $cuef_js_webpath;
+	global $cuef_plugin_dir, $cuef_css_webpath, $cuef_js_webpath;
 
 	$options = cimy_get_options();
 	if ($options['image_fields'][$rule_name] > 0) {
@@ -745,6 +745,12 @@ function cimy_uef_init_javascripts($rule_name) {
 		cimy_uef_init_upload_js();
 	}
 
+	if ($rule_name == "show_in_profile") {
+		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor")) {
+			wp_register_style("cimy_uef_tinymce", $cuef_css_webpath."/cimy_uef_tinymce.css", false, false);
+			wp_enqueue_style('cimy_uef_tinymce');
+		}
+	}
 	if ($rule_name == "show_in_reg" && (empty($_POST['register_confirmation']) || $_POST['register_confirmation'] != "1")) {
 		// This is needed for registration form on WordPress >= 3.3
 		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor"))

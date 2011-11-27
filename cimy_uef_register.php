@@ -543,7 +543,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		$i++;
 	}
 
-	if (isset($_POST["securimage_response_field"])) {
+	if ($options['captcha'] == "securimage") {
 		global $cuef_plugin_dir;
 		require_once($cuef_plugin_dir.'/securimage/securimage.php');
 		$securimage = new Securimage();

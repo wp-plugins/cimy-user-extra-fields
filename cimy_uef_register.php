@@ -552,7 +552,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	}
 
 	cimy_switch_current_blog();
-
 	return $errors;
 }
 
@@ -586,7 +585,6 @@ function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 			$errors->add("securimage_code", '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.__('Typed code is not correct.', $cimy_uef_domain));
 		}
 	}
-
 	return $errors;
 }
 

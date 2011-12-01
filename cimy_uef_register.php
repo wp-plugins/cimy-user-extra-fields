@@ -278,7 +278,9 @@ function cimy_registration_check_mu_wrapper($data) {
 	$user_email = $data['user_email'];
 	$errors = $data['errors'];
 
-	$data['errors'] = cimy_registration_check($user_login, $user_email, $errors);
+	$errors = cimy_registration_check($user_login, $user_email, $errors);
+	$errors = cimy_registration_captcha_check($user->user_login, $user->user_email, $errors);
+	$data['errors'] = $errors;
 
 	return $data;
 }
@@ -543,15 +545,20 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		$i++;
 	}
 
-	if ($options['captcha'] == "securimage") {
-		global $cuef_plugin_dir;
-		require_once($cuef_plugin_dir.'/securimage/securimage.php');
-		$securimage = new Securimage();
-		if ($securimage->check($_POST['securimage_response_field']) == false) {
-			$errors->add("securimage_code", '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.__('Typed code is not correct.', $cimy_uef_domain));
+	if ($options['confirm_form']) {
+		if ((empty($errors->errors)) && (isset($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 1)) {
+			$errors->add('register_confirmation', 'true');
 		}
 	}
 
+	cimy_switch_current_blog();
+
+	return $errors;
+}
+
+function cimy_registration_captcha_check($user_login, $user_email, $errors) {
+	global $cimy_uef_domain;
+	$options = cimy_get_options();
 	if (($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_private_key']))) {
 		$recaptcha_code_ok = false;
 
@@ -571,13 +578,14 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$errors->add("recaptcha_code", '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.__('Typed code is not correct.', $cimy_uef_domain));
 	}
 
-	if ($options['confirm_form']) {
-		if ((empty($errors->errors)) && (isset($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 1)) {
-			$errors->add('register_confirmation', 'true');
+	if ($options['captcha'] == "securimage") {
+		global $cuef_plugin_dir;
+		require_once($cuef_plugin_dir.'/securimage/securimage.php');
+		$securimage = new Securimage();
+		if ($securimage->check($_POST['securimage_response_field']) == false) {
+			$errors->add("securimage_code", '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.__('Typed code is not correct.', $cimy_uef_domain));
 		}
 	}
-
-	cimy_switch_current_blog();
 
 	return $errors;
 }

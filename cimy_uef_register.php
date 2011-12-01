@@ -1108,14 +1108,21 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 	if (($show_type != 2) && ($options['captcha'] == "securimage")) {
 		global $cuef_securimage_webpath;
+		if (is_multisite()) {
+			$width = 500;
+			if ($errmsg = $errors->get_error_message("securimage_code"))
+				echo '<p class="error">'.$errmsg.'</p>';
+		}
+		else
+			$width = 278;
 ?>
-		<div style="width: 278px; float: left; height: 80px; vertical-align: text-top;">
+		<div style="width: <?php echo $width; ?>px; float: left; height: 80px; vertical-align: text-top;">
 			<img id="captcha" align="left" style="padding-right: 5px; border: 0" src="<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php" alt="CAPTCHA Image" />
 			<object type="application/x-shockwave-flash" data="<?php echo $cuef_securimage_webpath; ?>/securimage_play.swf?audio=<?php echo $cuef_securimage_webpath; ?>/securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" height="19" width="19"><param name="movie" value="<?php echo $cuef_securimage_webpath; ?>/securimage_play.swf?audio=<?php echo $cuef_securimage_webpath; ?>/securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" /></object>
-			<br /><br /><br /><br />
+			<br /><br /><br />
 			<a align="right" tabindex="<?php echo $tabindex; $tabindex++; ?>" style="border-style: none" href="#" onclick="document.getElementById('captcha').src = '<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php?' + Math.random(); return false"><img src="<?php echo $cuef_securimage_webpath; ?>/images/refresh.gif" alt="<?php _e("Change image", $cimy_uef_domain); ?>" border="0" onclick="this.blur()" align="bottom" /></a>
 		</div>
-		<div style="width: 278px; float: left; height: 50px; vertical-align: bottom; padding: 5px;">
+		<div style="width: <?php echo $width; ?>px; float: left; height: 50px; vertical-align: bottom; padding: 5px;">
 			<?php _e("Insert the code:", $cimy_uef_domain); ?>&nbsp;<input type="text" name="securimage_response_field" size="10" maxlength="6" tabindex="<?php echo $tabindex; $tabindex++; ?>" />
 		</div>
 <?php
@@ -1123,24 +1130,26 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 	if (($show_type != 2) && ($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
 		require_once($cuef_plugin_dir.'/recaptcha/recaptchalib.php');
-
-	?>
-			<script type='text/javascript'>
-				var RecaptchaOptions = {
-					lang: '<?php echo substr(get_locale(), 0, 2); ?>',
-					tabindex : <?php echo strval($tabindex); $tabindex++; ?>
-				};
-			</script>
-	<?php
+		if (is_multisite() && $errmsg = $errors->get_error_message("recaptcha_code")) {
+			echo '<p class="error">'.$errmsg.'</p>';
+		}
+?>
+		<script type='text/javascript'>
+			var RecaptchaOptions = {
+				lang: '<?php echo substr(get_locale(), 0, 2); ?>',
+				tabindex : <?php echo strval($tabindex); $tabindex++; ?>
+			};
+		</script>
+<?php
 
 		// no need if Tiny MCE is present already
 		if (empty($tiny_mce_objects)) {
-	?>
+?>
 			<script type='text/javascript'>
 				var login_div = document.getElementById("login");
 				login_div.style.width = "375px";
 			</script>
-	<?php
+<?php
 		}
 		echo recaptcha_get_html($options['recaptcha_public_key']);
 	}

@@ -556,7 +556,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 	global $cimy_uef_domain;
 	if (!empty($_POST['register_confirmation']) && ($_POST['register_confirmation'] == 2) && (wp_verify_nonce($_REQUEST['confirm_form_nonce'], 'confirm_form')))
-		return;
+		return $errors;
 	$options = cimy_get_options();
 	if (($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_private_key']))) {
 		$recaptcha_code_ok = false;

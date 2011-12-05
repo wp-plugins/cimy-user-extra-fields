@@ -555,6 +555,8 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 	global $cimy_uef_domain;
+	if (!empty($_POST['register_confirmation']) && ($_POST['register_confirmation'] == 2) && (wp_verify_nonce($_REQUEST['confirm_form_nonce'], 'confirm_form')))
+		return;
 	$options = cimy_get_options();
 	if (($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_private_key']))) {
 		$recaptcha_code_ok = false;
@@ -1204,6 +1206,7 @@ function cimy_confirmation_form() {
 		<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
 		<br class="clear" />
 		<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
+		<input type="hidden" name="confirm_form_nonce" value="<?php echo wp_create_nonce('confirm_form'); ?>" />
 		<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="<?php esc_attr_e('Register'); ?>" tabindex="100" /></p>
 		</form>
 

@@ -529,13 +529,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 					if (in_array($type, $cimy_uef_file_types)) {
 						if ($file_size > $maxlen) {
-
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size more than', $cimy_uef_domain).' '.$maxlen.' KB.');
 						}
 					}
 					else {
 						if (strlen($value) > $maxlen) {
-
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length more than', $cimy_uef_domain).' '.$maxlen.'.');
 						}
 					}
@@ -1160,6 +1158,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 }
 
 function cimy_confirmation_form() {
+	if (empty($_POST['register_confirmation']))
+		return;
 	$confirmation = false;
 	$http_post = ('POST' == $_SERVER['REQUEST_METHOD']);
 	$user_login = '';
@@ -1169,9 +1169,14 @@ function cimy_confirmation_form() {
 		$user_login = $_POST['user_login'];
 		$user_email = $_POST['user_email'];
 
-		// Might be Theme My Login, they have its own register_new_user but they don't have login_header seems so, so let's return for now!
-		if (function_exists("register_new_user"))
+		if (function_exists("register_new_user")) {
+			// fake registration to check if no errors then we'll proceed to confirmation phase
 			$errors = register_new_user($user_login, $user_email);
+			// ok we can remove registration checks
+			remove_action('register_post', 'cimy_registration_check');
+			remove_action('register_post', 'cimy_registration_captcha_check');
+		}
+		// Might be Theme My Login, they have its own register_new_user but they don't have login_header seems so, so let's return for now!
 		else
 			return;
 

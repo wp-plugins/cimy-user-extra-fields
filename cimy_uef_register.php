@@ -3,8 +3,10 @@
 function cimy_register_user_extra_hidden_fields_stage2() {
 	global $start_cimy_uef_comment, $end_cimy_uef_comment;
 
-	echo "\n".$start_cimy_uef_comment;
+	if (empty($_POST))
+		return;
 
+	echo "\n".$start_cimy_uef_comment;
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
@@ -12,7 +14,7 @@ function cimy_register_user_extra_hidden_fields_stage2() {
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
 		}
 	}
-
+	wp_nonce_field('confirm_form', 'confirm_form_nonce');
 	echo $end_cimy_uef_comment;
 }
 
@@ -278,8 +280,12 @@ function cimy_registration_check_mu_wrapper($data) {
 	$user_email = $data['user_email'];
 	$errors = $data['errors'];
 
+	// no we don't want to check again at this stage
+	if (($_REQUEST['stage'] == "validate-blog-signup") && !empty($_REQUEST['confirm_form_nonce']) && ($_REQUEST['confirm_form_nonce'] == wp_create_nonce('confirm_form', 'confirm_form_nonce')))
+		return $data;
+
 	$errors = cimy_registration_check($user_login, $user_email, $errors);
-	$errors = cimy_registration_captcha_check($user->user_login, $user->user_email, $errors);
+	$errors = cimy_registration_captcha_check($user_login, $user_email, $errors);
 	$data['errors'] = $errors;
 
 	return $data;
@@ -555,6 +561,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 	global $cimy_uef_domain;
+	// no we don't want to check again at this stage
 	if (!empty($_POST['register_confirmation']) && ($_POST['register_confirmation'] == 2) && (wp_verify_nonce($_REQUEST['confirm_form_nonce'], 'confirm_form')))
 		return $errors;
 	$options = cimy_get_options();
@@ -1206,7 +1213,7 @@ function cimy_confirmation_form() {
 		<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
 		<br class="clear" />
 		<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
-		<input type="hidden" name="confirm_form_nonce" value="<?php echo wp_create_nonce('confirm_form'); ?>" />
+		<?php wp_nonce_field('confirm_form', 'confirm_form_nonce'); ?>
 		<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="<?php esc_attr_e('Register'); ?>" tabindex="100" /></p>
 		</form>
 

@@ -130,7 +130,7 @@ Every registration will have Extra Fields defined by single blogs, every user wi
 
 
 UPDATE FROM A PREVIOUS VERSION:
-- go to Cimy User Extra Fields admin options, press "Fix the problem" button and confirm
+- visit Cimy User Extra Fields admin options, DB upgrade will be performed automatically
 
 
 HOW TO ASSIGN A DEFAULT VALUE TO THE EXTRA FIELDS:
@@ -606,6 +606,10 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.1 - 06/12/2011
+- Fixed profiles cannot be updated anymore when captcha is selected (introduced with v2.3.0) (thanks to Miguel Morera and Takanudo)
+- Fixed captcha error messages are not displayed under WordPress MS
+
 v2.3.0 - 28/11/2011
 - Fixed security issue where reCAPTCHA and Securimage Captcha could be by-passed (thanks to corij)
 - Fixed tinyMCE was not working anymore since WP 3.3

@@ -130,7 +130,7 @@ Every registration will have Extra Fields defined by single blogs, every user wi
 
 
 UPDATE FROM A PREVIOUS VERSION:
-- go to Cimy User Extra Fields admin options, press "Fix the problem" button and confirm
+- visit Cimy User Extra Fields admin options, DB upgrade will be performed automatically
 
 
 HOW TO ASSIGN A DEFAULT VALUE TO THE EXTRA FIELDS:

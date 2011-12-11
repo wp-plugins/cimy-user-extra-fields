@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.3.1
+Version: 2.3.1.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -175,7 +175,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.3.1";
+$cimy_uef_version = "2.3.1.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -577,6 +577,10 @@ function cimy_change_signup_location($url) {
 	return "http://" . $current_site->domain . $current_site->path . "wp-signup.php".$attribute;
 }
 
+// add javascripts to profile edit
+add_action('admin_print_scripts-user-edit.php', 'cimy_uef_admin_profile_init_js');
+add_action('admin_print_scripts-profile.php', 'cimy_uef_admin_profile_init_js');
+
 // add filter for random generated password
 add_filter('random_password', 'cimy_register_overwrite_password');
 
@@ -832,9 +836,6 @@ function cimy_admin_menu_custom() {
 		add_action('admin_print_scripts-'.$aue_page, 'cimy_uef_admin_ajax_edit');
 	if (!empty($admin))
 		add_action('admin_print_scripts-'.$admin, 'cimy_uef_admin_init_js');
-
-	add_action('admin_print_scripts-user-edit.php', 'cimy_uef_admin_profile_init_js');
-	add_action('admin_print_scripts-profile.php', 'cimy_uef_admin_profile_init_js');
 }
 
 function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $delete_file=false, $type="", $new_filename="") {

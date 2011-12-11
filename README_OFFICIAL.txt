@@ -573,6 +573,19 @@ A: Unluckily due to a WordPress limitation I can’t add Extra Fields into user-
 Cimy User Manager – http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-manager/
 
 
+Q: I cannot edit neither delete some Extra Fields, usually after the 10th one, why?
+
+A: Your PHP server is probably limiting number of $_POST elements, Suhosin for example does it. Please allow at least 500 or more vars.
+http://www.hardened-php.net/suhosin/configuration.html#suhosin.post.max_vars
+
+
+Q: I am trying to change the fields' order, but whatever I try it doesn't work, why?
+
+A: First of all you need to select at least 2 fields if you want to change the order.
+Secondly if you change for example field n.1 to position n.3 be sure that field n.3 goes into another position and finally that a field goes into position n.1
+In short: every field should have a new position or at least the same one, but no positions can be skipped or be present multiple times.
+
+
 Q: When feature XYZ will be added?
 
 A: I don't know, remember that this is a 100% free project so answer is "When I have time and/or when someone help me with a donation".
@@ -606,6 +619,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.2 - /12/2011
+- Fixed image upload was no more possible in some cases under WordPress MS (introduced with v2.3.0) (thanks to Alexander Temper)
+
 v2.3.1 - 06/12/2011
 - Fixed profiles cannot be updated anymore when captcha is selected (introduced with v2.3.0) (thanks to Miguel Morera and Takanudo)
 - Fixed captcha error messages are not displayed under WordPress MS

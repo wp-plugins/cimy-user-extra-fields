@@ -1129,7 +1129,6 @@ function cimy_admin_users_list_page() {
 	if (is_network_admin()) {
 		require_once(ABSPATH . 'wp-admin/includes/class-wp-ms-users-list-table.php');
 		class WP_Cimy_Users_List_Table extends WP_MS_Users_List_Table {
-			var $old_args = array();
 			function prepare_items() {
 				global $role, $usersearch, $wpdb;
 
@@ -1232,7 +1231,6 @@ function cimy_admin_users_list_page() {
 	else {
 		require_once(ABSPATH . 'wp-admin/includes/class-wp-users-list-table.php');
 		class WP_Cimy_Users_List_Table extends WP_Users_List_Table {
-			var $old_args = array();
 			function prepare_items() {
 				global $role, $usersearch;
 

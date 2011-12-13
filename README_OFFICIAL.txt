@@ -619,8 +619,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.3.2 - /12/2011
+v2.3.2 - 14/12/2011
 - Fixed image upload was no more possible in some cases under WordPress MS (introduced with v2.3.0) (thanks to Alexander Temper)
+- Fixed a rare case of site crash under WordPress MS registration (thanks to Dan)
 
 v2.3.1 - 06/12/2011
 - Fixed profiles cannot be updated anymore when captcha is selected (introduced with v2.3.0) (thanks to Miguel Morera and Takanudo)

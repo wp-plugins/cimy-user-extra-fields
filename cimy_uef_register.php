@@ -130,10 +130,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$label = $thisField["LABEL"];
 			$rules = $thisField["RULES"];
 			$unique_id = $prefix.$field_id;
-			if ($type == "textarea-rich")
-				$input_name = $unique_id;
-			else
-				$input_name = $prefix.esc_attr($name);
+			$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -347,10 +344,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$label = esc_html($thisField['LABEL']);
 			$description = $thisField['DESCRIPTION'];
 			$unique_id = $prefix.$field_id;
-			if ($type == "textarea-rich")
-				$input_name = $unique_id;
-			else
-				$input_name = $prefix.esc_attr($name);
+			$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
@@ -694,10 +688,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;
-			if ($type == "textarea-rich")
-				$input_name = $unique_id;
-			else
-				$input_name = $prefix.esc_attr($name);
+			$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -1051,7 +1042,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			if (($type != "radio") && ($type != "checkbox"))
 				echo $obj_label;
 
-			if (is_multisite()) {
+			if (is_multisite() && is_wp_error($errors)) {
 				if ( $errmsg = $errors->get_error_message($unique_id) ) {
 					echo '<p class="error">'.$errmsg.'</p>';
 				}
@@ -1067,6 +1058,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		<?php
 				$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,spell,close' );
 				$editor_settings = array(
+					'textarea_name' => $input_name,
 					'teeny' => false,
 					'textarea_rows' => '10',
 					'dfw' => false,
@@ -1117,7 +1109,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		global $cuef_securimage_webpath;
 		if (is_multisite()) {
 			$width = 500;
-			if ($errmsg = $errors->get_error_message("securimage_code"))
+			if (is_wp_error($errors) && $errmsg = $errors->get_error_message("securimage_code"))
 				echo '<p class="error">'.$errmsg.'</p>';
 		}
 		else
@@ -1137,7 +1129,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 	if (($show_type != 2) && ($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
 		require_once($cuef_plugin_dir.'/recaptcha/recaptchalib.php');
-		if (is_multisite() && $errmsg = $errors->get_error_message("recaptcha_code")) {
+		if (is_multisite() && is_wp_error($errors) && $errmsg = $errors->get_error_message("recaptcha_code")) {
 			echo '<p class="error">'.$errmsg.'</p>';
 		}
 ?>

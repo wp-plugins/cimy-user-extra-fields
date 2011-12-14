@@ -36,7 +36,7 @@ function cimy_admin_define_extra_fields() {
 	$maxLen = $max_length_value;
 
 	$submit = "";
-
+	$fieldset = 0;
 	$action = "";
 	// defaults to add
 	$field_order = "0";
@@ -162,7 +162,7 @@ function cimy_admin_define_extra_fields() {
 
 		// check which fields are selected for deletions
 		for ($i = 1; $i <= $tot_fields; $i++)
-			if ($_POST['check'][$i]) {
+			if (!empty($_POST['check'][$i])) {
 				if ($k > (-1)) {
 					$sql.= " OR ";
 					$sql_data_del.= " OR ";
@@ -1129,7 +1129,6 @@ function cimy_admin_users_list_page() {
 	if (is_network_admin()) {
 		require_once(ABSPATH . 'wp-admin/includes/class-wp-ms-users-list-table.php');
 		class WP_Cimy_Users_List_Table extends WP_MS_Users_List_Table {
-			var $old_args = array();
 			function prepare_items() {
 				global $role, $usersearch, $wpdb;
 
@@ -1232,7 +1231,6 @@ function cimy_admin_users_list_page() {
 	else {
 		require_once(ABSPATH . 'wp-admin/includes/class-wp-users-list-table.php');
 		class WP_Cimy_Users_List_Table extends WP_Users_List_Table {
-			var $old_args = array();
 			function prepare_items() {
 				global $role, $usersearch;
 

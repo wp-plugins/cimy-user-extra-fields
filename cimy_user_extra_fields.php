@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.3.2
+Version: 2.3.2.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -175,7 +175,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_options.php');
 require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.3.2";
+$cimy_uef_version = "2.3.2.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -577,6 +577,9 @@ function cimy_change_signup_location($url) {
 	return "http://" . $current_site->domain . $current_site->path . "wp-signup.php".$attribute;
 }
 
+// with Theme My Login is more complicated, but we know how to workaround it
+add_action('wp_enqueue_scripts', 'cimy_uef_theme_my_login_fix');
+
 // add javascripts to profile edit
 add_action('admin_print_scripts-user-edit.php', 'cimy_uef_admin_profile_init_js');
 add_action('admin_print_scripts-profile.php', 'cimy_uef_admin_profile_init_js');
@@ -721,6 +724,14 @@ function cimy_uef_init_upload_js() {
 	global $cuef_js_webpath;
 	wp_register_script("cimy_uef_upload_file", $cuef_js_webpath."/upload_file.js", array(), false);
 	wp_enqueue_script('cimy_uef_upload_file');
+}
+
+function cimy_uef_theme_my_login_fix() {
+	// Theme My Login spam with its css _all_ pages, we like it cleaner thanks!
+	if (!empty($GLOBALS['theme_my_login'])) {
+		if ($GLOBALS['theme_my_login']->is_login_page())
+			cimy_uef_register_css();
+	}
 }
 
 function cimy_uef_register_css() {

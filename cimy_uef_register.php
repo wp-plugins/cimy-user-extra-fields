@@ -307,7 +307,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		$errors = cimy_check_user_on_signups($errors, $user_login, $user_email);
 	}
 	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
-	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
+	if (!empty($_POST["action"]) && ($_POST["action"] == "adduser" || $_POST["action"] == "createuser"))
 		return $errors;
 
 	$my_user_level = $user_level;
@@ -318,9 +318,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 	$extra_fields = get_cimyFields(false, true);
 	$wp_fields = get_cimyFields(true);
-
+	$from_profile = false;
+	if (!empty($_POST["profile"]) && $_POST["from"] == "profile")
+		$from_profile = true;
 	// if we are updating profile don't bother with WordPress fields' rules
-	if ($_POST["from"] == "profile")
+	if ($from_profile)
 		$i = 2;
 	else
 		$i = 1;
@@ -359,7 +361,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {
 				// if we are updating the profile check correct rule
-				if ($_POST["from"] == "profile") {
+				if ($from_profile) {
 					// if flag to show the field in the profile is NOT activated, skip it
 					if (!$rules['show_in_profile'])
 						continue;
@@ -374,7 +376,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			if (((is_multisite()) || ($options["confirm_email"])) && (in_array($type, $cimy_uef_file_types)))
 				continue;
 
-			if ($_POST["from"] == "profile") {
+			if ($from_profile) {
 				$old_value = $_POST[$input_name."_".$field_id."_prev_value"];
 				// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
 				if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
@@ -403,13 +405,20 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				$old_file = "";
 				$del_old_file = "";
 			}
-			else if (in_array($type, $cimy_uef_file_types)) {
+			else if (!empty($_FILES[$input_name]) && in_array($type, $cimy_uef_file_types)) {
 				// filesize in Byte transformed in KiloByte
 				$file_size = $_FILES[$input_name]['size'] / 1024;
 				$file_type = $_FILES[$input_name]['type'];
 				$value = $_FILES[$input_name]['name'];
-				$old_file = $_POST[$input_name."_".$field_id."_prev_value"];
-				$del_old_file = $_POST[$input_name."_del"];
+				$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+				$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+			}
+			else {
+				$file_size = 0;
+				$file_type = "";
+				$value = "";
+				$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+				$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
 			}
 
 			switch ($type) {

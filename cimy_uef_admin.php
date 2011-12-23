@@ -523,7 +523,7 @@ function cimy_admin_define_extra_fields() {
 	}
 
 	// CAN BE EMPTY
-	if (($store_rule['can_be_empty'] == true) || ($action != "add"))
+	if ((!isset($store_rule['can_be_empty'])) || ($store_rule['can_be_empty'] == true) || ($action != "add"))
 		$selected_input["empty"] = ' checked="checked"';
 	else
 		$selected_input["empty"] = '';

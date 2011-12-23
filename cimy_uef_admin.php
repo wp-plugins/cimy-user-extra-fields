@@ -1016,8 +1016,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 
 	<?php
 	// this will help me to track down the javascript dependencies without looping through all fields too many times
-	if (!$wp_fields) {
-		$options = cimy_get_options();
+	if (!$wp_fields && $options = cimy_get_options()) {
 		$options['file_fields'] = $javascripts_dep['file_fields'];
 		$options['image_fields'] = $javascripts_dep['image_fields'];
 		$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];

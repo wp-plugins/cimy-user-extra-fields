@@ -220,17 +220,16 @@ function cimy_admin_define_extra_fields() {
 		$label = substr(stripslashes($_POST['label'][$field_order]), 0, $max_length_label);
 
 		$name = strtoupper($name);
-		$oldname = strtoupper(stripslashes($_POST['oldname'][$field_order]));
+		$oldname = isset($_POST['oldname'][$field_order]) ? strtoupper(stripslashes($_POST['oldname'][$field_order])) : '';
 		$type = $_POST['type'][$field_order];
-		$fieldset = $_POST['fieldset'][$field_order];
+		$fieldset = isset($_POST['fieldset'][$field_order]) ? $_POST['fieldset'][$field_order] : '';
+		$minlen = isset($_POST['minlen'][$field_order]) ? $_POST['minlen'][$field_order] : '';
+		$exactlen = isset($_POST['exactlen'][$field_order]) ? $_POST['exactlen'][$field_order] : '';
+		$maxlen = isset($_POST['maxlen'][$field_order]) ? $_POST['maxlen'][$field_order] : '';
 
-		$minlen = $_POST['minlen'][$field_order];
-		$exactlen = $_POST['exactlen'][$field_order];
-		$maxlen = $_POST['maxlen'][$field_order];
-		
 		// min length available
 		$minLen = 1;
-			
+
 		// max length or size for picture available
 		if (in_array($type, $cimy_uef_file_types)) {
 			$maxLen = $max_size_file;
@@ -254,45 +253,28 @@ function cimy_admin_define_extra_fields() {
 
 		if (!empty($maxlen))
 			$store_rule['max_length'] = intval($_POST['maxlength'][$field_order]);
-		
-		$empty = $_POST['empty'][$field_order];
-		$empty == "1" ? $store_rule['can_be_empty'] = true : $store_rule['can_be_empty'] = false;
 
+		$store_rule['can_be_empty'] = empty($_POST['empty'][$field_order]) ? false : true;
 		$store_rule['edit'] = $_POST['edit'][$field_order];
-		
-		$email = $_POST['email'][$field_order];
-		$email == "1" ? $store_rule['email'] = true : $store_rule['email'] = false;
-		$equal = $_POST['equal'][$field_order];
+		$store_rule['email'] = empty($_POST['email'][$field_order]) ? false : true;
+		$equal = isset($_POST['equal'][$field_order]) ? $_POST['equal'][$field_order] : '';
 		
 		if (!empty($equal)) {
-			$store_rule['equal_to'] = stripslashes($_POST['equalto'][$field_order]);
-			
-			$equalto_casesens = $_POST['equalto_casesens'][$field_order];
-
-			$equalto_regex = $_POST['equalto_regex'][$field_order];
+			$store_rule['equal_to'] = empty($_POST['equalto'][$field_order]) ? '' : stripslashes($_POST['equalto'][$field_order]);
+			$equalto_casesens = empty($_POST['equalto_casesens'][$field_order]) ? '' : $_POST['equalto_casesens'][$field_order];
+			$equalto_regex = empty($_POST['equalto_regex'][$field_order]) ? '' : $_POST['equalto_regex'][$field_order];
 		}
 
 		$store_rule["advanced_options"] = stripslashes($_POST['advanced_options'][$field_order]);
-		$show_in_reg = $_POST['show_in_reg'][$field_order];
-		$show_in_reg == "1" ? $store_rule['show_in_reg'] = true : $store_rule['show_in_reg'] = false;
-		
-		$show_in_profile = $_POST['show_in_profile'][$field_order];
-		$show_in_profile == "1" ? $store_rule['show_in_profile'] = true : $store_rule['show_in_profile'] = false;
-		
-		$show_in_aeu = $_POST['show_in_aeu'][$field_order];
-		$show_in_aeu == "1" ? $store_rule['show_in_aeu'] = true : $store_rule['show_in_aeu'] = false;
-
-		$show_in_search = $_POST['show_in_search'][$field_order];
-		$show_in_search == "1" ? $store_rule['show_in_search'] = true : $store_rule['show_in_search'] = false;
-
-		$show_in_blog = $_POST['show_in_blog'][$field_order];
-		$show_in_blog == "1" ? $store_rule['show_in_blog'] = true : $store_rule['show_in_blog'] = false;
+		$store_rule['show_in_reg'] = empty($_POST['show_in_reg'][$field_order]) ? false : true;
+		$store_rule['show_in_profile'] = empty($_POST['show_in_profile'][$field_order]) ? false : true;
+		$store_rule['show_in_aeu'] = empty($_POST['show_in_aeu'][$field_order]) ? false : true;
+		$store_rule['show_in_search'] = empty($_POST['show_in_search'][$field_order]) ? false : true;
+		$store_rule['show_in_blog'] = empty($_POST['show_in_blog'][$field_order]) ? false : true;
 
 		$show_level = $_POST['show_level'][$field_order];
 		$store_rule['show_level'] = $show_level;
-
-		$email_admin = $_POST['email_admin'][$field_order];
-		$email_admin == "1" ? $store_rule['email_admin'] = true : $store_rule['email_admin'] = false;
+		$store_rule['email_admin'] = empty($_POST['email_admin'][$field_order]) ? false : true;
 
 		// START CHECKING FOR ERRORS
 		if (empty($name))
@@ -351,7 +333,7 @@ function cimy_admin_define_extra_fields() {
 			else
 				$store_rule['equal_to_case_sensitive'] = false;
 
-			if (($equalto_regex != "") && (in_array($type, $rule_equalto_regex)))
+			if ((!empty($equalto_regex)) && (in_array($type, $rule_equalto_regex)))
 				$store_rule['equal_to_regex'] = true;
 			else
 				$store_rule['equal_to_regex'] = false;
@@ -445,13 +427,13 @@ function cimy_admin_define_extra_fields() {
 	// print errors if there are some
 	cimy_uef_print_messages($errors, $results);
 	
-	if ($store_rule['min_length'] == 0)
+	if (isset($store_rule['min_length']) && $store_rule['min_length'] == 0)
 		unset($store_rule['min_length']);
 	
-	if ($store_rule['exact_length'] == 0)
+	if (isset($store_rule['exact_length']) && $store_rule['exact_length'] == 0)
 		unset($store_rule['exact_length']);
 
-	if ($store_rule['max_length'] == 0)
+	if (isset($store_rule['max_length']) && $store_rule['max_length'] == 0)
 		unset($store_rule['max_length']);
 
 	if (!isset($store_rule['show_level']))
@@ -824,8 +806,8 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$label = esc_attr($field['LABEL']);
 			$type = $field['TYPE'];
 			$rules = $field['RULES'];
-			$fieldset = $field["FIELDSET"];
 			if (!$wp_fields) {
+				$fieldset = $field["FIELDSET"];
 				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_reg", $rules["show_in_reg"]);
 				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_profile", $rules["show_in_profile"]);
 				$javascripts_dep = cimy_uef_set_javascript_dependencies($javascripts_dep, $type, "show_in_aeu", $rules["show_in_aeu"]);

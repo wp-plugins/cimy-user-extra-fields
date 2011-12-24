@@ -453,8 +453,6 @@ function cimy_admin_define_extra_fields() {
 	$selected_input["exact_length"] = '';
 	$selected_input["max_length"] = '';
 	$selected_input["equal_to"] = '';
-	$selected_input["email"] = '';
-	$selected_input["email_admin"] = '';
 	$selected_input["minlen"] = '';
 	$selected_input["exactlen"] = '';
 	$selected_input["maxlen"] = '';
@@ -493,17 +491,9 @@ function cimy_admin_define_extra_fields() {
 		if (isset($store_rule['equal_to']))
 			$selected_input["equal_to"] = $store_rule['equal_to'];
 
-		// CHECK EMAIL SYNTAX
-		if ($store_rule['email'] == true)
-			$selected_input["email"] = ' checked="checked"';
-
 		// ADVANCED OPTIONS
 		if (isset($store_rule['advanced_options']))
 			$selected_input["advanced_options"] = $store_rule['advanced_options'];
-
-		// EMAIL ADMIN
-		if ($store_rule['email_admin'] == true)
-			$selected_input["email_admin"] = ' checked="checked"';
 	}
 	// action is not "add"
 	else {
@@ -601,7 +591,7 @@ function cimy_admin_define_extra_fields() {
 			<input type="checkbox" name="maxlen[0]" value="1"<?php echo $selected_input["maxlen"]; ?> /> <?php echo $max_length_caption; ?> [1-<?php echo $maxLen; ?>]: &nbsp;&nbsp;<input type="text" name="maxlength[0]" value="<?php echo $selected_input["max_length"]; ?>" maxlength="5" size="5" /><br />
 			
 			<input type="checkbox" name="empty[0]" value="1"<?php echo $selected_input["empty"]; ?> /> <?php _e("Can be empty", $cimy_uef_domain); ?><br />
-			<input type="checkbox" name="email[0]" value="1"<?php echo $selected_input["email"]; ?> /> <?php _e("Check for E-mail syntax", $cimy_uef_domain); ?><br />
+			<input type="checkbox" name="email[0]" value="1"<?php checked(true, $store_rule['email'], true); ?> /> <?php _e("Check for E-mail syntax", $cimy_uef_domain); ?><br />
 			
 			<select name="edit[0]">
 				<option value="ok_edit"<?php selected('ok_edit', $store_rule['edit'], true); ?>><?php _e("Can be modified", $cimy_uef_domain); ?></option>
@@ -648,7 +638,7 @@ function cimy_admin_define_extra_fields() {
 			<br />
 
 			<!-- EMAIL ADMIN -->
-			<input type="checkbox" name="email_admin[0]" value="1"<?php echo $selected_input["email_admin"]; ?> /> <?php _e("Send an email to the admin if the user changes its value", $cimy_uef_domain); ?><br />
+			<input type="checkbox" name="email_admin[0]" value="1"<?php checked(true, $store_rule['email_admin'], true); ?> /> <?php _e("Send an email to the admin if the user changes its value", $cimy_uef_domain); ?><br />
 			<!-- ADVANCED OPTIONS -->
 			<?php _e("Advanced options", $cimy_uef_domain); ?>: <input type="text" name="advanced_options[0]" maxlength="500" value="<?php echo $selected_input["advanced_options"]; ?>"/><br />
 

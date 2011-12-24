@@ -257,8 +257,8 @@ function cimy_admin_define_extra_fields() {
 		$store_rule['can_be_empty'] = empty($_POST['empty'][$field_order]) ? false : true;
 		$store_rule['edit'] = $_POST['edit'][$field_order];
 		$store_rule['email'] = empty($_POST['email'][$field_order]) ? false : true;
-		$equal = isset($_POST['equal'][$field_order]) ? $_POST['equal'][$field_order] : '';
-		
+
+		$equal = empty($_POST['equal'][$field_order]) ? '' : $_POST['equal'][$field_order];
 		if (!empty($equal)) {
 			$store_rule['equal_to'] = empty($_POST['equalto'][$field_order]) ? '' : stripslashes($_POST['equalto'][$field_order]);
 			$equalto_casesens = empty($_POST['equalto_casesens'][$field_order]) ? '' : $_POST['equalto_casesens'][$field_order];
@@ -452,10 +452,7 @@ function cimy_admin_define_extra_fields() {
 	$selected_input["min_length"] = '';
 	$selected_input["exact_length"] = '';
 	$selected_input["max_length"] = '';
-	$selected_input["equal"] = '';
 	$selected_input["equal_to"] = '';
-	$selected_input["equal_to_case_sensitive"] = '';
-	$selected_input["equal_to_regex"] = '';
 	$selected_input["email"] = '';
 	$selected_input["email_admin"] = '';
 	$selected_input["minlen"] = '';
@@ -493,18 +490,8 @@ function cimy_admin_define_extra_fields() {
 		if (isset($store_rule['max_length']))
 			$selected_input["max_length"] = $store_rule['max_length'];
 
-		// EQUAL TO
-		if (isset($equal))
-			$selected_input["equal"] = ' checked="checked"';
-
 		if (isset($store_rule['equal_to']))
 			$selected_input["equal_to"] = $store_rule['equal_to'];
-
-		if (isset($equalto_casesens))
-			$selected_input["equal_to_case_sensitive"] = ' checked="checked"';
-
-		if (isset($equalto_regex))
-			$selected_input["equal_to_regex"] = ' checked="checked"';
 
 		// CHECK EMAIL SYNTAX
 		if ($store_rule['email'] == true)
@@ -625,12 +612,12 @@ function cimy_admin_define_extra_fields() {
 			</select>
 			<br />
 			<!-- EQUAL TO -->
-			<input type="checkbox" name="equal[0]" value="1"<?php echo $selected_input["equal"]; ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[0]" maxlength="500" value="<?php echo $selected_input["equal_to"]; ?>"/><br />
+			<input type="checkbox" name="equal[0]" value="1"<?php checked(false, empty($equal), true); ?> /> <?php _e("Should be equal TO", $cimy_uef_domain); ?>: <input type="text" name="equalto[0]" maxlength="500" value="<?php echo $selected_input["equal_to"]; ?>"/><br />
 			<!-- CASE SENSITIVE -->
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens[0]" value="1"<?php echo $selected_input["equal_to_case_sensitive"]; ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_casesens[0]" value="1"<?php checked(false, empty($equalto_casesens), true); ?> /> <?php _e("Case sensitive", $cimy_uef_domain); ?><br />
 
 			<!-- REGEX -->
-			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_regex[0]" value="1"<?php echo $selected_input["equal_to_regex"]; ?> /> <?php _e("Regular Expression", $cimy_uef_domain); ?><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="equalto_regex[0]" value="1"<?php checked(false, empty($equalto_regex), true); ?> /> <?php _e("Regular Expression", $cimy_uef_domain); ?><br />
 			
 			<!-- SHOW IN REGISTRATION -->
 			<input type="checkbox" name="show_in_reg[0]" value="1"<?php echo $selected_input["show_in_reg"]; ?> /> <?php _e("Show the field in the registration", $cimy_uef_domain); ?><br />

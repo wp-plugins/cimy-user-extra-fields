@@ -337,6 +337,7 @@ function cimy_manage_db($command) {
 		'aue_hidden_fields' => array('website', 'posts', 'email'),
 		'wp_hidden_fields' => array(),
 		'fieldset_title' => '',
+		'registration-logo' => '',
 		'captcha' => 'none',
 		'welcome_email' => $welcome_email,
 		'confirm_form' => false,

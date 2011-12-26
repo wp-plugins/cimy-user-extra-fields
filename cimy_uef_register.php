@@ -83,7 +83,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 		return;
 
 	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
-	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
+	if (!empty($_POST["action"]) && ($_POST["action"] == "adduser" || $_POST["action"] == "createuser"))
 		return;
 
 	$my_user_level = $user_level;

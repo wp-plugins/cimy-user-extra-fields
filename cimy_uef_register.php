@@ -45,7 +45,7 @@ function cimy_register_overwrite_password($password) {
 	else {
 		if (!empty($_GET['key']))
 			$key = $_GET['key'];
-		else
+		else if (!empty($_POST['key']))
 			$key = $_POST['key'];
 
 		if (!empty($key)) {
@@ -1224,6 +1224,60 @@ function cimy_confirmation_form() {
 <?php
 		login_footer("");
 		exit(0);
+	}
+}
+
+function cimy_uef_registration_redirect($redirect_to) {
+	if (empty($redirect_to)) {
+		$options = cimy_get_options();
+
+		if ($options["redirect_to"] == "source")
+			$redirect_to = esc_attr($_SERVER["HTTP_REFERER"]);
+	}
+
+	return $redirect_to;
+}
+
+function cimy_uef_redirect() {
+	if (isset($_GET["cimy_key"]))
+		cimy_uef_activate("");
+
+	if (!empty($_REQUEST["redirect_to"]))
+		wp_safe_redirect($_REQUEST["redirect_to"]);
+
+}
+
+function cimy_change_signup_location($url) {
+	global $blog_id, $current_site, $cimy_uef_plugins_dir;
+
+	if ($cimy_uef_plugins_dir == "plugins")
+		$attribute = "?blog_id=".$blog_id;
+	else
+		$attribute = "";
+
+	return "http://" . $current_site->domain . $current_site->path . "wp-signup.php".$attribute;
+}
+
+function cimy_change_login_registration_logo() {
+	$options = cimy_get_options();
+
+	if (!empty($options["registration-logo"])) {
+		global $cuef_upload_webpath;
+		list($logo_width, $logo_height, $logo_type, $logo_attr) = getimagesize($options["registration-logo"]);
+		?>
+		<style type="text/css">
+		#login h1:first-child a:first-child {
+			background: url(<?php echo esc_url($cuef_upload_webpath.basename($options["registration-logo"])); ?>) no-repeat top center;
+			background-position: center top;
+			width: <?php echo max(328, $logo_width); ?>px;
+			height: <?php echo $logo_height; ?>px;
+			text-indent: -9999px;
+			overflow: hidden;
+			padding-bottom: 15px;
+			display: block;
+		}
+		</style>
+		<?php
 	}
 }
 

@@ -623,6 +623,7 @@ v2.3.3 - 26/12/2011
 - Fixed image/file/avatar upload when Theme My Login is in use (introduced with v2.3.0) (thanks to Brandon Krakowsky)
 - Fixed a lot of PHP warnings
 - Code cleanup
+- Added Belarusian translation (Alexander Ovsov)
 
 v2.3.2 - 14/12/2011
 - Fixed image upload was no more possible in some cases under WordPress MS (introduced with v2.3.0) (thanks to Alexander Temper)

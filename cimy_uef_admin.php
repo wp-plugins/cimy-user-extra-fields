@@ -1801,6 +1801,7 @@ function cimy_save_field($action, $table, $data) {
 		$fieldset_sql = "";
 	}
 	else {
+		$wp_fields = false;
 		$fieldset = intval($data['fieldset']);
 		$fieldset_sql = ", fieldset=".$fieldset;
 	}

@@ -391,34 +391,37 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			}
 			else
 				$value = "";
-	
+
 			if ($type == "dropdown") {
 				$ret = cimy_dropDownOptions($label, $value);
 				$label = esc_html($ret['label']);
 				$html = $ret['html'];
 			}
 
-			// confirmation page
-			if ((!empty($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
-				$file_size = $_POST[$field_id_data."_size"];
-				$file_type = $_POST[$field_id_data."_type"];
-				$old_file = "";
-				$del_old_file = "";
-			}
-			else if (!empty($_FILES[$input_name]) && in_array($type, $cimy_uef_file_types)) {
-				// filesize in Byte transformed in KiloByte
-				$file_size = $_FILES[$input_name]['size'] / 1024;
-				$file_type = $_FILES[$input_name]['type'];
-				$value = $_FILES[$input_name]['name'];
-				$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
-				$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
-			}
-			else {
-				$file_size = 0;
-				$file_type = "";
-				$value = "";
-				$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
-				$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+			// upload of a file, avatar or picture
+			if (in_array($type, $cimy_uef_file_types)) {
+				// confirmation page
+				if ((!empty($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
+					$file_size = $_POST[$field_id_data."_size"];
+					$file_type = $_POST[$field_id_data."_type"];
+					$old_file = "";
+					$del_old_file = "";
+				}
+				else if (!empty($_FILES[$input_name])) {
+					// filesize in Byte transformed in KiloByte
+					$file_size = $_FILES[$input_name]['size'] / 1024;
+					$file_type = $_FILES[$input_name]['type'];
+					$value = $_FILES[$input_name]['name'];
+					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+				}
+				else {
+					$file_size = 0;
+					$file_type = "";
+					$value = "";
+					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+				}
 			}
 
 			switch ($type) {
@@ -456,7 +459,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 
 				if ((isset($rules['equal_to'])) && (in_array($type, $apply_equalto_rule))) {
-
 					$equalTo = $rules['equal_to'];
 					// 	if the type is not allowed to be case sensitive
 					// 	OR if case sensitive is not checked

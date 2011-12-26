@@ -271,7 +271,7 @@ function cimy_show_options($results, $embedded) {
 	if (!empty($options['version']) && $cimy_uef_version != $options['version'])
 		$options = cimy_plugin_install();
 
-	$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
+	$warning_msg = esc_js(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
 
 	if ($options) {
 		if (is_writable(WP_CONTENT_DIR)) {
@@ -344,7 +344,7 @@ function cimy_show_options($results, $embedded) {
 	if ((isset($cimy_top_menu)) && ($embedded))
 		return $ret;
 
-	$update_db_label = $wpdb->escape(__("This operation will create/update all missing tables/options, do you want to proceed?", $cimy_uef_domain));
+	$update_db_label = esc_js(__("This operation will create/update all missing tables/options, do you want to proceed?", $cimy_uef_domain));
 	
 	?>
 	

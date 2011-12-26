@@ -342,6 +342,7 @@ function cimy_manage_db($command) {
 		'confirm_form' => false,
 		'confirm_email' => false,
 		'password_meter' => false,
+		'mail_include_fields' => false,
 		'redirect_to' => '',
 		'file_fields' => array(
 			'show_in_reg' => 0,

@@ -619,6 +619,11 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.3 - 26/12/2011
+- Fixed image/file/avatar upload when Theme My Login is in use (introduced with v2.3.0) (thanks to Brandon Krakowsky)
+- Fixed a lot of PHP warnings
+- Code cleanup
+
 v2.3.2 - 14/12/2011
 - Fixed image upload was no more possible in some cases under WordPress MS (introduced with v2.3.0) (thanks to Alexander Temper)
 - Fixed a rare case of site crash under WordPress MS registration (thanks to Dan)

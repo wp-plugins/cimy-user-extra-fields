@@ -621,7 +621,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.3.3 - 29/12/2011
 - Fixed image/file/avatar upload when Theme My Login is in use (introduced with v2.3.0) (thanks to Brandon Krakowsky)
-- Fixed password meter and textarea-rich were not working after submitting a registration with some errors (introduced with v2.3.0)
+- Fixed password meter and textarea-rich were not working after submitting a registration with some errors when form confirmation is turned on (introduced with v2.3.0)
 - Fixed a lot of PHP warnings
 - Code cleanup
 - Added Belarusian translation (Alexander Ovsov)

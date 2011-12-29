@@ -101,7 +101,7 @@ function cimy_uef_init_javascripts($rule_name) {
 			wp_enqueue_style('cimy_uef_tinymce');
 		}
 	}
-	if ($rule_name == "show_in_reg" && (empty($_POST['register_confirmation']) || $_POST['register_confirmation'] != "1")) {
+	if ($rule_name == "show_in_reg") {
 		// This is needed for registration form on WordPress >= 3.3
 		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor"))
 			wp_enqueue_script('utils');

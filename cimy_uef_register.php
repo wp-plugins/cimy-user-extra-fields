@@ -319,7 +319,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	$extra_fields = get_cimyFields(false, true);
 	$wp_fields = get_cimyFields(true);
 	$from_profile = false;
-	if (!empty($_POST["profile"]) && $_POST["from"] == "profile")
+	if (!empty($_POST["from"]) && $_POST["from"] == "profile")
 		$from_profile = true;
 	// if we are updating profile don't bother with WordPress fields' rules
 	if ($from_profile)

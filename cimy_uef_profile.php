@@ -73,10 +73,7 @@ function cimy_extract_ExtraFields() {
 			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
 			$fieldset = $thisField['FIELDSET'];
 			$unique_id = $fields_name_prefix.$field_id;
-			if ($type == "textarea-rich")
-				$input_name = $unique_id;
-			else
-				$input_name = $fields_name_prefix.esc_attr($name);
+			$input_name = $fields_name_prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -420,7 +417,7 @@ function cimy_extract_ExtraFields() {
 // 					echo "\n\t\t";
 				}
 
-				if ((($type == "picture") || ($type == "avatar")) && ((empty($rules["equal_to"])) || ($advanced_options["no-thumb"]))) {
+				if ((($type == "picture") || ($type == "avatar")) && ((empty($rules["equal_to"])) || (!empty($advanced_options["no-thumb"])))) {
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_x1\" id=\"".$field_id_data."_x1\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_y1\" id=\"".$field_id_data."_y1\" value=\"\" />";
 					echo "<input type=\"hidden\" name=\"".$field_id_data."_x2\" id=\"".$field_id_data."_x2\" value=\"\" />";
@@ -481,6 +478,7 @@ function cimy_extract_ExtraFields() {
 			if ($type == "textarea-rich" && function_exists("wp_editor")) {
 				$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,spell,close' );
 				$editor_settings = array(
+					'textarea_name' => $input_name,
 					'teeny' => false,
 					'textarea_rows' => '10',
 					'dfw' => false,
@@ -554,10 +552,7 @@ function cimy_update_ExtraFields() {
 		$label = $thisField["LABEL"];
 		$rules = $thisField["RULES"];
 		$unique_id = $fields_name_prefix.$field_id;
-		if ($type == "textarea-rich")
-			$input_name = $unique_id;
-		else
-			$input_name = $fields_name_prefix.esc_attr($name);
+		$input_name = $fields_name_prefix.esc_attr($name);
 		$field_id_data = $input_name."_".$field_id."_data";
 		$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 

@@ -445,8 +445,6 @@ function cimy_admin_define_extra_fields() {
 	if (empty($type))
 		$type = "text";
 
-	(empty($label)) ? $selected_input["label"] = '' : $selected_input["label"] = $label;
-	(empty($value)) ? $selected_input["value"] = '' : $selected_input["value"] = $value;
 	$selected_input["name"] = '';
 	$selected_input["desc"] = '';
 	$selected_input["min_length"] = '';
@@ -462,6 +460,12 @@ function cimy_admin_define_extra_fields() {
 		// NAME
 		if (!empty($name))
 			$selected_input["name"] = $name;
+
+		// VALUE
+		(empty($value)) ? $selected_input["value"] = '' : $selected_input["value"] = $value;
+
+		// LABEL
+		(empty($label)) ? $selected_input["label"] = '' : $selected_input["label"] = $label;
 
 		// DESCRIPTION
 		if (!empty($desc))
@@ -524,9 +528,9 @@ function cimy_admin_define_extra_fields() {
 		$selected_input["show_in_aeu"] = '';
 
 	$selected_input["name"] = esc_attr($selected_input["name"]);
-	$selected_input["value"] = esc_attr($selected_input["value"]);
-	$selected_input["label"] = esc_attr($selected_input["label"]);
-	$selected_input["desc"] = esc_attr($selected_input["desc"]);
+	$selected_input["value"] = esc_html($selected_input["value"]);
+	$selected_input["label"] = esc_html($selected_input["label"]);
+	$selected_input["desc"] = esc_html($selected_input["desc"]);
 	$selected_input["equal_to"] = esc_attr($selected_input["equal_to"]);
 	?>
 	
@@ -778,9 +782,9 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			$id = $field['ID'];
 			$order = $field['F_ORDER'];
 			$name = esc_attr($field['NAME']);
-			$value = esc_attr($field['VALUE']);
-			$desc = esc_attr($field['DESCRIPTION']);
-			$label = esc_attr($field['LABEL']);
+			$value = esc_html($field['VALUE']);
+			$desc = esc_html($field['DESCRIPTION']);
+			$label = esc_html($field['LABEL']);
 			$type = $field['TYPE'];
 			$rules = $field['RULES'];
 			if (!$wp_fields) {
@@ -1817,7 +1821,6 @@ function cimy_save_field($action, $table, $data) {
 	
 	$type = $wpdb->escape($data['type']);
 	$store_rule = $wpdb->escape(serialize($data['store_rule']));
-	$field_order = $wpdb->escape($data['field_order']);
 	$num_fields = $wpdb->escape($data['num_fields']);
 
 	if ($action == "add")
@@ -1829,8 +1832,10 @@ function cimy_save_field($action, $table, $data) {
 
 	if ($action == "add")
 		$sql.= ", F_ORDER=".($num_fields + 1);
-	else if ($action == "edit")
+	else if ($action == "edit") {
+		$field_order = $wpdb->escape($data['field_order']);
 		$sql.= " WHERE F_ORDER=".$field_order;
+	}
 
 	$wpdb->query($sql);
 }

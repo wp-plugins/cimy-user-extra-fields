@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.3.3.1
+Version: 2.3.4
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -172,7 +172,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 add_action('admin_init', 'cimy_uef_admin_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.3.3.1";
+$cimy_uef_version = "2.3.4";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -214,6 +214,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'password2' => array(
@@ -234,6 +235,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'firstname' => array(
@@ -254,6 +256,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'lastname' => array(
@@ -274,6 +277,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'nickname' => array(
@@ -294,6 +298,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'website' => array(
@@ -314,6 +319,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'aim' => array(
@@ -334,6 +340,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'yahoo' => array(
@@ -354,6 +361,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'jgt' => array(
@@ -374,6 +382,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			'bio-info' => array(
@@ -394,6 +403,7 @@ $wp_hidden_fields = array(
 								'show_in_search' => false,
 								'show_in_blog' => false,
 								'show_level' => -1,
+								'advanced_options' => '',
 								),
 					),
 			);

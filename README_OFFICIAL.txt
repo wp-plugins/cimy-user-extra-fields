@@ -619,6 +619,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.5 - /01/2012
+- Fixed use of a deprecated function on plug-in activation, fixes relative warning (thanks to David Anderson)
+
 v2.3.4 - 02/01/2012
 - Fixed profiles cannot be updated anymore when there are some rules set (introduced with v2.3.3) (thanks to Csaba)
 - Fixed PHP warnings

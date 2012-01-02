@@ -267,21 +267,21 @@ function cimy_plugin_install () {
 	if ($wpdb->get_var("SHOW TABLES LIKE '$wpdb_wp_fields_table'") != $wpdb_wp_fields_table) {
 		$sql = "CREATE TABLE ".$wpdb_wp_fields_table." (ID bigint(20) NOT NULL AUTO_INCREMENT, F_ORDER bigint(20) NOT NULL, NAME varchar(20), LABEL TEXT, DESCRIPTION TEXT, TYPE varchar(20), RULES TEXT, VALUE TEXT, PRIMARY KEY (ID), INDEX F_ORDER (F_ORDER), INDEX NAME (NAME))".$charset_collate.";";
 
-		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
 	}
 
 	if ($wpdb->get_var("SHOW TABLES LIKE '$wpdb_data_table'") != $wpdb_data_table) {
 		$sql = "CREATE TABLE ".$wpdb_data_table." (ID bigint(20) NOT NULL AUTO_INCREMENT, USER_ID bigint(20) NOT NULL, FIELD_ID bigint(20) NOT NULL, VALUE TEXT NOT NULL, PRIMARY KEY (ID), INDEX USER_ID (USER_ID), INDEX FIELD_ID (FIELD_ID))".$charset_collate.";";
 
-		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
 	}
 
 	if ($wpdb->get_var("SHOW TABLES LIKE '$wpdb_fields_table'") != $wpdb_fields_table) {
 		$sql = "CREATE TABLE ".$wpdb_fields_table." (ID bigint(20) NOT NULL AUTO_INCREMENT, F_ORDER bigint(20) NOT NULL, FIELDSET bigint(20) NOT NULL DEFAULT 0, NAME varchar(20), LABEL TEXT, DESCRIPTION TEXT, TYPE varchar(20), RULES TEXT, VALUE TEXT, PRIMARY KEY (ID), INDEX F_ORDER (F_ORDER), INDEX NAME (NAME))".$charset_collate.";";
 
-		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
 	}
 	return $options;
@@ -316,7 +316,7 @@ function cimy_force_signup_table_creation() {
 			KEY domain (domain)
 		)".$charset_collate.";";
 
-		require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
 	}
 }

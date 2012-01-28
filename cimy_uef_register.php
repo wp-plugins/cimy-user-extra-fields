@@ -787,7 +787,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 			if ((!empty($description)) && ($type != "registration-date")) {
 				echo "\t";
-				echo '<p id="'.$prefix.'p_desc_'.$field_id.'" class="desc"><br />'.$description.'</p>';
+				echo '<p id="'.$prefix.'p_desc_'.$field_id.'" class="description"><br />'.$description.'</p>';
 				echo "\n";
 			}
 

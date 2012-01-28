@@ -394,8 +394,10 @@ function cimy_uef_sanitize_content($content, $override_allowed_tags=null) {
 
 	if (is_array($override_allowed_tags))
 		$cimy_allowedtags = $override_allowed_tags;
-	else
+	else {
 		$cimy_allowedtags = $allowedtags;
+		$cimy_allowedtags['a']['target'] = array();
+	}
 
 	$content = wp_kses($content, $cimy_allowedtags);
 	$content = wptexturize($content);

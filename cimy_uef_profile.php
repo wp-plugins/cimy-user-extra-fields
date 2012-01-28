@@ -214,9 +214,7 @@ function cimy_extract_ExtraFields() {
 					$ret = cimy_dropDownOptions($label, $non_escaped_value);
 					$label = $ret['label'];
 					$html = $ret['html'];
-
 					$obj_label = '<label for="'.$unique_id.'">'.$label.$required.'</label>';
-
 
 					if ($type == "dropdown-multi") {
 						$obj_name = ' name="'.$input_name.'[]" multiple="multiple" size="5"';

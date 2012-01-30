@@ -622,6 +622,7 @@ CHANGELOG:
 v2.3.5 - 30/01/2012
 - Added (required) for extra fields with unchecked 'Can be empty' rule (thanks to Paul 'Sparrow Hawk' Biron for the patch)
 - Changed fields' description is now consistent with WordPress look (thanks to Paul 'Sparrow Hawk' Biron for the patch)
+- Allow 'target' attribute for links added in the extra fields' description
 - Fixed use of a deprecated function on plug-in activation, fixes relative warning (thanks to David Anderson)
 - Added Ukrainian translation (Oleg Bondarenko)
 

@@ -3,8 +3,10 @@
 function cimy_register_user_extra_hidden_fields_stage2() {
 	global $start_cimy_uef_comment, $end_cimy_uef_comment;
 
-	echo "\n".$start_cimy_uef_comment;
+	if (empty($_POST))
+		return;
 
+	echo "\n".$start_cimy_uef_comment;
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
@@ -12,7 +14,7 @@ function cimy_register_user_extra_hidden_fields_stage2() {
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
 		}
 	}
-
+	wp_nonce_field('confirm_form', 'confirm_form_nonce');
 	echo $end_cimy_uef_comment;
 }
 
@@ -43,7 +45,7 @@ function cimy_register_overwrite_password($password) {
 	else {
 		if (!empty($_GET['key']))
 			$key = $_GET['key'];
-		else
+		else if (!empty($_POST['key']))
 			$key = $_POST['key'];
 
 		if (!empty($key)) {
@@ -81,7 +83,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 		return;
 
 	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
-	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
+	if (!empty($_POST["action"]) && ($_POST["action"] == "adduser" || $_POST["action"] == "createuser"))
 		return;
 
 	$my_user_level = $user_level;
@@ -128,10 +130,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			$label = $thisField["LABEL"];
 			$rules = $thisField["RULES"];
 			$unique_id = $prefix.$field_id;
-			if ($type == "textarea-rich")
-				$input_name = $unique_id;
-			else
-				$input_name = $prefix.esc_attr($name);
+			$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -278,8 +277,12 @@ function cimy_registration_check_mu_wrapper($data) {
 	$user_email = $data['user_email'];
 	$errors = $data['errors'];
 
+	// no we don't want to check again at this stage
+	if (($_REQUEST['stage'] == "validate-blog-signup") && !empty($_REQUEST['confirm_form_nonce']) && ($_REQUEST['confirm_form_nonce'] == wp_create_nonce('confirm_form', 'confirm_form_nonce')))
+		return $data;
+
 	$errors = cimy_registration_check($user_login, $user_email, $errors);
-	$errors = cimy_registration_captcha_check($user->user_login, $user->user_email, $errors);
+	$errors = cimy_registration_captcha_check($user_login, $user_email, $errors);
 	$data['errors'] = $errors;
 
 	return $data;
@@ -304,7 +307,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		$errors = cimy_check_user_on_signups($errors, $user_login, $user_email);
 	}
 	// avoid to save stuff if user is being added from: /wp-admin/user-new.php and shit WP 3.1 changed the value just to create new bugs :@
-	if (($_POST["action"] == "adduser") || ($_POST["action"] == "createuser"))
+	if (!empty($_POST["action"]) && ($_POST["action"] == "adduser" || $_POST["action"] == "createuser"))
 		return $errors;
 
 	$my_user_level = $user_level;
@@ -315,9 +318,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 	$extra_fields = get_cimyFields(false, true);
 	$wp_fields = get_cimyFields(true);
-
+	$from_profile = false;
+	if (!empty($_POST["from"]) && $_POST["from"] == "profile")
+		$from_profile = true;
 	// if we are updating profile don't bother with WordPress fields' rules
-	if ($_POST["from"] == "profile")
+	if ($from_profile)
 		$i = 2;
 	else
 		$i = 1;
@@ -341,10 +346,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			$label = esc_html($thisField['LABEL']);
 			$description = $thisField['DESCRIPTION'];
 			$unique_id = $prefix.$field_id;
-			if ($type == "textarea-rich")
-				$input_name = $unique_id;
-			else
-				$input_name = $prefix.esc_attr($name);
+			$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 
 			// if the current user LOGGED IN has not enough permissions to see the field, skip it
@@ -359,7 +361,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {
 				// if we are updating the profile check correct rule
-				if ($_POST["from"] == "profile") {
+				if ($from_profile) {
 					// if flag to show the field in the profile is NOT activated, skip it
 					if (!$rules['show_in_profile'])
 						continue;
@@ -374,7 +376,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			if (((is_multisite()) || ($options["confirm_email"])) && (in_array($type, $cimy_uef_file_types)))
 				continue;
 
-			if ($_POST["from"] == "profile") {
+			if ($from_profile) {
 				$old_value = $_POST[$input_name."_".$field_id."_prev_value"];
 				// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
 				if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
@@ -389,27 +391,37 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			}
 			else
 				$value = "";
-	
+
 			if ($type == "dropdown") {
 				$ret = cimy_dropDownOptions($label, $value);
 				$label = esc_html($ret['label']);
 				$html = $ret['html'];
 			}
 
-			// confirmation page
-			if ((!empty($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
-				$file_size = $_POST[$field_id_data."_size"];
-				$file_type = $_POST[$field_id_data."_type"];
-				$old_file = "";
-				$del_old_file = "";
-			}
-			else if (in_array($type, $cimy_uef_file_types)) {
-				// filesize in Byte transformed in KiloByte
-				$file_size = $_FILES[$input_name]['size'] / 1024;
-				$file_type = $_FILES[$input_name]['type'];
-				$value = $_FILES[$input_name]['name'];
-				$old_file = $_POST[$input_name."_".$field_id."_prev_value"];
-				$del_old_file = $_POST[$input_name."_del"];
+			// upload of a file, avatar or picture
+			if (in_array($type, $cimy_uef_file_types)) {
+				// confirmation page
+				if ((!empty($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
+					$file_size = $_POST[$field_id_data."_size"];
+					$file_type = $_POST[$field_id_data."_type"];
+					$old_file = "";
+					$del_old_file = "";
+				}
+				else if (!empty($_FILES[$input_name])) {
+					// filesize in Byte transformed in KiloByte
+					$file_size = $_FILES[$input_name]['size'] / 1024;
+					$file_type = $_FILES[$input_name]['type'];
+					$value = $_FILES[$input_name]['name'];
+					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+				}
+				else {
+					$file_size = 0;
+					$file_type = "";
+					$value = "";
+					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+				}
 			}
 
 			switch ($type) {
@@ -447,7 +459,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 
 				if ((isset($rules['equal_to'])) && (in_array($type, $apply_equalto_rule))) {
-
 					$equalTo = $rules['equal_to'];
 					// 	if the type is not allowed to be case sensitive
 					// 	OR if case sensitive is not checked
@@ -555,6 +566,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 	global $cimy_uef_domain;
+	// no we don't want to check again at this stage
 	if (!empty($_POST['register_confirmation']) && ($_POST['register_confirmation'] == 2) && (wp_verify_nonce($_REQUEST['confirm_form_nonce'], 'confirm_form')))
 		return $errors;
 	$options = cimy_get_options();
@@ -687,10 +699,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;
-			if ($type == "textarea-rich")
-				$input_name = $unique_id;
-			else
-				$input_name = $prefix.esc_attr($name);
+			$input_name = $prefix.esc_attr($name);
 			$field_id_data = $input_name."_".$field_id."_data";
 			$advanced_options = cimy_uef_parse_advanced_options($rules["advanced_options"]);
 
@@ -778,7 +787,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 			if ((!empty($description)) && ($type != "registration-date")) {
 				echo "\t";
-				echo '<p id="'.$prefix.'p_desc_'.$field_id.'" class="desc"><br />'.$description.'</p>';
+				echo '<p id="'.$prefix.'p_desc_'.$field_id.'" class="description"><br />'.$description.'</p>';
 				echo "\n";
 			}
 
@@ -944,7 +953,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 							$value = cimy_manage_upload($input_name, $temp_user_login, $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 							$file_on_server = cimy_uef_get_dir_or_filename($temp_user_login, $value, false);
 							$file_thumb = cimy_uef_get_dir_or_filename($temp_user_login, $value, true);
-							if (($advanced_options["no-thumb"]) && (is_file($file_thumb)))
+							if ((!empty($advanced_options["no-thumb"])) && (is_file($file_thumb)))
 								rename($file_thumb, $file_on_server);
 
 							// yea little trick
@@ -1044,7 +1053,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			if (($type != "radio") && ($type != "checkbox"))
 				echo $obj_label;
 
-			if (is_multisite()) {
+			if (is_multisite() && is_wp_error($errors)) {
 				if ( $errmsg = $errors->get_error_message($unique_id) ) {
 					echo '<p class="error">'.$errmsg.'</p>';
 				}
@@ -1060,6 +1069,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		<?php
 				$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,spell,close' );
 				$editor_settings = array(
+					'textarea_name' => $input_name,
 					'teeny' => false,
 					'textarea_rows' => '10',
 					'dfw' => false,
@@ -1110,7 +1120,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 		global $cuef_securimage_webpath;
 		if (is_multisite()) {
 			$width = 500;
-			if ($errmsg = $errors->get_error_message("securimage_code"))
+			if (is_wp_error($errors) && $errmsg = $errors->get_error_message("securimage_code"))
 				echo '<p class="error">'.$errmsg.'</p>';
 		}
 		else
@@ -1130,7 +1140,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 	if (($show_type != 2) && ($options['captcha'] == "recaptcha") && (!empty($options['recaptcha_public_key'])) && (!empty($options['recaptcha_private_key']))) {
 		require_once($cuef_plugin_dir.'/recaptcha/recaptchalib.php');
-		if (is_multisite() && $errmsg = $errors->get_error_message("recaptcha_code")) {
+		if (is_multisite() && is_wp_error($errors) && $errmsg = $errors->get_error_message("recaptcha_code")) {
 			echo '<p class="error">'.$errmsg.'</p>';
 		}
 ?>
@@ -1206,7 +1216,7 @@ function cimy_confirmation_form() {
 		<p id="reg_passmail"><?php _e('A password will be e-mailed to you.') ?></p>
 		<br class="clear" />
 		<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
-		<input type="hidden" name="confirm_form_nonce" value="<?php echo wp_create_nonce('confirm_form'); ?>" />
+		<?php wp_nonce_field('confirm_form', 'confirm_form_nonce'); ?>
 		<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="<?php esc_attr_e('Register'); ?>" tabindex="100" /></p>
 		</form>
 
@@ -1216,6 +1226,60 @@ function cimy_confirmation_form() {
 <?php
 		login_footer("");
 		exit(0);
+	}
+}
+
+function cimy_uef_registration_redirect($redirect_to) {
+	if (empty($redirect_to)) {
+		$options = cimy_get_options();
+
+		if ($options["redirect_to"] == "source")
+			$redirect_to = esc_attr($_SERVER["HTTP_REFERER"]);
+	}
+
+	return $redirect_to;
+}
+
+function cimy_uef_redirect() {
+	if (isset($_GET["cimy_key"]))
+		cimy_uef_activate("");
+
+	if (!empty($_REQUEST["redirect_to"]))
+		wp_safe_redirect($_REQUEST["redirect_to"]);
+
+}
+
+function cimy_change_signup_location($url) {
+	global $blog_id, $current_site, $cimy_uef_plugins_dir;
+
+	if ($cimy_uef_plugins_dir == "plugins")
+		$attribute = "?blog_id=".$blog_id;
+	else
+		$attribute = "";
+
+	return "http://" . $current_site->domain . $current_site->path . "wp-signup.php".$attribute;
+}
+
+function cimy_change_login_registration_logo() {
+	$options = cimy_get_options();
+
+	if (!empty($options["registration-logo"])) {
+		global $cuef_upload_webpath;
+		list($logo_width, $logo_height, $logo_type, $logo_attr) = getimagesize($options["registration-logo"]);
+		?>
+		<style type="text/css">
+		#login h1:first-child a:first-child {
+			background: url(<?php echo esc_url($cuef_upload_webpath.basename($options["registration-logo"])); ?>) no-repeat top center;
+			background-position: center top;
+			width: <?php echo max(328, $logo_width); ?>px;
+			height: <?php echo $logo_height; ?>px;
+			text-indent: -9999px;
+			overflow: hidden;
+			padding-bottom: 15px;
+			display: block;
+		}
+		</style>
+		<?php
 	}
 }
 

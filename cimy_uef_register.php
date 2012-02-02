@@ -1183,21 +1183,21 @@ function cimy_confirmation_form() {
 
 		if (function_exists("register_new_user")) {
 			// fake registration to check if no errors then we'll proceed to confirmation phase
-			$errors = register_new_user($user_login, $user_email);
+			$fake_errors = register_new_user($user_login, $user_email);
 			// ok we can remove registration checks
-			remove_action('register_post', 'cimy_registration_check');
-			remove_action('register_post', 'cimy_registration_captcha_check');
+// 			remove_action('register_post', 'cimy_registration_check');
+// 			remove_action('register_post', 'cimy_registration_captcha_check');
 		}
 		// Might be Theme My Login, they have its own register_new_user but they don't have login_header seems so, so let's return for now!
 		else
 			return;
 
-		if (!is_wp_error($errors)) {
+		if (!is_wp_error($fake_errors)) {
 			$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';
 			wp_safe_redirect( $redirect_to );
 			exit();
 		}
-		else if ((count($errors->errors) == 1) && (isset($errors->errors["register_confirmation"]))) {
+		else if ((count($fake_errors->errors) == 1) && (isset($fake_errors->errors["register_confirmation"]))) {
 			$confirmation = true;
 		}
 	}

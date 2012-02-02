@@ -619,6 +619,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.6 - 03/02/2012
+- Fixed rules are not applied if form confirmation is turned on (introduced with v2.3.1) (thanks to Pietro Gabba)
+
 v2.3.5 - 30/01/2012
 - Added (required) for extra fields with unchecked 'Can be empty' rule (thanks to Paul 'Sparrow Hawk' Biron for the patch)
 - Changed fields' description is now consistent with WordPress look (thanks to Paul 'Sparrow Hawk' Biron for the patch)

@@ -64,6 +64,9 @@ function cimy_uef_theme_my_login_fix() {
 	if (!empty($GLOBALS['theme_my_login'])) {
 		if ($GLOBALS['theme_my_login']->is_login_page())
 			cimy_uef_register_css();
+		// Themed profile
+		if (defined('IS_PROFILE_PAGE') && constant('IS_PROFILE_PAGE'))
+			cimy_uef_admin_profile_init_js();
 	}
 }
 

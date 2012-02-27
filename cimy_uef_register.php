@@ -726,7 +726,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 
 			// if show_level == anonymous then do NOT ovverride other show_xyz rules
 			if ($rules['show_level'] == -1) {
-				if ($show_type == 0) {
+				if ($show_type == 0 || $show_type == 2) {
 					// if flag to show the field in the registration is NOT activated, skip it
 					if (!$rules['show_in_reg'])
 						continue;

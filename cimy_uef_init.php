@@ -106,8 +106,10 @@ function cimy_uef_init_javascripts($rule_name) {
 	}
 	if ($rule_name == "show_in_reg") {
 		// This is needed for registration form on WordPress >= 3.3
-		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor"))
+		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor")) {
+			wp_enqueue_script('jquery');
 			wp_enqueue_script('utils');
+		}
 
 		if ($options['password_meter']) {
 			wp_register_script("cimy_uef_password_strength_meter", $cuef_js_webpath."/password_strength_meter.js", array("password-strength-meter"), false);

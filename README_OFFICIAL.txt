@@ -619,10 +619,11 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.3.7 - /02/2012
+v2.3.7 - /03/2012
 - Fixed image/file/avatar upload on profile edit when Theme My Login - Themed profile is in use (introduced with v2.3.0) (thanks to Giovanni Gonzalez)
 - Fixed fields were showed anyways in the form confirmation even if they were not showed in the registration
 - Fixed textarea-rich didn't work sometimes in the registration form
+- Fixed registration was not possible if both password field and password meter are present and form confirmation is turned on (introduced with v2.3.3) (thanks to Jörg Thanheiser)
 
 v2.3.6 - 03/02/2012
 - Fixed rules are not applied if form confirmation is turned on (introduced with v2.3.1) (thanks to Pietro Gabba)

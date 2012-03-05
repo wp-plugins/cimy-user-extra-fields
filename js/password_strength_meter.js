@@ -33,7 +33,10 @@ function check_pass_strength() {
 }
 
 jQuery(document).ready( function() {
-	jQuery('[name=cimy_uef_wp_PASSWORD]').val('').keyup( check_pass_strength );
-	jQuery('[name=cimy_uef_wp_PASSWORD2]').val('').keyup( check_pass_strength );
-	check_pass_strength();
+	// really we need this IF otherwise we break freaking form confirmation when password and password meter are both present
+	if (jQuery('[name=cimy_uef_wp_PASSWORD]').attr('type') == 'password') {
+		jQuery('[name=cimy_uef_wp_PASSWORD]').val('').keyup( check_pass_strength );
+		jQuery('[name=cimy_uef_wp_PASSWORD2]').val('').keyup( check_pass_strength );
+		check_pass_strength();
+	}
 });

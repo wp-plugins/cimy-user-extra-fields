@@ -619,6 +619,11 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.8 - 30/07/2012
+- Fixed security issue where any site with [file|avatar|picture] extra fields is vulnerable by a possible remote code execution vulnerability present in all versions of the plug-in probably since v0.9.5
+  see: secunia.com/advisories/49975/ ('Thanks' to the kid 'Crim3R' that in the need of popularity thought that exposing thousands of users was a better idea rather than responsibly email me first)
+- Fixed plug-in PHP error for people that have 'plugins' directory with a different name/location (thanks to anmari)
+
 v2.3.7 - 05/03/2012
 - Fixed image/file/avatar upload on profile edit when Theme My Login - Themed profile is in use (introduced with v2.3.0) (thanks to Giovanni Gonzalez)
 - Fixed fields were showed anyways in the form confirmation even if they were not showed in the registration

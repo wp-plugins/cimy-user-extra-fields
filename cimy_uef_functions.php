@@ -897,4 +897,15 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	return $data;
 }
 
+function cimy_uef_get_allowed_image_extensions() {
+	$all_ext = get_allowed_mime_types();
+	$image_ext = array();
+	if (empty($all_ext))
+		return $image_ext;
+	foreach ($all_ext as $key=>$value)
+		if (stristr($value, "image/") !== false)
+			$image_ext = array_merge($image_ext, explode('|', $key));
+	return $image_ext;
+}
+
 ?>

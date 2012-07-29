@@ -935,8 +935,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					else {
 						// if we do not escape then some translations can break
 						$warning_msg = esc_js(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
-
-						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array(\'gif\', \'png\', \'jpg\', \'jpeg\', \'tiff\'));"';
+						$allowed_exts = "'".implode("','", cimy_uef_get_allowed_image_extensions())."'";
+						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array('.$allowed_exts.'));"';
 					}
 
 					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).' </label>';

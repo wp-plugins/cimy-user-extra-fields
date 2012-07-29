@@ -622,6 +622,7 @@ CHANGELOG:
 v2.3.8 - 30/07/2012
 - Fixed security issue where any site with [file|avatar|picture] extra fields is vulnerable by a possible remote code execution vulnerability present in all versions of the plug-in probably since v0.9.5
   see: secunia.com/advisories/49975/ ('thanks' to the kid 'Crim3R' that in the need of popularity thought that exposing thousands of users was a better idea rather than responsibly email me first)
+- Fixed image extensions are now restricted to what WordPress allows
 - Fixed plug-in PHP error for people that have 'plugins' directory with a different name/location (thanks to anmari)
 
 v2.3.7 - 05/03/2012

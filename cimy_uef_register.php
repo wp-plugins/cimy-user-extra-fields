@@ -494,9 +494,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				// CHECK IF IT IS A REAL PICTURE
 				if (in_array($type, $cimy_uef_file_images_types)) {
 					$allowed_mime_types = get_allowed_mime_types();
-					// this restricts to what the Network Admin decided to be allowed
-					if (is_multisite())
-						$allowed_mime_types = check_upload_mimes($allowed_mime_types);
 					$ret = wp_check_filetype($value, $allowed_mime_types);
 					$file_type2 = "";
 					if (!empty($ret['type']))
@@ -508,9 +505,6 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 				else if (in_array($type, $cimy_uef_file_types)) {
 					$allowed_mime_types = get_allowed_mime_types();
-					// this restricts to what the Network Admin decided to be allowed
-					if (is_multisite())
-						$allowed_mime_types = check_upload_mimes($allowed_mime_types);
 					$ret = wp_check_filetype($value, $allowed_mime_types);
 					$file_type2 = "";
 					if (!empty($ret['type']))

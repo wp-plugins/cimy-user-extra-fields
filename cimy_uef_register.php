@@ -412,8 +412,8 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 					$file_size = $_FILES[$input_name]['size'] / 1024;
 					$file_type1 = $_FILES[$input_name]['type']; // this can be faked!
 					$value = $_FILES[$input_name]['name'];
-					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
-					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+					$old_file = $from_profile && !empty($_POST[$input_name."_".$field_id."_prev_value"]) ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+					$del_old_file = $from_profile && !empty($_POST[$input_name."_del"]) ? $_POST[$input_name."_del"] : '';
 				}
 				else {
 					$file_size = 0;
@@ -494,10 +494,10 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				// CHECK IF IT IS A REAL PICTURE
 				if (in_array($type, $cimy_uef_file_images_types)) {
 					$allowed_mime_types = get_allowed_mime_types();
-					$ret = wp_check_filetype($value, $allowed_mime_types);
+					$validate = wp_check_filetype($value, $allowed_mime_types);
 					$file_type2 = "";
-					if (!empty($ret['type']))
-						$file_type2 = $ret['type'];
+					if (!empty($validate['type']))
+						$file_type2 = $validate['type'];
 
 					if (((stristr($file_type1, "image/") === false) || (stristr($file_type2, "image/") === false)) && (!empty($value))) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('should be an image.', $cimy_uef_domain));
@@ -505,10 +505,10 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				}
 				else if (in_array($type, $cimy_uef_file_types)) {
 					$allowed_mime_types = get_allowed_mime_types();
-					$ret = wp_check_filetype($value, $allowed_mime_types);
+					$validate = wp_check_filetype($value, $allowed_mime_types);
 					$file_type2 = "";
-					if (!empty($ret['type']))
-						$file_type2 = $ret['type'];
+					if (!empty($validate['type']))
+						$file_type2 = $validate['type'];
 
 					if (empty($file_type2) && !empty($value)) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('does not accept this file type.', $cimy_uef_domain));

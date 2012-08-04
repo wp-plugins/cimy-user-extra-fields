@@ -619,6 +619,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.9 - 05/08/2012
+- Fixed another possible security issue where webservers with poor configuration might end up executing arbitrary PHP code when a malicious [file|avatar|picture] is uploaded (thanks to Artyom Skrobov from Secunia)
+
 v2.3.8 - 30/07/2012
 - Fixed security issue where any site with [file|avatar|picture] extra fields is vulnerable by a possible remote code execution vulnerability present in all versions of the plug-in probably since v0.9.5
   see: secunia.com/advisories/49975/ ('thanks' to the kid 'Crim3R' that in the need of popularity thought that exposing thousands of users was a better idea rather than responsibly email me first)

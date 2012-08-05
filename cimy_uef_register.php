@@ -9,6 +9,9 @@ function cimy_register_user_extra_hidden_fields_stage2() {
 	echo "\n".$start_cimy_uef_comment;
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
+			// dropdown-multi will be an Array of selected elements
+			if (is_array($value))
+				$value = implode(',', $value);
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
 		} else if ($name == "blog_id") {
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
@@ -22,6 +25,9 @@ function cimy_register_user_extra_fields_signup_meta($meta) {
 
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
+			// dropdown-multi will be an Array of selected elements
+			if (is_array($value))
+				$value = implode(',', $value);
 			$meta[$name] = $value;
 		} else if ($name == "blog_id") {
 			$meta[$name] = $value;

@@ -622,6 +622,7 @@ CHANGELOG:
 v2.3.9 - 05/08/2012
 - Fixed another possible security issue where webservers with poor configuration might end up executing arbitrary PHP code when a malicious [file|avatar|picture] is uploaded (thanks to Artyom Skrobov from Secunia)
 - Fixed dropdown-multi were not saved correctly under 'Users Extended' (thanks to David Vranish)
+- Fixed dropdown-multi were not saved correctly under WordPress MS registration (thanks to David Vranish)
 
 v2.3.8 - 30/07/2012
 - Fixed security issue where any site with [file|avatar|picture] extra fields is vulnerable by a possible remote code execution vulnerability present in all versions of the plug-in probably since v0.9.5

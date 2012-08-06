@@ -250,6 +250,7 @@ function cimy_uef_activate_signup($key) {
 
 	$user_id = username_exists($user_login);
 
+	$user_already_exists = false;
 	if ( ! $user_id )
 		$user_id = wp_create_user( $user_login, $password, $user_email );
 	else

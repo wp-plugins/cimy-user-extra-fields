@@ -813,10 +813,24 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($file_path, 0777);
 		}
 	}
-	
-	// picture filesystem path
+
+	// filesize in Byte transformed in KiloByte
+	$file_size = $_FILES[$input_name]['size'] / 1024;
+	$file_type = $_FILES[$input_name]['type'];
+	$file_tmp_name = $_FILES[$input_name]['tmp_name'];
+	$file_error = $_FILES[$input_name]['error'];
+
+	$allowed_mime_types = get_allowed_mime_types();
+	// let's see if the image extension is correct, bad boy
+	$validate = wp_check_filetype_and_ext($file_tmp_name, $file_name, $allowed_mime_types);
+	if ($validate['proper_filename'] !== false)
+		$file_name = $validate['proper_filename'];
+
+	// sanitize the file name
+	$file_name = wp_unique_filename($file_path, $file_name);
+	// file path
 	$file_full_path = $file_path.$file_name;
-	
+
 	// picture url to write in the DB
 	$data = $cuef_upload_webpath;
 
@@ -827,12 +841,6 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		$data .= $type_path.$file_name;
 	else
 		$data .= $user_login."/".$type_path.$file_name;
-	
-	// filesize in Byte transformed in KiloByte
-	$file_size = $_FILES[$input_name]['size'] / 1024;
-	$file_type = $_FILES[$input_name]['type'];
-	$file_tmp_name = $_FILES[$input_name]['tmp_name'];
-	$file_error = $_FILES[$input_name]['error'];
 
 	// CHECK IF IT IS A REAL PICTURE
 	if (($type != "file") && (stristr($file_type, "image/") === false))
@@ -895,6 +903,17 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		$data = "";
 
 	return $data;
+}
+
+function cimy_uef_get_allowed_image_extensions() {
+	$all_ext = get_allowed_mime_types();
+	$image_ext = array();
+	if (empty($all_ext))
+		return $image_ext;
+	foreach ($all_ext as $key=>$value)
+		if (stristr($value, "image/") !== false)
+			$image_ext = array_merge($image_ext, explode('|', $key));
+	return $image_ext;
 }
 
 ?>

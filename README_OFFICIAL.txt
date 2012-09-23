@@ -621,6 +621,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.3.10 - 24/09/2012
 - Fixed email is not sent to the user once confirmed its email address (non-MS only) (introduced in v2.3.9) (thanks to all that reported this)
+- Fixed labels for dropdown and dropdown-multi were not correctly showed in the welcome email
 
 v2.3.9 - 06/08/2012
 - Fixed another possible security issue where webservers with poor configuration might end up executing arbitrary PHP code when a malicious [file|avatar|picture] is uploaded (thanks to Artyom Skrobov from Secunia)

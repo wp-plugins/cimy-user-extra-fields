@@ -95,15 +95,28 @@ function cimy_uef_mail_fields($user = false, $activation_data = false) {
 
 	if (empty($meta)) {
 		// normal fields
-		foreach ($wp_hidden_fields as $field)
-			if ((!empty($user->{$field["post_name"]})) && ($field["type"] != "password"))
-				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $field["label"], $user->{$field["post_name"]}) . "\r\n";
+		foreach ($wp_hidden_fields as $field) {
+			if ((!empty($user->{$field["post_name"]})) && ($field["type"] != "password")) {
+				$label = $field["label"];
+				if ($field["type"] == "dropdown" || $field["type"] == "dropdown-multi") {
+					$ret = cimy_dropDownOptions($label, "");
+					$label = $ret['label'];
+				}
+				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $label, $user->{$field["post_name"]}) . "\r\n";
+			}
+		}
 	}
 	else {
 		$fields = get_cimyFields(true);
 		foreach ($fields as $field) {
-			if ((!empty($meta[$wp_fields_name_prefix.$field["NAME"]])) && ($field["TYPE"] != "password"))
-				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $field["LABEL"], $meta[$wp_fields_name_prefix.$field["NAME"]]) . "\r\n";
+			if ((!empty($meta[$wp_fields_name_prefix.$field["NAME"]])) && ($field["TYPE"] != "password")) {
+				$label = $field["LABEL"];
+				if ($field["TYPE"] == "dropdown" || $field["TYPE"] == "dropdown-multi") {
+					$ret = cimy_dropDownOptions($label, "");
+					$label = $ret['label'];
+				}
+				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $label, $meta[$wp_fields_name_prefix.$field["NAME"]]) . "\r\n";
+			}
 		}
 	}
 

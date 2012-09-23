@@ -268,7 +268,7 @@ function cimy_uef_activate_signup($key) {
 
 	$wpdb->update( $wpdb->prefix."signups", array('active' => 1, 'activated' => $now), array('activation_key' => $key) );
 
-	if ( isset( $user_already_exists ) )
+	if ($user_already_exists)
 		return new WP_Error( 'user_already_exists', __( 'That username is already activated.', $cimy_uef_domain), $signup);
 
 	$options = cimy_get_options();

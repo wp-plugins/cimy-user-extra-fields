@@ -9,6 +9,9 @@ function cimy_register_user_extra_hidden_fields_stage2() {
 	echo "\n".$start_cimy_uef_comment;
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
+			// dropdown-multi will be an Array of selected elements
+			if (is_array($value))
+				$value = implode(',', $value);
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
 		} else if ($name == "blog_id") {
 			echo "\t\t<input type=\"hidden\" name=\"".$name."\" value=\"".esc_attr($value)."\" />\n";
@@ -22,6 +25,9 @@ function cimy_register_user_extra_fields_signup_meta($meta) {
 
 	foreach ($_POST as $name=>$value) {
 		if (!(stristr($name, "cimy_uef_")) === FALSE) {
+			// dropdown-multi will be an Array of selected elements
+			if (is_array($value))
+				$value = implode(',', $value);
 			$meta[$name] = $value;
 		} else if ($name == "blog_id") {
 			$meta[$name] = $value;
@@ -403,21 +409,21 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				// confirmation page
 				if ((!empty($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 2)) {
 					$file_size = $_POST[$field_id_data."_size"];
-					$file_type = $_POST[$field_id_data."_type"];
+					$file_type1 = $_POST[$field_id_data."_type"]; // this can be faked!
 					$old_file = "";
 					$del_old_file = "";
 				}
 				else if (!empty($_FILES[$input_name])) {
 					// filesize in Byte transformed in KiloByte
 					$file_size = $_FILES[$input_name]['size'] / 1024;
-					$file_type = $_FILES[$input_name]['type'];
+					$file_type1 = $_FILES[$input_name]['type']; // this can be faked!
 					$value = $_FILES[$input_name]['name'];
-					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
-					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+					$old_file = $from_profile && !empty($_POST[$input_name."_".$field_id."_prev_value"]) ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+					$del_old_file = $from_profile && !empty($_POST[$input_name."_del"]) ? $_POST[$input_name."_del"] : '';
 				}
 				else {
 					$file_size = 0;
-					$file_type = "";
+					$file_type1 = "";
 					$value = "";
 					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
 					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
@@ -493,8 +499,25 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 				// CHECK IF IT IS A REAL PICTURE
 				if (in_array($type, $cimy_uef_file_images_types)) {
-					if ((stristr($file_type, "image/") === false) && (!empty($value))) {
+					$allowed_mime_types = get_allowed_mime_types();
+					$validate = wp_check_filetype($value, $allowed_mime_types);
+					$file_type2 = "";
+					if (!empty($validate['type']))
+						$file_type2 = $validate['type'];
+
+					if (((stristr($file_type1, "image/") === false) || (stristr($file_type2, "image/") === false)) && (!empty($value))) {
 						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('should be an image.', $cimy_uef_domain));
+					}
+				}
+				else if (in_array($type, $cimy_uef_file_types)) {
+					$allowed_mime_types = get_allowed_mime_types();
+					$validate = wp_check_filetype($value, $allowed_mime_types);
+					$file_type2 = "";
+					if (!empty($validate['type']))
+						$file_type2 = $validate['type'];
+
+					if (empty($file_type2) && !empty($value)) {
+						$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('does not accept this file type.', $cimy_uef_domain));
 					}
 				}
 
@@ -918,8 +941,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					else {
 						// if we do not escape then some translations can break
 						$warning_msg = esc_js(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
-
-						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array(\'gif\', \'png\', \'jpg\', \'jpeg\', \'tiff\'));"';
+						$allowed_exts = "'".implode("','", cimy_uef_get_allowed_image_extensions())."'";
+						$obj_checked = ' onchange="uploadFile(\'registerform\', \''.$unique_id.'\', \''.$warning_msg.'\', Array('.$allowed_exts.'));"';
 					}
 
 					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).' </label>';

@@ -74,6 +74,15 @@ function cimy_uef_register_css() {
 	global $cuef_css_webpath;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");
+	if (!is_multisite()) {
+		$options = cimy_get_options();
+		if (in_array("password", $options["wp_hidden_fields"])) {
+			// this CSS will hide the label "A password will be e-mailed to you."
+			wp_register_style("cimy_uef_register_nopasswordlabel", $cuef_css_webpath."/cimy_uef_register_nopasswordlabel.css", false, false);
+			wp_enqueue_style("cimy_uef_register_nopasswordlabel");
+		}
+	}
+
 	cimy_uef_init_javascripts("show_in_reg");
 	// needed till they fix this bug: http://core.trac.wordpress.org/ticket/17916#comment:18
 	wp_print_styles();

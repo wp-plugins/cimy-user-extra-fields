@@ -619,6 +619,22 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.10 - 24/09/2012
+- Fixed email is not sent to the user once confirmed its email address (non-MS only) (introduced in v2.3.9) (thanks to nerik73 and all people that reported this)
+- Fixed 'A password will be e-mailed to you.' will be hidden when password field is not hidden (non-MS only) (thanks to lcool for the idea)
+- Fixed labels for dropdown and dropdown-multi were not correctly showed in the welcome email
+
+v2.3.9 - 06/08/2012
+- Fixed another possible security issue where webservers with poor configuration might end up executing arbitrary PHP code when a malicious [file|avatar|picture] is uploaded (thanks to Artyom Skrobov from Secunia)
+- Fixed dropdown-multi were not saved correctly under 'Users Extended' (thanks to David Vranish)
+- Fixed dropdown-multi were not saved correctly under WordPress MS registration (thanks to David Vranish)
+
+v2.3.8 - 30/07/2012
+- Fixed security issue where any site with [file|avatar|picture] extra fields is vulnerable by a possible remote code execution vulnerability present in all versions of the plug-in probably since v0.9.5
+  see: secunia.com/advisories/49975/ ('thanks' to the kid 'Crim3R' that in the need of popularity thought that exposing thousands of users was a better idea rather than responsibly email me first)
+- Fixed image extensions are now restricted to what WordPress allows
+- Fixed plug-in PHP error for people that have 'plugins' directory with a different name/location (thanks to anmari)
+
 v2.3.7 - 05/03/2012
 - Fixed image/file/avatar upload on profile edit when Theme My Login - Themed profile is in use (introduced with v2.3.0) (thanks to Giovanni Gonzalez)
 - Fixed fields were showed anyways in the form confirmation even if they were not showed in the registration

@@ -1184,7 +1184,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			</script>
 <?php
 		}
-		echo recaptcha_get_html($options['recaptcha_public_key']);
+		echo recaptcha_get_html($options['recaptcha_public_key'], null, is_ssl());
 	}
 
 	cimy_switch_current_blog(true);

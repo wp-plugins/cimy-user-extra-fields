@@ -725,5 +725,3 @@ function cimy_show_options($results, $embedded) {
 	
 	return $ret;
 }
-
-?>

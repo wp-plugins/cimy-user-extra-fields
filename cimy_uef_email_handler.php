@@ -320,4 +320,3 @@ function cimy_check_user_on_signups($errors, $user_name, $user_email) {
 
 	return $errors;
 }
-?>

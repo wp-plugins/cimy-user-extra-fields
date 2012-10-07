@@ -582,5 +582,3 @@ add_filter('get_avatar', 'cimy_uef_avatar_filter', 1, 5);
 
 // add code to handle new value from ajax code in A&U Extended
 add_action('wp_ajax_save-extra-field-new-value', 'cimy_uef_admin_ajax_save_ef_new_value');
-
-?>

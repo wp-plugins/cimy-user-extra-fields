@@ -130,5 +130,3 @@ function cimy_uef_init_javascripts($rule_name) {
 			wp_print_scripts();
 	}
 }
-
-?>

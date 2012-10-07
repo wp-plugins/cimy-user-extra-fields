@@ -621,6 +621,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.3.11 - /10/2012
 - Fixed reCAPTCHA was not working on secure webservers (thanks to invisnet for the patch)
+- Fixed extra lines outputted by php files (thanks to Ov3rfly)
 
 v2.3.10 - 24/09/2012
 - Fixed email is not sent to the user once confirmed its email address (non-MS only) (introduced in v2.3.9) (thanks to nerik73 and all people that reported this)

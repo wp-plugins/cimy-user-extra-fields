@@ -566,5 +566,3 @@ function cimy_uef_get_meta_from_url($domain, $path) {
 
 	return $wpdb->get_row($wpdb->prepare("SELECT user_login, user_email, meta FROM ".$wpdb->prefix."signups WHERE domain = %s AND path = %s AND active = %d", $domain, $path, 0), ARRAY_A );
 }
-
-?>

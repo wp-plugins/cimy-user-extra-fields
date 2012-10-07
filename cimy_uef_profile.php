@@ -738,5 +738,3 @@ function cimy_update_ExtraFields() {
 		wp_mail($admin_email, $mail_subject, $mail_changes);
 	}
 }
-
-?>

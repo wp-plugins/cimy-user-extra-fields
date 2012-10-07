@@ -915,5 +915,3 @@ function cimy_uef_get_allowed_image_extensions() {
 			$image_ext = array_merge($image_ext, explode('|', $key));
 	return $image_ext;
 }
-
-?>

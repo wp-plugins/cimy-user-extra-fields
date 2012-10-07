@@ -1305,5 +1305,3 @@ function cimy_change_login_registration_logo() {
 		<?php
 	}
 }
-
-?>

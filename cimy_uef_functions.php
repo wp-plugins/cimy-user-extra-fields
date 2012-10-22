@@ -763,15 +763,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		$user_path = $blog_path;
 		$file_path = $blog_path.$type_path;
 	}
-	if (!empty($new_filename))
-		$file_name = $new_filename;
-	else
-		$file_name = $_FILES[$input_name]['name'];
 
-	// protect from site traversing
-	$file_name = str_replace('../', '', $file_name);
-	$file_name = str_replace('/', '', $file_name);
-	
 	// delete old file if requested
 	if ($delete_file) {
 		if (is_file($file_path.$old_file))
@@ -789,6 +781,15 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	// then everything else is useless
 	if ((($user_login == "") && ($type != "registration-logo")) || (!isset($_FILES[$input_name]['name'])) || (!is_writable($cuef_upload_path)))
 		return "";
+
+	if (!empty($new_filename))
+		$file_name = $new_filename;
+	else
+		$file_name = $_FILES[$input_name]['name'];
+
+	// protect from site traversing
+	$file_name = str_replace('../', '', $file_name);
+	$file_name = str_replace('/', '', $file_name);
 
 	// create user subdir
 	if (!is_dir($user_path)) {

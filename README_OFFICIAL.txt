@@ -619,10 +619,11 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.3.11 - /10/2012
+v2.3.11 - 29/10/2012
 - Fixed reCAPTCHA was not working on secure webservers (thanks to invisnet for the patch)
 - Fixed extra lines outputted by php files (thanks to Ov3rfly)
 - Fixed one PHP warning on options save (thanks to thomask)
+- Fixed background logo was stretched under Safari (thanks to DarioDN)
 - Updated Securimage Captcha to v3.0.1
 
 v2.3.10 - 24/09/2012

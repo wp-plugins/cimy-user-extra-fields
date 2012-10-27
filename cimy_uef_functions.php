@@ -779,17 +779,8 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	//	or there is no file to upload
 	//	or dest dir is not writable
 	// then everything else is useless
-	if ((($user_login == "") && ($type != "registration-logo")) || (!isset($_FILES[$input_name]['name'])) || (!is_writable($cuef_upload_path)))
+	if ((($user_login == "") && ($type != "registration-logo")) || (empty($_FILES[$input_name]['name'])) || (!is_writable($cuef_upload_path)))
 		return "";
-
-	if (!empty($new_filename))
-		$file_name = $new_filename;
-	else
-		$file_name = $_FILES[$input_name]['name'];
-
-	// protect from site traversing
-	$file_name = str_replace('../', '', $file_name);
-	$file_name = str_replace('/', '', $file_name);
 
 	// create user subdir
 	if (!is_dir($user_path)) {
@@ -814,6 +805,11 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($file_path, 0777);
 		}
 	}
+
+	if (!empty($new_filename))
+		$file_name = $new_filename;
+	else
+		$file_name = $_FILES[$input_name]['name'];
 
 	// filesize in Byte transformed in KiloByte
 	$file_size = $_FILES[$input_name]['size'] / 1024;

@@ -1839,5 +1839,3 @@ function cimy_save_field($action, $table, $data) {
 
 	$wpdb->query($sql);
 }
-
-?>

@@ -619,6 +619,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.3.12 - /11/2012
+- Fixed (better) background logo was stretched under Safari (thanks to DarioDN)
+
 v2.3.11 - 29/10/2012
 - Fixed reCAPTCHA was not working on secure webservers (thanks to invisnet for the patch)
 - Fixed extra lines outputted by php files (thanks to Ov3rfly)

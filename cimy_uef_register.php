@@ -254,7 +254,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 	}
 
 	if ($user_signups) {
-		$sql = $wpdb->prepare("SELECT * FROM $wpdb->users WHERE ID=$user_id");
+		$sql = $wpdb->prepare("SELECT * FROM $wpdb->users WHERE ID=%d", $user_id);
 		$saved_user = array_shift($wpdb->get_results($sql));
 		$key = substr( md5( time() . rand() . $saved_user->user_email ), 0, 16 );
 
@@ -266,10 +266,10 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			'activation_key' => $key,
 			'meta' => serialize($meta),
 		));
-		$sql = $wpdb->prepare("DELETE FROM $wpdb->users WHERE ID=$user_id");
+		$sql = $wpdb->prepare("DELETE FROM $wpdb->users WHERE ID=%d", $user_id);
 		$wpdb->query($sql);
 
-		$sql = $wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id=$user_id");
+		$sql = $wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id=%d", $user_id);
 		$wpdb->query($sql);
 
 		cimy_signup_user_notification($saved_user->user_login, $saved_user->user_email, $key, serialize($meta));

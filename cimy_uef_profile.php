@@ -98,11 +98,11 @@ function cimy_extract_ExtraFields() {
 // 				if ($d_field['FIELD_ID'] == $field_id)
 // 					$value = $d_field['VALUE'];
 // 			}
-			$value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id));
+			$value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=%d AND FIELD_ID=%d", $get_user_id, $field_id));
 			$old_value = $value;
 
 			if (($type == "radio") && (empty($radio_checked[$name])))
-				$radio_checked[$name] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id." AND VALUE=\"selected\""));
+				$radio_checked[$name] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb_data_table." WHERE USER_ID=%d AND FIELD_ID=%d AND VALUE=\"selected\"", $get_user_id, $field_id));
 
 			// if nothing is inserted and field admin default value then assign it
 			if (in_array($type, $rule_profile_value)) {

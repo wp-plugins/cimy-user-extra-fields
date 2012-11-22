@@ -1166,7 +1166,7 @@ function cimy_admin_users_list_page() {
 					'per_page' => $users_per_page,
 				));
 			}
-			function bulk_actions($which) {}
+			function bulk_actions() {}
 			function extra_tablenav($which) {
 				if ('top' != $which)
 					return;
@@ -1249,7 +1249,7 @@ function cimy_admin_users_list_page() {
 					'per_page' => $users_per_page,
 				));
 			}
-			function bulk_actions($which) {}
+			function bulk_actions() {}
 			function extra_tablenav($which) {
 				if ('top' != $which)
 					return;

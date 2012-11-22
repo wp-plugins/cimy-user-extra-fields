@@ -622,6 +622,7 @@ CHANGELOG:
 v2.3.12 - /11/2012
 - Fixed (better) background logo was stretched under Safari (thanks to DarioDN)
 - Fixed PHP warnings wpdb::prepare usage on WordPress 3.5
+- Fixed PHP warnings on Extended Users page on WordPress 3.5
 
 v2.3.11 - 29/10/2012
 - Fixed reCAPTCHA was not working on secure webservers (thanks to invisnet for the patch)

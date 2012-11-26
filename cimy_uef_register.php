@@ -122,7 +122,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 			unset($meta_db['cimy_uef_wp_PASSWORD']);
 			if (!empty($meta_db['cimy_uef_wp_PASSWORD2']))
 				unset($meta_db['cimy_uef_wp_PASSWORD2']);
-			$ret = $wpdb->update($wpdb->prefix."signups", array('meta' => serialize($meta_db)), array('user_login' => $user->user_login));
+			$wpdb->update($wpdb->prefix."signups", array('meta' => serialize($meta_db)), array('user_login' => $user->user_login));
 		}
 	}
 

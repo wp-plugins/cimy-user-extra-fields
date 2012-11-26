@@ -15,7 +15,7 @@ function get_cimyFields($wp_fields=false, $order_by_section=false) {
 		$order = " ORDER BY F_ORDER";
 
 	// if tables exist then read all fields else array empty, will be read after the creation
-	if($wpdb->get_var("SHOW TABLES LIKE '".$table."'") == $table) {
+	if ($wpdb->get_var("SHOW TABLES LIKE '".$table."'") == $table) {
 		$sql = "SELECT * FROM ".$table.$order;
 		$extra_fields = $wpdb->get_results($sql, ARRAY_A);
 	

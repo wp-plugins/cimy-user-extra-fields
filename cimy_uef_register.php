@@ -113,6 +113,18 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 		if (!empty($signup))
 			return;
 	}
+	if (!empty($meta)) {
+		$user = new WP_User((int) $user_id);
+		$meta_db = $wpdb->get_var($wpdb->prepare("SELECT meta FROM ".$wpdb->prefix."signups WHERE user_login = %s", $user->user_login));
+		$meta_db = unserialize($meta_db);
+		// password detected, kill it!
+		if (!empty($meta_db['cimy_uef_wp_PASSWORD'])) {
+			unset($meta_db['cimy_uef_wp_PASSWORD']);
+			if (!empty($meta_db['cimy_uef_wp_PASSWORD2']))
+				unset($meta_db['cimy_uef_wp_PASSWORD2']);
+			$ret = $wpdb->update($wpdb->prefix."signups", array('meta' => serialize($meta_db)), array('user_login' => $user->user_login));
+		}
+	}
 
 	$i = 1;
 

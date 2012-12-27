@@ -423,11 +423,11 @@ if (count($allFields) > 0) {
 	foreach ($allFields as $field) {
 		echo "ID: ".$field['ID']." \n";
 		echo "F_ORDER: ".$field['F_ORDER']." \n";
-		echo "NAME: ".$field['NAME']." \n";
-		echo "TYPE: ".$field['TYPE']." \n";
-		echo "VALUE: ".$field['VALUE']." \n";
-		echo "LABEL: ".$field['LABEL']." \n";
-		echo "DESCRIPTION: ".$field['DESCRIPTION']." \n";
+		echo "NAME: ".cimy_uef_sanitize_content($field['NAME'])." \n";
+		echo "TYPE: ".cimy_uef_sanitize_content($field['TYPE'])." \n";
+		echo "VALUE: ".cimy_uef_sanitize_content($field['VALUE'])." \n";
+		echo "LABEL: ".cimy_uef_sanitize_content($field['LABEL'])." \n";
+		echo "DESCRIPTION: ".cimy_uef_sanitize_content($field['DESCRIPTION'])." \n";
 
 		echo "RULES: ";
 		print_r($field['RULES']);
@@ -472,6 +472,13 @@ crop_x1=0,crop_y1=0,crop_x2=80,crop_y2=90 - pre-select cropping window
 
 [AVATAR, PICTURE, FILE]
 filename=default.pdf - rename the uploaded file to the given file name
+
+
+HOW TO USE WPML SUPPORT:
+Since v2.4.0 field's label and description can be translated using the WordPress Multilingual plug-in.
+To use it in your code you can get the get_cimyFields example above and change only the following lines:
+    echo "LABEL: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['LABEL']))." \n";
+    echo "DESCRIPTION: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['DESCRIPTION']))." \n";
 
 
 KNOWN ISSUES:
@@ -620,7 +627,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 CHANGELOG:
 v2.4.0 - 27/12/2012
-- Added support for WPML plug-in.
+- Added support for the WordPress Multilingual plug-in.
 - Fixed plain text password was staying in the DataBase for registered users (WordPress MS and WordPress + confirmation email only)
 - Fixed (better) background logo was stretched under Safari (thanks to DarioDN)
 - Fixed PHP warnings wpdb::supports_collation usage on WordPress 3.5

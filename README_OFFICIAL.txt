@@ -619,9 +619,11 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.3.12 - /11/2012
+v2.4.0 - 27/12/2012
+- Added support for WPML plug-in.
 - Fixed plain text password was staying in the DataBase for registered users (WordPress MS and WordPress + confirmation email only)
 - Fixed (better) background logo was stretched under Safari (thanks to DarioDN)
+- Fixed PHP warnings wpdb::supports_collation usage on WordPress 3.5
 - Fixed PHP warnings wpdb::prepare usage on WordPress 3.5
 - Fixed PHP warnings on Extended Users page on WordPress 3.5
 

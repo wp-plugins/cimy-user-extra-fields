@@ -729,8 +729,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
 			$old_type = $type;
-			$label = $thisField['LABEL'];
-			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
+			$label = cimy_wpml_translate_string($name."_label", $thisField["LABEL"]);
+			$description = cimy_uef_sanitize_content(cimy_wpml_translate_string($name."_desc", $thisField["DESCRIPTION"]));
 			$fieldset = empty($thisField['FIELDSET']) ? 0 : $thisField['FIELDSET'];
 			$maxlen = 0;
 			$unique_id = $prefix.$field_id;

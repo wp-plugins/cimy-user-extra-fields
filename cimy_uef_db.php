@@ -18,7 +18,7 @@ function cimy_plugin_install () {
 
 	$charset_collate = "";
 	// try to get proper charset and collate
-	if ( $wpdb->supports_collation() ) {
+	if ($wpdb->has_cap('collation')) {
 		if ( ! empty($wpdb->charset) )
 			$charset_collate = " DEFAULT CHARACTER SET $wpdb->charset";
 		if ( ! empty($wpdb->collate) )
@@ -259,6 +259,25 @@ function cimy_plugin_install () {
 			$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];
 		}
 
+		if (version_compare($options['version'], "2.3.11", "<=") === true) {
+			for ($i = 0; $i <= 1; $i++) {
+				if ($i == 0)
+					$the_table = $wpdb_wp_fields_table;
+				else
+					$the_table = $wpdb_fields_table;
+
+				$sql = "SELECT ID, RULES FROM ".$the_table;
+				$all_fields = $wpdb->get_results($sql, ARRAY_A);
+
+				if (!empty($all_fields)) {
+					foreach ($all_fields as $field) {
+						cimy_wpml_register_string($field['NAME']."_label", $field['LABEL']);
+						cimy_wpml_register_string($field['NAME']."_desc", $field['DESCRIPTION']);
+					}
+				}
+			}
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);
@@ -292,7 +311,7 @@ function cimy_force_signup_table_creation() {
 	$charset_collate = "";
 	
 	// try to get proper charset and collate
-	if ( $wpdb->supports_collation() ) {
+	if ($wpdb->has_cap('collation')) {
 		if ( ! empty($wpdb->charset) )
 			$charset_collate = " DEFAULT CHARACTER SET $wpdb->charset";
 		if ( ! empty($wpdb->collate) )

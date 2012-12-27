@@ -69,8 +69,8 @@ function cimy_extract_ExtraFields() {
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
-			$label = $thisField['LABEL'];
-			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
+			$label = cimy_wpml_translate_string($name."_label", $thisField["LABEL"]);
+			$description = cimy_uef_sanitize_content(cimy_wpml_translate_string($name."_desc", $thisField["DESCRIPTION"]));
 			$fieldset = $thisField['FIELDSET'];
 			$unique_id = $fields_name_prefix.$field_id;
 			$input_name = $fields_name_prefix.esc_attr($name);

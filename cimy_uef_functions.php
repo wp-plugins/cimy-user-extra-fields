@@ -912,3 +912,23 @@ function cimy_uef_get_allowed_image_extensions() {
 			$image_ext = array_merge($image_ext, explode('|', $key));
 	return $image_ext;
 }
+
+// http://wpml.org/documentation/support/translation-for-texts-by-other-plugins-and-themes/
+function cimy_wpml_register_string($name, $value) {
+	global $cimy_uef_name;
+	if (function_exists('icl_register_string'))
+		icl_register_string($cimy_uef_name, $name, $value);
+}
+
+function cimy_wpml_translate_string($name, $value) {
+	global $cimy_uef_name;
+	if (function_exists('icl_t'))
+		return icl_t($cimy_uef_name, $name, $value);
+	return $value;
+}
+
+function cimy_wpml_unregister_string($name) {
+	global $cimy_uef_name;
+	if (function_exists('icl_unregister_string'))
+		icl_unregister_string($cimy_uef_name, $name);
+}

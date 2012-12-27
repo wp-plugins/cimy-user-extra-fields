@@ -176,6 +176,10 @@ function cimy_admin_define_extra_fields() {
 				$sql_data_del.= "FIELD_ID=".$i;
 				$sql.= "F_ORDER=".$i;
 				$msg.= $i;
+				// wpml stuff, unregister label and description for deleted fields
+				$field_to_del_name = substr(stripslashes($_POST['name'][$i]), 0, $max_length_name);
+				cimy_wpml_unregister_string($field_to_del_name."_label");
+				cimy_wpml_unregister_string($field_to_del_name."_desc");
 			}
 			else // field to NOT be deleted, but order probably have to change, if j==(-1) then order is ok because deletions is after it!
 				if ($j > (-1)) {
@@ -401,8 +405,17 @@ function cimy_admin_define_extra_fields() {
 
 				if ($action == "add")
 					$results['inserted'] = __("Field inserted correctly", $cimy_uef_domain);
-				else if ($action == "edit")
+				else if ($action == "edit") {
 					$results['edit'] = __("Field #", $cimy_uef_domain).$field_order." ".__("updated correctly", $cimy_uef_domain);
+					// wpml stuff, unregister the string if name changed
+					if ($name != $oldname && !empty($oldname)) {
+						cimy_wpml_unregister_string($oldname."_label");
+						cimy_wpml_unregister_string($oldname."_desc");
+					}
+				}
+				// wpml stuff, always register or update
+				cimy_wpml_register_string($name."_label", $label);
+				cimy_wpml_register_string($name."_desc", $desc);
 			}
 			else {
 				$errors['namedup'] = __("Name inserted is just in the database, change to another one", $cimy_uef_domain);
@@ -446,6 +459,8 @@ function cimy_admin_define_extra_fields() {
 		$type = "text";
 
 	$selected_input["name"] = '';
+	$selected_input["label"] = '';
+	$selected_input["value"] = '';
 	$selected_input["desc"] = '';
 	$selected_input["min_length"] = '';
 	$selected_input["exact_length"] = '';
@@ -498,9 +513,6 @@ function cimy_admin_define_extra_fields() {
 		// ADVANCED OPTIONS
 		if (isset($store_rule['advanced_options']))
 			$selected_input["advanced_options"] = $store_rule['advanced_options'];
-	}
-	// action is not "add"
-	else {
 	}
 
 	// CAN BE EMPTY
@@ -1166,7 +1178,7 @@ function cimy_admin_users_list_page() {
 					'per_page' => $users_per_page,
 				));
 			}
-			function bulk_actions($which) {}
+			function bulk_actions() {}
 			function extra_tablenav($which) {
 				if ('top' != $which)
 					return;
@@ -1249,7 +1261,7 @@ function cimy_admin_users_list_page() {
 					'per_page' => $users_per_page,
 				));
 			}
-			function bulk_actions($which) {}
+			function bulk_actions() {}
 			function extra_tablenav($which) {
 				if ('top' != $which)
 					return;
@@ -1839,5 +1851,3 @@ function cimy_save_field($action, $table, $data) {
 
 	$wpdb->query($sql);
 }
-
-?>

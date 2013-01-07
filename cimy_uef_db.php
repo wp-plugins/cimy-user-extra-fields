@@ -278,6 +278,17 @@ function cimy_plugin_install () {
 			}
 		}
 
+		if (version_compare($options['version'], "2.4.0", "<=") === true) {
+			cimy_wpml_register_string("a_opt_welcome_email", $options['welcome_email']);
+			cimy_wpml_register_string("a_opt_extra_fields_title", $options['extra_fields_title']);
+			$fieldset_titles = explode(",", $options['fieldset_title']);
+			if (!empty($fieldset_titles)) {
+				foreach ($fieldset_titles as $fset_key => $fieldset) {
+					cimy_wpml_register_string("a_opt_fieldset_title_".$fset_key, $options['fieldset_title']);
+				}
+			}
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);

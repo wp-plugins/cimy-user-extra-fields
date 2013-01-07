@@ -14,7 +14,7 @@ function wp_new_user_notification($user_id, $plaintext_pass = '') {
 	$options = cimy_get_options();
 	if (!is_multisite()) {
 		if (!$options["confirm_email"])
-			wp_new_user_notification_original($user_id, $plaintext_pass, $options["mail_include_fields"], false, $options["welcome_email"]);
+			wp_new_user_notification_original($user_id, $plaintext_pass, $options["mail_include_fields"], false, cimy_wpml_translate_string("a_opt_welcome_email", $options["welcome_email"]));
 		// if confirmation email is enabled delete the default_password_nag but checks first if has not been done on top of this function!
 		else if (!isset($_POST["cimy_uef_wp_PASSWORD"]))
 			delete_user_meta($user_id, 'default_password_nag');
@@ -285,7 +285,7 @@ function cimy_uef_activate_signup($key) {
 		return new WP_Error( 'user_already_exists', __( 'That username is already activated.', $cimy_uef_domain), $signup);
 
 	$options = cimy_get_options();
-	wp_new_user_notification_original($user_id, $password, $options["mail_include_fields"], $meta, $options["welcome_email"]);
+	wp_new_user_notification_original($user_id, $password, $options["mail_include_fields"], $meta, cimy_wpml_translate_string("a_opt_welcome_email", $options["welcome_email"]));
 	return array('user_id' => $user_id, 'password' => $password, 'meta' => $meta);
 }
 

@@ -25,11 +25,19 @@ function cimy_save_options() {
 	$options['wp_hidden_fields'] = array();
 
 	$options['welcome_email'] = stripslashes($_POST['welcome_email']);
+	cimy_wpml_register_string("a_opt_welcome_email", $options['welcome_email']);
 	$options['extra_fields_title'] = stripslashes($_POST['extra_fields_title']);
 	$options['extra_fields_title'] = substr($options['extra_fields_title'], 0, $max_length_extra_fields_title);
+	cimy_wpml_register_string("a_opt_extra_fields_title", $options['extra_fields_title']);
 
 	$options['fieldset_title'] = stripslashes($_POST['fieldset_title']);
 	$options['fieldset_title'] = substr($options['fieldset_title'], 0, $max_length_fieldset_value);
+	$fieldset_titles = explode(",", $options['fieldset_title']);
+	if (!empty($fieldset_titles)) {
+		foreach ($fieldset_titles as $fset_key => $fieldset) {
+			cimy_wpml_register_string("a_opt_fieldset_title_".$fset_key, $options['fieldset_title']);
+		}
+	}
 
 	$old_reg_log = $options['registration-logo'];
 	$registration_logo = cimy_manage_upload("registration_logo", "", array(), empty($old_reg_log) ? false : basename($old_reg_log), isset($_POST['registration_logo_del']), "registration-logo");

@@ -628,6 +628,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.4.1 - /01/2013
 - Added support for welcome email, extra fields title and fieldset titles under the WordPress Multilingual plug-in (thanks to Piet for testing it)
+- Added Arabic translation (Mamoun Elkheir)
 
 v2.4.0 - 27/12/2012
 - Added support for the WordPress Multilingual plug-in.

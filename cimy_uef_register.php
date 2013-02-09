@@ -1024,8 +1024,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	
 			$obj_id = ' id="'.$unique_id.'"';
 
-			// tabindex not used in MU, dropping...
-			if (is_multisite())
+			// tabindex not used in MU, WordPress 3.5+ and Theme My Login  dropping...
+			if (is_multisite() || !empty($GLOBALS['theme_my_login']) || version_compare(get_bloginfo('version'), '3.5') >= 0)
 				$obj_tabindex = "";
 			else {
 				$obj_tabindex = ' tabindex="'.strval($tabindex).'"';
@@ -1165,7 +1165,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			<img id="captcha" align="left" style="padding-right: 5px; border: 0" src="<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php" alt="CAPTCHA Image" />
 			<object type="application/x-shockwave-flash" data="<?php echo $cuef_securimage_webpath; ?>/securimage_play.swf?audio_file=<?php echo $cuef_securimage_webpath; ?>/securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" height="19" width="19"><param name="movie" value="<?php echo $cuef_securimage_webpath; ?>/securimage_play.swf?audio_file=<?php echo $cuef_securimage_webpath; ?>/securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" /></object>
 			<br /><br /><br />
-			<a align="right" tabindex="<?php echo $tabindex; $tabindex++; ?>" style="border-style: none" href="#" onclick="document.getElementById('captcha').src = '<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php?' + Math.random(); return false"><img src="<?php echo $cuef_securimage_webpath; ?>/images/refresh.gif" alt="<?php _e("Change image", $cimy_uef_domain); ?>" border="0" onclick="this.blur()" align="bottom" /></a>
+			<a align="right" <?php if (!empty($obj_tabindex)) echo "tabindex=\"".$tabindex."\""; $tabindex++; ?> style="border-style: none" href="#" onclick="document.getElementById('captcha').src = '<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php?' + Math.random(); return false"><img src="<?php echo $cuef_securimage_webpath; ?>/images/refresh.gif" alt="<?php _e("Change image", $cimy_uef_domain); ?>" border="0" onclick="this.blur()" align="bottom" /></a>
 		</div>
 		<div style="width: <?php echo $width; ?>px; float: left; height: 50px; vertical-align: bottom; padding: 5px;">
 			<?php _e("Insert the code:", $cimy_uef_domain); ?>&nbsp;<input type="text" name="securimage_response_field" size="10" maxlength="6" tabindex="<?php echo $tabindex; $tabindex++; ?>" />
@@ -1181,8 +1181,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 ?>
 		<script type='text/javascript'>
 			var RecaptchaOptions = {
-				lang: '<?php echo substr(get_locale(), 0, 2); ?>',
-				tabindex : <?php echo strval($tabindex); $tabindex++; ?>
+				lang: '<?php echo substr(get_locale(), 0, 2); ?>'
+				<?php if (!empty($obj_tabindex)) echo ", tabindex: ".$tabindex; $tabindex++; ?>
 			};
 		</script>
 <?php

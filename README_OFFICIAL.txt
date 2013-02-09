@@ -629,6 +629,7 @@ CHANGELOG:
 v2.4.1 - /01/2013
 - Added support for welcome email, extra fields title and fieldset titles under the WordPress Multilingual plug-in (thanks to Piet for testing it)
 - Added Arabic translation (Mamoun Elkheir)
+- Fixed tabindex is no longer needed for WordPress 3.5 and Theme My Login users
 
 v2.4.0 - 27/12/2012
 - Added support for the WordPress Multilingual plug-in.

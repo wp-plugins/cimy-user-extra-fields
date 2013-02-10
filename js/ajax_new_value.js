@@ -35,12 +35,13 @@ jQuery(document).ready(function($) {
 			}
 		});
 
+		// focus first, then feed the value, so cursor will be at the end
+		$('#ef-new-value-'+user_id+'-'+field_name).focus();
 		if (extra_field_type == 'select-multiple')
 			$('#ef-new-value-'+user_id+'-'+field_name).val(old_value.split(','));
 		else
 			$('#ef-new-value-'+user_id+'-'+field_name).val(old_value);
 
-		$('#ef-new-value-'+user_id+'-'+field_name).focus();
 		if (extra_field_type == 'checkbox' && old_value == "YES")
 			$('#ef-new-value-'+user_id+'-'+field_name).attr("checked", true);
 

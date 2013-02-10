@@ -762,11 +762,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 	else {
 		?>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
-		<input type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
-		<input name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
+		<input class="button" type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
+		<input class="button" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
-			<input name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
+			<input class="button" name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 		<?php } ?>
 		</p>
 
@@ -991,11 +991,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		</tbody>
 		</table>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
-		<input type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
-		<input name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
+		<input class="button" type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
+		<input class="button" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
-			<input name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
+			<input class="button" name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 		<?php } ?>
 		</p>
 		<br />

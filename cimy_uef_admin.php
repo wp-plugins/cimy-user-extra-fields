@@ -661,8 +661,8 @@ function cimy_admin_define_extra_fields() {
 		</td>
 		<td align="center" style="vertical-align: middle;">
 			<p class="submit" style="border-width: 0px;">
-			<input name="reset" type="reset" value="<?php _e("Clear", $cimy_uef_domain); ?>" /><br /><br />
-			<input class="button-primary" name="submit_add[0]" type="submit" value="<?php echo $add_caption ?>" />
+			<input class="button button-secondary" name="reset" type="reset" value="<?php _e("Clear", $cimy_uef_domain); ?>" /><br /><br />
+			<input class="button button-primary" name="submit_add[0]" type="submit" value="<?php echo $add_caption ?>" />
 			</p>
 		</td>
 		</tr>
@@ -763,7 +763,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		?>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
 		<input class="button" type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
-		<input class="button" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
+		<input class="button action" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
 			<input class="button" name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
@@ -976,11 +976,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			</td>
 			<td align="center" style="vertical-align: middle;">
 				<p class="submit" style="border-width: 0px;">
-				<input name="reset" type="reset" value="<?php _e("Reset", $cimy_uef_domain); ?>" /><br /><br />
-				<input class="button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" onclick="changeFormAction('<?php echo $form_id; ?>', '<?php echo $field_anchor.$order; ?>')" /><br /><br />
+				<input class="button button-secondary" name="reset" type="reset" value="<?php _e("Reset", $cimy_uef_domain); ?>" /><br /><br />
+				<input class="button button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" onclick="changeFormAction('<?php echo $form_id; ?>', '<?php echo $field_anchor.$order; ?>')" /><br /><br />
 				
 				<?php if (!$wp_fields) { ?>
-					<input name="submit_del[<?php echo $order ?>]" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
+					<input class="button button-secondary" name="submit_del[<?php echo $order ?>]" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 				<?php } ?>
 				</p>
 			</td>
@@ -992,7 +992,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		</table>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
 		<input class="button" type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
-		<input class="button" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
+		<input class="button action" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
 			<input class="button" name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />

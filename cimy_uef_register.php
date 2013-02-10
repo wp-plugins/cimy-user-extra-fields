@@ -1025,7 +1025,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			$obj_id = ' id="'.$unique_id.'"';
 
 			// tabindex not used in MU, WordPress 3.5+ and Theme My Login  dropping...
-			if (is_multisite() || !empty($GLOBALS['theme_my_login']) || version_compare(get_bloginfo('version'), '3.5') >= 0)
+			if (is_multisite() || version_compare(get_bloginfo('version'), '3.5') >= 0 || (!empty($GLOBALS['theme_my_login']) && $GLOBALS['theme_my_login']->is_login_page()))
 				$obj_tabindex = "";
 			else {
 				$obj_tabindex = ' tabindex="'.strval($tabindex).'"';

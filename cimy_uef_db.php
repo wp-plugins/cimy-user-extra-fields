@@ -284,7 +284,7 @@ function cimy_plugin_install () {
 			$fieldset_titles = explode(",", $options['fieldset_title']);
 			if (!empty($fieldset_titles)) {
 				foreach ($fieldset_titles as $fset_key => $fieldset) {
-					cimy_wpml_register_string("a_opt_fieldset_title_".$fset_key, $options['fieldset_title']);
+					cimy_wpml_register_string("a_opt_fieldset_title_".$fset_key, $fieldset);
 				}
 			}
 		}

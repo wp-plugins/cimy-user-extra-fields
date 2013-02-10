@@ -1467,13 +1467,11 @@ function cimy_admin_users_list_page() {
 			foreach ($extra_fields as $thisField) {
 				$rules = $thisField['RULES'];
 				if ($rules['show_in_aeu']) {
-		
 					$i++;
-					
-					$label = cimy_uef_sanitize_content($thisField['LABEL']);
 					$id = $thisField['ID'];
 					$name = $thisField['NAME'];
 					$name_esc_attr = esc_attr($thisField['NAME']);
+					$label = cimy_uef_sanitize_content(cimy_wpml_translate_string($name."_label", $thisField["LABEL"]));
 					$type = $thisField['TYPE'];
 					$fieldset = $thisField["FIELDSET"];
 

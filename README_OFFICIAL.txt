@@ -477,8 +477,8 @@ filename=default.pdf - rename the uploaded file to the given file name
 HOW TO USE WPML SUPPORT:
 Since v2.4.0 field's label and description can be translated using the WordPress Multilingual plug-in.
 To use it in your code you can get the get_cimyFields example above and change only the following lines:
-    echo "LABEL: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['LABEL']))." \n";
-    echo "DESCRIPTION: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['DESCRIPTION']))." \n";
+    echo "LABEL: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['NAME']."_label", $field['LABEL']))." \n";
+    echo "DESCRIPTION: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['NAME']."_desc", $field['DESCRIPTION']))." \n";
 
 
 KNOWN ISSUES:

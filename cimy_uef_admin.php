@@ -1355,9 +1355,9 @@ function cimy_admin_users_list_page() {
 	_e("Users Extended", $cimy_uef_domain);
 
 	if (current_user_can('create_users')) { ?>
-		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x('Add New', 'user'); ?></a>
+		<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x('Add New', 'user'); ?></a>
 	<?php } elseif (is_multisite() && current_user_can('promote_users')) { ?>
-		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x('Add Existing', 'user'); ?></a>
+		<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x('Add Existing', 'user'); ?></a>
 	<?php }
 	if (!empty($usersearch))
 		printf('<span class="subtitle">'.__('Search results for &#8220;%s&#8221;')." (%s)</span>", esc_html($usersearch), $users_found);

@@ -43,7 +43,13 @@ function cimy_admin_menu_custom() {
 }
 
 function cimy_uef_admin_init() {
-	global $cuef_js_webpath;
+	global $cuef_js_webpath, $cuef_plugin_dir;
+	require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
+	require_once($cuef_plugin_dir.'/cimy_uef_options.php');
+	require_once($cuef_plugin_dir.'/cimy_uef_profile.php');
+	// add code to handle new value from ajax code in A&U Extended
+	add_action('wp_ajax_save-extra-field-new-value', 'cimy_uef_admin_ajax_save_ef_new_value');
+
 	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."/invert_sel.js", array(), false);
 	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."/ajax_new_value.js", array(), false);
 }

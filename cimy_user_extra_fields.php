@@ -154,10 +154,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_init.php');
 require_once($cuef_plugin_dir.'/cimy_uef_email_handler.php');
 require_once($cuef_plugin_dir.'/cimy_uef_db.php');
 require_once($cuef_plugin_dir.'/cimy_uef_register.php');
-require_once($cuef_plugin_dir.'/cimy_uef_profile.php');
 require_once($cuef_plugin_dir.'/cimy_uef_functions.php');
-require_once($cuef_plugin_dir.'/cimy_uef_options.php');
-require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 add_action('admin_init', 'cimy_uef_admin_init');
 
@@ -579,6 +576,3 @@ add_action('delete_user', 'cimy_delete_user_info');
 
 // add avatar filter
 add_filter('get_avatar', 'cimy_uef_avatar_filter', 1, 5);
-
-// add code to handle new value from ajax code in A&U Extended
-add_action('wp_ajax_save-extra-field-new-value', 'cimy_uef_admin_ajax_save_ef_new_value');

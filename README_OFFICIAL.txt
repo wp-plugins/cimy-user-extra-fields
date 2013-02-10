@@ -630,7 +630,8 @@ v2.4.1 - 11/02/2013
 - Added support for welcome email, extra fields title and fieldset titles under the WordPress Multilingual plug-in (thanks to Piet for testing it)
 - Added Arabic translation (Mamoun Elkheir)
 - Fixed tabindex is no longer needed for WordPress 3.5 and Theme My Login users
-- Fixed cursor doesn't appear at the end of the text edit under User Extended
+- Fixed PHP files inclusion, do not include the admin's files if not in the admin area
+- Fixed cursor doesn't appear at the end of the text edit under 'Users Extended'
 
 v2.4.0 - 27/12/2012
 - Added support for the WordPress Multilingual plug-in.
@@ -638,7 +639,7 @@ v2.4.0 - 27/12/2012
 - Fixed (better) background logo was stretched under Safari (thanks to DarioDN)
 - Fixed PHP warnings wpdb::supports_collation usage on WordPress 3.5
 - Fixed PHP warnings wpdb::prepare usage on WordPress 3.5
-- Fixed PHP warnings on Extended Users page on WordPress 3.5
+- Fixed PHP warnings on 'Users Extended' page on WordPress 3.5
 
 v2.3.11 - 29/10/2012
 - Fixed reCAPTCHA was not working on secure webservers (thanks to invisnet for the patch)

@@ -18,7 +18,7 @@ function cimy_plugin_install () {
 
 	$charset_collate = "";
 	// try to get proper charset and collate
-	if ( $wpdb->supports_collation() ) {
+	if ($wpdb->has_cap('collation')) {
 		if ( ! empty($wpdb->charset) )
 			$charset_collate = " DEFAULT CHARACTER SET $wpdb->charset";
 		if ( ! empty($wpdb->collate) )
@@ -259,6 +259,36 @@ function cimy_plugin_install () {
 			$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];
 		}
 
+		if (version_compare($options['version'], "2.3.11", "<=") === true) {
+			for ($i = 0; $i <= 1; $i++) {
+				if ($i == 0)
+					$the_table = $wpdb_wp_fields_table;
+				else
+					$the_table = $wpdb_fields_table;
+
+				$sql = "SELECT ID, RULES FROM ".$the_table;
+				$all_fields = $wpdb->get_results($sql, ARRAY_A);
+
+				if (!empty($all_fields)) {
+					foreach ($all_fields as $field) {
+						cimy_wpml_register_string($field['NAME']."_label", $field['LABEL']);
+						cimy_wpml_register_string($field['NAME']."_desc", $field['DESCRIPTION']);
+					}
+				}
+			}
+		}
+
+		if (version_compare($options['version'], "2.4.0", "<=") === true) {
+			cimy_wpml_register_string("a_opt_welcome_email", $options['welcome_email']);
+			cimy_wpml_register_string("a_opt_extra_fields_title", $options['extra_fields_title']);
+			$fieldset_titles = explode(",", $options['fieldset_title']);
+			if (!empty($fieldset_titles)) {
+				foreach ($fieldset_titles as $fset_key => $fieldset) {
+					cimy_wpml_register_string("a_opt_fieldset_title_".$fset_key, $fieldset);
+				}
+			}
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);
@@ -292,7 +322,7 @@ function cimy_force_signup_table_creation() {
 	$charset_collate = "";
 	
 	// try to get proper charset and collate
-	if ( $wpdb->supports_collation() ) {
+	if ($wpdb->has_cap('collation')) {
 		if ( ! empty($wpdb->charset) )
 			$charset_collate = " DEFAULT CHARACTER SET $wpdb->charset";
 		if ( ! empty($wpdb->collate) )
@@ -566,5 +596,3 @@ function cimy_uef_get_meta_from_url($domain, $path) {
 
 	return $wpdb->get_row($wpdb->prepare("SELECT user_login, user_email, meta FROM ".$wpdb->prefix."signups WHERE domain = %s AND path = %s AND active = %d", $domain, $path, 0), ARRAY_A );
 }
-
-?>

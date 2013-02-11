@@ -36,7 +36,7 @@ function cimy_extract_ExtraFields() {
 
 		if ($options['extra_fields_title'] != "") {
 			echo "<br clear=\"all\" />\n";
-			echo "<h2>".esc_html($options['extra_fields_title'])."</h2>\n";
+			echo "<h2>".esc_html(cimy_wpml_translate_string("a_opt_extra_fields_title", $options['extra_fields_title']))."</h2>\n";
 		}
 
 		foreach ($extra_fields as $thisField) {
@@ -69,8 +69,8 @@ function cimy_extract_ExtraFields() {
 			$name = $thisField['NAME'];
 			$rules = $thisField['RULES'];
 			$type = $thisField['TYPE'];
-			$label = $thisField['LABEL'];
-			$description = cimy_uef_sanitize_content($thisField['DESCRIPTION']);
+			$label = cimy_wpml_translate_string($name."_label", $thisField["LABEL"]);
+			$description = cimy_uef_sanitize_content(cimy_wpml_translate_string($name."_desc", $thisField["DESCRIPTION"]));
 			$fieldset = $thisField['FIELDSET'];
 			$unique_id = $fields_name_prefix.$field_id;
 			$input_name = $fields_name_prefix.esc_attr($name);
@@ -98,11 +98,11 @@ function cimy_extract_ExtraFields() {
 // 				if ($d_field['FIELD_ID'] == $field_id)
 // 					$value = $d_field['VALUE'];
 // 			}
-			$value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id));
+			$value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=%d AND FIELD_ID=%d", $get_user_id, $field_id));
 			$old_value = $value;
 
 			if (($type == "radio") && (empty($radio_checked[$name])))
-				$radio_checked[$name] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb_data_table." WHERE USER_ID=".$get_user_id." AND FIELD_ID=".$field_id." AND VALUE=\"selected\""));
+				$radio_checked[$name] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb_data_table." WHERE USER_ID=%d AND FIELD_ID=%d AND VALUE=\"selected\"", $get_user_id, $field_id));
 
 			// if nothing is inserted and field admin default value then assign it
 			if (in_array($type, $rule_profile_value)) {
@@ -120,7 +120,7 @@ function cimy_extract_ExtraFields() {
 					$close_table = true;
 
 				if (isset($fieldset_titles[$current_fieldset]))
-					echo "\n\t<h3>".esc_html($fieldset_titles[$current_fieldset])."</h3>\n";
+					echo "\n\t<h3>".esc_html(cimy_wpml_translate_string("a_opt_fieldset_title_".$current_fieldset, $fieldset_titles[$current_fieldset]))."</h3>\n";
 
 				echo '<table class="form-table">';
 				echo "\n";
@@ -308,8 +308,8 @@ function cimy_extract_ExtraFields() {
 					else {
 						// if we do not escape then some translations can break
 						$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
-
-						$obj_style = ' onchange="uploadFile(\'your-profile\', \''.$unique_id.'\', \''.$warning_msg.'\', Array(\'gif\', \'png\', \'jpg\', \'jpeg\', \'tiff\'));"';
+						$allowed_exts = "'".implode("','", cimy_uef_get_allowed_image_extensions())."'";
+						$obj_style = ' onchange="uploadFile(\'your-profile\', \''.$unique_id.'\', \''.$warning_msg.'\', Array('.$allowed_exts.'));"';
 					}
 
 					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
@@ -738,5 +738,3 @@ function cimy_update_ExtraFields() {
 		wp_mail($admin_email, $mail_subject, $mail_changes);
 	}
 }
-
-?>

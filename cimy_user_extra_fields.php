@@ -3,13 +3,13 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.3.7
+Version: 2.4.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
-Copyright (c) 2006-2012 Marco Cimmino
+Copyright (c) 2006-2013 Marco Cimmino
 
 Code for drop-down support is in part from Raymond Elferink raymond@raycom.com
 Code for regular expression under equalTo rule is in part from Shane Hartman shane@shanehartman.com
@@ -137,25 +137,15 @@ $cuef_plugin_name = basename(__FILE__);
 $cuef_plugin_path = plugin_basename(dirname(__FILE__))."/";
 $cuef_upload_path = WP_CONTENT_DIR."/Cimy_User_Extra_Fields/";
 $cuef_upload_webpath = content_url("Cimy_User_Extra_Fields/");
-
-if (is_multisite()) {
-	$cuef_plugin_path = "Cimy_User_Extra_Fields/";
-	$cuef_plugin_dir = WP_CONTENT_DIR."/".$cimy_uef_plugins_dir."/";
-
-	if (!is_dir($cuef_plugin_dir.$cuef_plugin_path))
-		$cuef_plugin_path = "cimy-user-extra-fields/";
-
-	$cuef_plugin_dir.= $cuef_plugin_path;
-}
-else {
-	$cuef_plugin_dir = WP_CONTENT_DIR."/plugins/".$cuef_plugin_path;
-}
-
-// let's use plugins_url to build urls, take in account https too
+// this is more accurate to detect plug-in path, some people might even rename /plugins/
+$cuef_plugin_dir = plugin_dir_path(__FILE__);
 $cimy_uef_plugins_dirprefix = "";
 if ($cimy_uef_plugins_dir == "mu-plugins")
-	$cimy_uef_plugins_dirprefix = $cuef_plugin_path;
+	$cimy_uef_plugins_dirprefix = "cimy-user-extra-fields/";
 
+$cuef_plugin_dir.= $cimy_uef_plugins_dirprefix;
+
+// let's use plugins_url function to build urls, takes in account https too
 $cuef_css_webpath = plugins_url($cimy_uef_plugins_dirprefix."css", __FILE__);
 $cuef_js_webpath = plugins_url($cimy_uef_plugins_dirprefix."js", __FILE__);
 $cuef_securimage_webpath = plugins_url($cimy_uef_plugins_dirprefix."securimage", __FILE__);
@@ -164,21 +154,18 @@ require_once($cuef_plugin_dir.'/cimy_uef_init.php');
 require_once($cuef_plugin_dir.'/cimy_uef_email_handler.php');
 require_once($cuef_plugin_dir.'/cimy_uef_db.php');
 require_once($cuef_plugin_dir.'/cimy_uef_register.php');
-require_once($cuef_plugin_dir.'/cimy_uef_profile.php');
 require_once($cuef_plugin_dir.'/cimy_uef_functions.php');
-require_once($cuef_plugin_dir.'/cimy_uef_options.php');
-require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
 
 add_action('admin_init', 'cimy_uef_admin_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.3.7";
+$cimy_uef_version = "2.4.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
 $start_cimy_uef_comment = "<!--\n";
 $start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version."\n";
-$start_cimy_uef_comment .= "\tCopyright (c) 2006-2012 Marco Cimmino\n";
+$start_cimy_uef_comment .= "\tCopyright (c) 2006-2013 Marco Cimmino\n";
 $start_cimy_uef_comment .= "\t".$cimy_uef_url."\n";
 $start_cimy_uef_comment .= "-->\n";
 
@@ -589,8 +576,3 @@ add_action('delete_user', 'cimy_delete_user_info');
 
 // add avatar filter
 add_filter('get_avatar', 'cimy_uef_avatar_filter', 1, 5);
-
-// add code to handle new value from ajax code in A&U Extended
-add_action('wp_ajax_save-extra-field-new-value', 'cimy_uef_admin_ajax_save_ef_new_value');
-
-?>

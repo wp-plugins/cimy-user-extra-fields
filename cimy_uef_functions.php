@@ -15,7 +15,7 @@ function get_cimyFields($wp_fields=false, $order_by_section=false) {
 		$order = " ORDER BY F_ORDER";
 
 	// if tables exist then read all fields else array empty, will be read after the creation
-	if($wpdb->get_var("SHOW TABLES LIKE '".$table."'") == $table) {
+	if ($wpdb->get_var("SHOW TABLES LIKE '".$table."'") == $table) {
 		$sql = "SELECT * FROM ".$table.$order;
 		$extra_fields = $wpdb->get_results($sql, ARRAY_A);
 	
@@ -763,15 +763,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		$user_path = $blog_path;
 		$file_path = $blog_path.$type_path;
 	}
-	if (!empty($new_filename))
-		$file_name = $new_filename;
-	else
-		$file_name = $_FILES[$input_name]['name'];
 
-	// protect from site traversing
-	$file_name = str_replace('../', '', $file_name);
-	$file_name = str_replace('/', '', $file_name);
-	
 	// delete old file if requested
 	if ($delete_file) {
 		if (is_file($file_path.$old_file))
@@ -787,7 +779,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	//	or there is no file to upload
 	//	or dest dir is not writable
 	// then everything else is useless
-	if ((($user_login == "") && ($type != "registration-logo")) || (!isset($_FILES[$input_name]['name'])) || (!is_writable($cuef_upload_path)))
+	if ((($user_login == "") && ($type != "registration-logo")) || (empty($_FILES[$input_name]['name'])) || (!is_writable($cuef_upload_path)))
 		return "";
 
 	// create user subdir
@@ -813,10 +805,29 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($file_path, 0777);
 		}
 	}
-	
-	// picture filesystem path
+
+	if (!empty($new_filename))
+		$file_name = $new_filename;
+	else
+		$file_name = $_FILES[$input_name]['name'];
+
+	// filesize in Byte transformed in KiloByte
+	$file_size = $_FILES[$input_name]['size'] / 1024;
+	$file_type = $_FILES[$input_name]['type'];
+	$file_tmp_name = $_FILES[$input_name]['tmp_name'];
+	$file_error = $_FILES[$input_name]['error'];
+
+	$allowed_mime_types = get_allowed_mime_types();
+	// let's see if the image extension is correct, bad boy
+	$validate = wp_check_filetype_and_ext($file_tmp_name, $file_name, $allowed_mime_types);
+	if ($validate['proper_filename'] !== false)
+		$file_name = $validate['proper_filename'];
+
+	// sanitize the file name
+	$file_name = wp_unique_filename($file_path, $file_name);
+	// file path
 	$file_full_path = $file_path.$file_name;
-	
+
 	// picture url to write in the DB
 	$data = $cuef_upload_webpath;
 
@@ -827,12 +838,6 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 		$data .= $type_path.$file_name;
 	else
 		$data .= $user_login."/".$type_path.$file_name;
-	
-	// filesize in Byte transformed in KiloByte
-	$file_size = $_FILES[$input_name]['size'] / 1024;
-	$file_type = $_FILES[$input_name]['type'];
-	$file_tmp_name = $_FILES[$input_name]['tmp_name'];
-	$file_error = $_FILES[$input_name]['error'];
 
 	// CHECK IF IT IS A REAL PICTURE
 	if (($type != "file") && (stristr($file_type, "image/") === false))
@@ -897,4 +902,33 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 	return $data;
 }
 
-?>
+function cimy_uef_get_allowed_image_extensions() {
+	$all_ext = get_allowed_mime_types();
+	$image_ext = array();
+	if (empty($all_ext))
+		return $image_ext;
+	foreach ($all_ext as $key=>$value)
+		if (stristr($value, "image/") !== false)
+			$image_ext = array_merge($image_ext, explode('|', $key));
+	return $image_ext;
+}
+
+// http://wpml.org/documentation/support/translation-for-texts-by-other-plugins-and-themes/
+function cimy_wpml_register_string($name, $value) {
+	global $cimy_uef_name;
+	if (function_exists('icl_register_string'))
+		icl_register_string($cimy_uef_name, $name, $value);
+}
+
+function cimy_wpml_translate_string($name, $value) {
+	global $cimy_uef_name;
+	if (function_exists('icl_t'))
+		return icl_t($cimy_uef_name, $name, $value);
+	return $value;
+}
+
+function cimy_wpml_unregister_string($name) {
+	global $cimy_uef_name;
+	if (function_exists('icl_unregister_string'))
+		icl_unregister_string($cimy_uef_name, $name);
+}

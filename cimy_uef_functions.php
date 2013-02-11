@@ -470,14 +470,16 @@ function cimy_switch_to_blog($meta=array()) {
 			$mu_blog_id = 1;
 
 		if (cimy_uef_mu_blog_exists($mu_blog_id)) {
-			if (switch_to_blog($mu_blog_id))
-				cimy_uef_set_tables();
-			else
+			if (!switch_to_blog($mu_blog_id))
 				$mu_blog_id = 1;
 		}
 		else
 			$mu_blog_id = 1;
 	}
+}
+
+function cimy_uef_blog_switched($new_blog_id, $prev_blog_id) {
+	cimy_uef_set_tables();
 }
 
 function cimy_is_at_least_wordpress35() {

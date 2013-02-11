@@ -461,6 +461,9 @@ if (is_multisite()) {
 		add_action('admin_menu', 'cimy_admin_menu_custom');
 	}
 
+	// when blog is switched we need to re-set the table's names
+	add_action('switch_blog', 'cimy_uef_blog_switched', 10, 2);
+
 	// add action to delete all files/images when deleting a blog
 	add_action('delete_blog', 'cimy_delete_blog_info', 10, 2);
 

@@ -519,6 +519,11 @@ function cimy_delete_blog_info($blog_id, $drop) {
 	// delete also the subdir
 	if (is_dir($file_path))
 		rmdir($file_path);
+	if ($drop) {
+		cimy_manage_db("drop_wp_fields");
+		cimy_manage_db("drop_extra_fields");
+		cimy_manage_db("drop_data");
+	}
 }
 
 function cimy_delete_users_info($fields_id) {

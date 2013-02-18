@@ -500,7 +500,8 @@ function cimy_switch_current_blog($hidden_field=false) {
 			
 		}
 
-		//restore_current_blog();
+		if (cimy_is_at_least_wordpress35())
+			restore_current_blog();
 	}
 }
 

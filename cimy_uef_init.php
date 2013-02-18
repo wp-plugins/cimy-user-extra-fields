@@ -43,7 +43,12 @@ function cimy_admin_menu_custom() {
 }
 
 function cimy_uef_admin_init() {
-	global $cuef_js_webpath;
+	global $cuef_js_webpath, $cuef_plugin_dir;
+	require_once($cuef_plugin_dir.'/cimy_uef_admin.php');
+	require_once($cuef_plugin_dir.'/cimy_uef_options.php');
+	// add code to handle new value from ajax code in A&U Extended
+	add_action('wp_ajax_save-extra-field-new-value', 'cimy_uef_admin_ajax_save_ef_new_value');
+
 	wp_register_script("cimy_uef_invert_sel", $cuef_js_webpath."/invert_sel.js", array(), false);
 	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."/ajax_new_value.js", array(), false);
 }
@@ -74,6 +79,15 @@ function cimy_uef_register_css() {
 	global $cuef_css_webpath;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");
+	if (!is_multisite()) {
+		$options = cimy_get_options();
+		if (in_array("password", $options["wp_hidden_fields"])) {
+			// this CSS will hide the label "A password will be e-mailed to you."
+			wp_register_style("cimy_uef_register_nopasswordlabel", $cuef_css_webpath."/cimy_uef_register_nopasswordlabel.css", false, false);
+			wp_enqueue_style("cimy_uef_register_nopasswordlabel");
+		}
+	}
+
 	cimy_uef_init_javascripts("show_in_reg");
 	// needed till they fix this bug: http://core.trac.wordpress.org/ticket/17916#comment:18
 	wp_print_styles();
@@ -121,5 +135,3 @@ function cimy_uef_init_javascripts($rule_name) {
 			wp_print_scripts();
 	}
 }
-
-?>

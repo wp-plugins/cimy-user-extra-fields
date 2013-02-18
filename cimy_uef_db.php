@@ -18,7 +18,7 @@ function cimy_plugin_install () {
 
 	$charset_collate = "";
 	// try to get proper charset and collate
-	if ( $wpdb->supports_collation() ) {
+	if ($wpdb->has_cap('collation')) {
 		if ( ! empty($wpdb->charset) )
 			$charset_collate = " DEFAULT CHARACTER SET $wpdb->charset";
 		if ( ! empty($wpdb->collate) )
@@ -259,6 +259,36 @@ function cimy_plugin_install () {
 			$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];
 		}
 
+		if (version_compare($options['version'], "2.3.11", "<=") === true) {
+			for ($i = 0; $i <= 1; $i++) {
+				if ($i == 0)
+					$the_table = $wpdb_wp_fields_table;
+				else
+					$the_table = $wpdb_fields_table;
+
+				$sql = "SELECT ID, RULES FROM ".$the_table;
+				$all_fields = $wpdb->get_results($sql, ARRAY_A);
+
+				if (!empty($all_fields)) {
+					foreach ($all_fields as $field) {
+						cimy_wpml_register_string($field['NAME']."_label", $field['LABEL']);
+						cimy_wpml_register_string($field['NAME']."_desc", $field['DESCRIPTION']);
+					}
+				}
+			}
+		}
+
+		if (version_compare($options['version'], "2.4.0", "<=") === true) {
+			cimy_wpml_register_string("a_opt_welcome_email", $options['welcome_email']);
+			cimy_wpml_register_string("a_opt_extra_fields_title", $options['extra_fields_title']);
+			$fieldset_titles = explode(",", $options['fieldset_title']);
+			if (!empty($fieldset_titles)) {
+				foreach ($fieldset_titles as $fset_key => $fieldset) {
+					cimy_wpml_register_string("a_opt_fieldset_title_".$fset_key, $fieldset);
+				}
+			}
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);
@@ -292,7 +322,7 @@ function cimy_force_signup_table_creation() {
 	$charset_collate = "";
 	
 	// try to get proper charset and collate
-	if ( $wpdb->supports_collation() ) {
+	if ($wpdb->has_cap('collation')) {
 		if ( ! empty($wpdb->charset) )
 			$charset_collate = " DEFAULT CHARACTER SET $wpdb->charset";
 		if ( ! empty($wpdb->collate) )
@@ -479,7 +509,7 @@ if (!function_exists("cimy_rfr")) {
 }
 
 function cimy_delete_blog_info($blog_id, $drop) {
-	global $cuef_upload_path;
+	global $cuef_upload_path, $cimy_uef_plugins_dir;
 
 	$file_path = $cuef_upload_path.$blog_id."/";
 	
@@ -489,6 +519,16 @@ function cimy_delete_blog_info($blog_id, $drop) {
 	// delete also the subdir
 	if (is_dir($file_path))
 		rmdir($file_path);
+
+	// in this case no need to delete anything, per blog tables are not created
+	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+		$drop = false;
+
+	if ($drop) {
+		cimy_manage_db("drop_wp_fields");
+		cimy_manage_db("drop_extra_fields");
+		cimy_manage_db("drop_data");
+	}
 }
 
 function cimy_delete_users_info($fields_id) {
@@ -564,7 +604,5 @@ function cimy_uef_get_meta_from_user_login($user_login) {
 function cimy_uef_get_meta_from_url($domain, $path) {
 	global $wpdb;
 
-	return $wpdb->get_row($wpdb->prepare("SELECT user_login, user_email, meta FROM ".$wpdb->prefix."signups WHERE domain = %s AND path = %s AND active = %d", $domain, $path, 0), ARRAY_A );
+	return $wpdb->get_row($wpdb->prepare("SELECT user_login, user_email, meta FROM ".$wpdb->prefix."signups WHERE domain = %s AND path = %s AND active = %d", $domain, $path, 0), ARRAY_A);
 }
-
-?>

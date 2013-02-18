@@ -14,7 +14,7 @@ function wp_new_user_notification($user_id, $plaintext_pass = '') {
 	$options = cimy_get_options();
 	if (!is_multisite()) {
 		if (!$options["confirm_email"])
-			wp_new_user_notification_original($user_id, $plaintext_pass, $options["mail_include_fields"], false, $options["welcome_email"]);
+			wp_new_user_notification_original($user_id, $plaintext_pass, $options["mail_include_fields"], false, cimy_wpml_translate_string("a_opt_welcome_email", $options["welcome_email"]));
 		// if confirmation email is enabled delete the default_password_nag but checks first if has not been done on top of this function!
 		else if (!isset($_POST["cimy_uef_wp_PASSWORD"]))
 			delete_user_meta($user_id, 'default_password_nag');
@@ -95,15 +95,28 @@ function cimy_uef_mail_fields($user = false, $activation_data = false) {
 
 	if (empty($meta)) {
 		// normal fields
-		foreach ($wp_hidden_fields as $field)
-			if ((!empty($user->{$field["post_name"]})) && ($field["type"] != "password"))
-				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $field["label"], $user->{$field["post_name"]}) . "\r\n";
+		foreach ($wp_hidden_fields as $field) {
+			if ((!empty($user->{$field["post_name"]})) && ($field["type"] != "password")) {
+				$label = $field["label"];
+				if ($field["type"] == "dropdown" || $field["type"] == "dropdown-multi") {
+					$ret = cimy_dropDownOptions($label, "");
+					$label = $ret['label'];
+				}
+				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $label, $user->{$field["post_name"]}) . "\r\n";
+			}
+		}
 	}
 	else {
 		$fields = get_cimyFields(true);
 		foreach ($fields as $field) {
-			if ((!empty($meta[$wp_fields_name_prefix.$field["NAME"]])) && ($field["TYPE"] != "password"))
-				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $field["LABEL"], $meta[$wp_fields_name_prefix.$field["NAME"]]) . "\r\n";
+			if ((!empty($meta[$wp_fields_name_prefix.$field["NAME"]])) && ($field["TYPE"] != "password")) {
+				$label = $field["LABEL"];
+				if ($field["TYPE"] == "dropdown" || $field["TYPE"] == "dropdown-multi") {
+					$ret = cimy_dropDownOptions($label, "");
+					$label = $ret['label'];
+				}
+				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $label, $meta[$wp_fields_name_prefix.$field["NAME"]]) . "\r\n";
+			}
 		}
 	}
 
@@ -250,6 +263,7 @@ function cimy_uef_activate_signup($key) {
 
 	$user_id = username_exists($user_login);
 
+	$user_already_exists = false;
 	if ( ! $user_id )
 		$user_id = wp_create_user( $user_login, $password, $user_email );
 	else
@@ -267,11 +281,11 @@ function cimy_uef_activate_signup($key) {
 
 	$wpdb->update( $wpdb->prefix."signups", array('active' => 1, 'activated' => $now), array('activation_key' => $key) );
 
-	if ( isset( $user_already_exists ) )
+	if ($user_already_exists)
 		return new WP_Error( 'user_already_exists', __( 'That username is already activated.', $cimy_uef_domain), $signup);
 
 	$options = cimy_get_options();
-	wp_new_user_notification_original($user_id, $password, $options["mail_include_fields"], $meta, $options["welcome_email"]);
+	wp_new_user_notification_original($user_id, $password, $options["mail_include_fields"], $meta, cimy_wpml_translate_string("a_opt_welcome_email", $options["welcome_email"]));
 	return array('user_id' => $user_id, 'password' => $password, 'meta' => $meta);
 }
 
@@ -306,4 +320,3 @@ function cimy_check_user_on_signups($errors, $user_name, $user_email) {
 
 	return $errors;
 }
-?>

@@ -423,11 +423,11 @@ if (count($allFields) > 0) {
 	foreach ($allFields as $field) {
 		echo "ID: ".$field['ID']." \n";
 		echo "F_ORDER: ".$field['F_ORDER']." \n";
-		echo "NAME: ".$field['NAME']." \n";
-		echo "TYPE: ".$field['TYPE']." \n";
-		echo "VALUE: ".$field['VALUE']." \n";
-		echo "LABEL: ".$field['LABEL']." \n";
-		echo "DESCRIPTION: ".$field['DESCRIPTION']." \n";
+		echo "NAME: ".cimy_uef_sanitize_content($field['NAME'])." \n";
+		echo "TYPE: ".cimy_uef_sanitize_content($field['TYPE'])." \n";
+		echo "VALUE: ".cimy_uef_sanitize_content($field['VALUE'])." \n";
+		echo "LABEL: ".cimy_uef_sanitize_content($field['LABEL'])." \n";
+		echo "DESCRIPTION: ".cimy_uef_sanitize_content($field['DESCRIPTION'])." \n";
 
 		echo "RULES: ";
 		print_r($field['RULES']);
@@ -472,6 +472,13 @@ crop_x1=0,crop_y1=0,crop_x2=80,crop_y2=90 - pre-select cropping window
 
 [AVATAR, PICTURE, FILE]
 filename=default.pdf - rename the uploaded file to the given file name
+
+
+HOW TO USE WPML SUPPORT:
+Since v2.4.0 field's label and description can be translated using the WordPress Multilingual plug-in.
+To use it in your code you can get the get_cimyFields example above and change only the following lines:
+    echo "LABEL: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['NAME']."_label", $field['LABEL']))." \n";
+    echo "DESCRIPTION: ".cimy_uef_sanitize_content(cimy_wpml_translate_string($field['NAME']."_desc", $field['DESCRIPTION']))." \n";
 
 
 KNOWN ISSUES:
@@ -619,6 +626,49 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.4.2 - 18/02/2013
+- Fixed missing 'cimy_update_ExtraFields' PHP warning (introduced in v2.4.1) (thanks to Ashton Clark and vtxyzzy)
+- Fixed WordPress MS per-blog installation was not working for non main sites since WordPress MS 3.5 (thanks to Denis Lam)
+- Fixed WordPress MS per-blog installation was not deleting cimy tables when blog is deleted
+
+v2.4.1 - 11/02/2013
+- Added support for welcome email, extra fields title and fieldset titles under the WordPress Multilingual plug-in (thanks to Piet for testing it)
+- Added Arabic translation (Mamoun Elkheir)
+- Fixed tabindex is no longer needed for WordPress 3.5 and Theme My Login users
+- Fixed PHP files inclusion, do not include the admin's files if not in the admin area
+- Fixed cursor doesn't appear at the end of the text edit under 'Users Extended'
+
+v2.4.0 - 27/12/2012
+- Added support for the WordPress Multilingual plug-in.
+- Fixed plain text password was staying in the DataBase for registered users (WordPress MS and WordPress + confirmation email only)
+- Fixed (better) background logo was stretched under Safari (thanks to DarioDN)
+- Fixed PHP warnings wpdb::supports_collation usage on WordPress 3.5
+- Fixed PHP warnings wpdb::prepare usage on WordPress 3.5
+- Fixed PHP warnings on 'Users Extended' page on WordPress 3.5
+
+v2.3.11 - 29/10/2012
+- Fixed reCAPTCHA was not working on secure webservers (thanks to invisnet for the patch)
+- Fixed extra lines outputted by php files (thanks to Ov3rfly)
+- Fixed one PHP warning on options save (thanks to thomask)
+- Fixed background logo was stretched under Safari (thanks to DarioDN)
+- Updated Securimage Captcha to v3.0.1
+
+v2.3.10 - 24/09/2012
+- Fixed email is not sent to the user once confirmed its email address (non-MS only) (introduced in v2.3.9) (thanks to nerik73 and all people that reported this)
+- Fixed 'A password will be e-mailed to you.' will be hidden when password field is not hidden (non-MS only) (thanks to lcool for the idea)
+- Fixed labels for dropdown and dropdown-multi were not correctly showed in the welcome email
+
+v2.3.9 - 06/08/2012
+- Fixed another possible security issue where webservers with poor configuration might end up executing arbitrary PHP code when a malicious [file|avatar|picture] is uploaded (thanks to Artyom Skrobov from Secunia)
+- Fixed dropdown-multi were not saved correctly under 'Users Extended' (thanks to David Vranish)
+- Fixed dropdown-multi were not saved correctly under WordPress MS registration (thanks to David Vranish)
+
+v2.3.8 - 30/07/2012
+- Fixed security issue where any site with [file|avatar|picture] extra fields is vulnerable by a possible remote code execution vulnerability present in all versions of the plug-in probably since v0.9.5
+  see: secunia.com/advisories/49975/ ('thanks' to the kid 'Crim3R' that in the need of popularity thought that exposing thousands of users was a better idea rather than responsibly email me first)
+- Fixed image extensions are now restricted to what WordPress allows
+- Fixed plug-in PHP error for people that have 'plugins' directory with a different name/location (thanks to anmari)
+
 v2.3.7 - 05/03/2012
 - Fixed image/file/avatar upload on profile edit when Theme My Login - Themed profile is in use (introduced with v2.3.0) (thanks to Giovanni Gonzalez)
 - Fixed fields were showed anyways in the form confirmation even if they were not showed in the registration

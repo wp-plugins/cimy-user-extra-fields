@@ -682,7 +682,7 @@ function cimy_show_options($results, $embedded) {
 <?php if (!is_multisite()) { ?>
 		<tr>
 			<th scope="row" width="40%"><input type="checkbox" name="show_wp_username" value="1"<?php checked(true, in_array('username', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show username", $cimy_uef_domain); ?></th>
-			<td width="60%"></td>
+			<td width="60%"><?php _e("when unchecked the email address will be used as username", $cimy_uef_domain); ?></td>
 		</tr>
 <?php } ?>
 		<tr>

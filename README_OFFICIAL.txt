@@ -628,6 +628,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.4.3 - /02/2013
 - Added support for hiding the username under standard WP registration, email will substitute it (non-MS only) (thanks to Matt Hoffman)
+- Added support for WordPress hidden fields rules under profile update
 
 v2.4.2 - 18/02/2013
 - Fixed missing 'cimy_update_ExtraFields' PHP warning (introduced in v2.4.1) (thanks to Ashton Clark and vtxyzzy)

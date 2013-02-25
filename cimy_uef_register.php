@@ -321,9 +321,12 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 		cimy_switch_to_blog();
 	$options = cimy_get_options();
 	if (!in_array("username", $options["wp_hidden_fields"])) {
+		// ok username is empty, we are replacing it with the email, don't bother
 		if (isset($errors->errors['empty_username']))
 			unset($errors->errors['empty_username']);
-		
+		// remove username exists error only if email exists error is there covering for us
+		if (isset($errors->errors['username_exists']) && isset($errors->errors['email_exists']))
+			unset($errors->errors['username_exists']);
 	}
 
 	// code for confirmation email check
@@ -370,7 +373,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			if ($i == 1 && $name == "USERNAME" && $from_profile)
 				continue;
 
-			// use WP inpxut name for the username (always) or when updating the profile
+			// use WP input name for the username (always) or when updating the profile
 			if ($i == 1 && ($name == "USERNAME" || $from_profile))
 				$input_name = $wp_hidden_fields[strtolower($name)]['post_name'];
 			else

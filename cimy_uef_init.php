@@ -77,10 +77,17 @@ function cimy_uef_theme_my_login_fix() {
 
 function cimy_uef_register_css() {
 	global $cuef_css_webpath;
+	if (empty($_GET['action']) || $_GET['action'] != 'register')
+		return;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");
+	wp_register_style("cimy_uef_register_nousername", $cuef_css_webpath."/cimy_uef_register_nousername.css", false, false);
+
 	if (!is_multisite()) {
 		$options = cimy_get_options();
+		if (!in_array("username", $options["wp_hidden_fields"])) {
+			wp_enqueue_style("cimy_uef_register_nousername");
+		}
 		if (in_array("password", $options["wp_hidden_fields"])) {
 			// this CSS will hide the label "A password will be e-mailed to you."
 			wp_register_style("cimy_uef_register_nopasswordlabel", $cuef_css_webpath."/cimy_uef_register_nopasswordlabel.css", false, false);

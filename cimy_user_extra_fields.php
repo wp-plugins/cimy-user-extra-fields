@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.4.2
+Version: 2.4.3-beta1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -160,7 +160,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_profile.php');
 add_action('admin_init', 'cimy_uef_admin_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.4.2";
+$cimy_uef_version = "2.4.3-beta1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -184,6 +184,27 @@ cimy_uef_i18n_setup();
 // 	$wp_password_description = __('<strong>Note:</strong> this website let you personalize your password; after the registration you will receive an e-mail with another password, do not care about that!', $cimy_uef_domain);
 
 $wp_hidden_fields = array(
+			'username' => array(
+						'name' => "USERNAME",
+						'post_name' => "user_login",
+						'type' => "text",
+						'label' => __("Username"),
+						'desc' => '',
+						'value' => '',
+						'store_rule' => array(
+								'max_length' => 100,
+								'can_be_empty' => false,
+								'edit' => 'ok_edit',
+								'email' => false,
+								'show_in_reg' => true,
+								'show_in_profile' => true,
+								'show_in_aeu' => false,
+								'show_in_search' => false,
+								'show_in_blog' => false,
+								'show_level' => -1,
+								'advanced_options' => '',
+								),
+					),
 			'password' => array(
 						'name' => "PASSWORD",
 						'post_name' => "user_pass",
@@ -542,6 +563,10 @@ else {
 	add_filter('registration_redirect', 'cimy_uef_registration_redirect');
 	// this is needed only in the case where both redirection and email confirmation has been enabled
 	add_action('login_form_cimy_uef_redirect', 'cimy_uef_redirect');
+
+	// add filter to replace the username with the email
+	add_filter('sanitize_user', 'cimy_uef_sanitize_username', 1, 3);
+	add_filter('validate_username', 'cimy_uef_validate_username', 1, 2);
 }
 
 // with Theme My Login is more complicated, but we know how to workaround it

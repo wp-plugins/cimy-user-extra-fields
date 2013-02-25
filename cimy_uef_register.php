@@ -320,6 +320,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	if (cimy_is_at_least_wordpress35())
 		cimy_switch_to_blog();
 	$options = cimy_get_options();
+	if (!in_array("username", $options["wp_hidden_fields"])) {
+		if (isset($errors->errors['empty_username']))
+			unset($errors->errors['empty_username']);
+		
+	}
 
 	// code for confirmation email check
 	if ((!is_multisite()) && ($options["confirm_email"])) {
@@ -634,6 +639,23 @@ function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 		}
 	}
 	return $errors;
+}
+
+
+function cimy_uef_sanitize_username($username, $raw_username, $strict) {
+	$options = cimy_get_options();
+	if (!in_array("username", $options["wp_hidden_fields"]) && !empty($_POST['user_email']) && is_email($_POST['user_email']) && !empty($_GET['action']) && $_GET['action'] == 'register') {
+		$username = $_POST['user_email'];
+	}
+	return $username;
+}
+
+function cimy_uef_validate_username($valid, $username) {
+	$options = cimy_get_options();
+	if (!in_array("username", $options["wp_hidden_fields"]) && empty($username) && !empty($_GET['action']) && $_GET['action'] == 'register') {
+		return true;
+	}
+	return $valid;
 }
 
 // show_type == 0 - normal form

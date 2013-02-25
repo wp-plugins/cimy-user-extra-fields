@@ -177,7 +177,7 @@ function cimy_save_options() {
 		else
 			$options['password_meter'] = false;
 
-		$db_wp_fields_independent = array("firstname", "lastname", "nickname", "website", "aim", "yahoo", "jgt", "bio-info");
+		$db_wp_fields_independent = array("username", "firstname", "lastname", "nickname", "website", "aim", "yahoo", "jgt", "bio-info");
 		foreach ($db_wp_fields_independent as $wp_field_independent) {
 			if (isset($_POST['show_wp_'.$wp_field_independent])) {
 				array_push($options['wp_hidden_fields'], $wp_field_independent);
@@ -679,6 +679,12 @@ function cimy_show_options($results, $embedded) {
 	<br />
 	<h3><?php _e("WordPress hidden fields", $cimy_uef_domain); ?></h3>
 	<table class="form-table">
+<?php if (!is_multisite()) { ?>
+		<tr>
+			<th scope="row" width="40%"><input type="checkbox" name="show_wp_username" value="1"<?php checked(true, in_array('username', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show username", $cimy_uef_domain); ?></th>
+			<td width="60%"></td>
+		</tr>
+<?php } ?>
 		<tr>
 			<th scope="row" width="40%"><input type="checkbox" name="show_wp_password" value="1"<?php checked(true, in_array('password', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show password", $cimy_uef_domain); ?></th>
 			<td width="60%"></td>

@@ -289,6 +289,10 @@ function cimy_plugin_install () {
 			}
 		}
 
+		if (version_compare($options['version'], "2.4.2", "<=") === true) {
+			$options["wp_hidden_fields"][] = "username";
+		}
+
 		$options['version'] = $cimy_uef_version;
 
 		cimy_set_options($options);
@@ -365,7 +369,7 @@ function cimy_manage_db($command) {
 		'extra_fields_title' => __("Extra Fields", $cimy_uef_domain),
 		'users_per_page' => 50,
 		'aue_hidden_fields' => array('website', 'posts', 'email'),
-		'wp_hidden_fields' => array(),
+		'wp_hidden_fields' => array('username'),
 		'fieldset_title' => '',
 		'registration-logo' => '',
 		'captcha' => 'none',

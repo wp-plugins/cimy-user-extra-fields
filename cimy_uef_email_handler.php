@@ -96,13 +96,13 @@ function cimy_uef_mail_fields($user = false, $activation_data = false) {
 	if (empty($meta)) {
 		// normal fields
 		foreach ($wp_hidden_fields as $field) {
-			if ((!empty($user->{$field["post_name"]})) && ($field["type"] != "password")) {
+			if ((!empty($user->{$field["userdata_name"]})) && ($field["type"] != "password")) {
 				$label = $field["label"];
 				if ($field["type"] == "dropdown" || $field["type"] == "dropdown-multi") {
 					$ret = cimy_dropDownOptions($label, "");
 					$label = $ret['label'];
 				}
-				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $label, $user->{$field["post_name"]}) . "\r\n";
+				$message.= sprintf(__('%s: %s', $cimy_uef_domain), $label, $user->{$field["userdata_name"]}) . "\r\n";
 			}
 		}
 	}

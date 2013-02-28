@@ -257,7 +257,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 				
 				$userdata = array();
 				$userdata['ID'] = $user_id;
-				$userdata[$wp_hidden_fields[$f_name]['post_name']] = $data;
+				$userdata[$wp_hidden_fields[$f_name]['userdata_name']] = $data;
 				
 				wp_update_user($userdata);
 			}
@@ -408,10 +408,17 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 				continue;
 
 			if ($from_profile) {
-				$old_value = $_POST[$input_name."_".$field_id."_prev_value"];
-				// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
-				if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
-					continue;
+				if ($i == 1) {
+					// Do not bother with the rules if encountered an empty password field on profile update
+					if ($type == "password")
+						continue;
+				}
+				else {
+					$old_value = $_POST[$input_name."_".$field_id."_prev_value"];
+					// Hey, no need to check for rules if anyway I can't edit due to low permissions, neeeext!
+					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
+						continue;
+				}
 			}
 
 			if (isset($_POST[$input_name])) {

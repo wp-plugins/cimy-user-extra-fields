@@ -655,7 +655,6 @@ function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 	return $errors;
 }
 
-
 function cimy_uef_sanitize_username($username, $raw_username, $strict) {
 	$options = cimy_get_options();
 	if (!in_array("username", $options["wp_hidden_fields"]) && !empty($_POST['user_email']) && is_email($_POST['user_email']) && !empty($_GET['action']) && $_GET['action'] == 'register') {

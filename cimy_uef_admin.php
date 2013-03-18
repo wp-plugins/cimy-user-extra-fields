@@ -176,6 +176,10 @@ function cimy_admin_define_extra_fields() {
 				$sql_data_del.= "FIELD_ID=".$i;
 				$sql.= "F_ORDER=".$i;
 				$msg.= $i;
+				// wpml stuff, unregister label and description for deleted fields
+				$field_to_del_name = substr(stripslashes($_POST['name'][$i]), 0, $max_length_name);
+				cimy_wpml_unregister_string($field_to_del_name."_label");
+				cimy_wpml_unregister_string($field_to_del_name."_desc");
 			}
 			else // field to NOT be deleted, but order probably have to change, if j==(-1) then order is ok because deletions is after it!
 				if ($j > (-1)) {
@@ -401,8 +405,17 @@ function cimy_admin_define_extra_fields() {
 
 				if ($action == "add")
 					$results['inserted'] = __("Field inserted correctly", $cimy_uef_domain);
-				else if ($action == "edit")
+				else if ($action == "edit") {
 					$results['edit'] = __("Field #", $cimy_uef_domain).$field_order." ".__("updated correctly", $cimy_uef_domain);
+					// wpml stuff, unregister the string if name changed
+					if ($name != $oldname && !empty($oldname)) {
+						cimy_wpml_unregister_string($oldname."_label");
+						cimy_wpml_unregister_string($oldname."_desc");
+					}
+				}
+				// wpml stuff, always register or update
+				cimy_wpml_register_string($name."_label", $label);
+				cimy_wpml_register_string($name."_desc", $desc);
 			}
 			else {
 				$errors['namedup'] = __("Name inserted is just in the database, change to another one", $cimy_uef_domain);
@@ -446,6 +459,8 @@ function cimy_admin_define_extra_fields() {
 		$type = "text";
 
 	$selected_input["name"] = '';
+	$selected_input["label"] = '';
+	$selected_input["value"] = '';
 	$selected_input["desc"] = '';
 	$selected_input["min_length"] = '';
 	$selected_input["exact_length"] = '';
@@ -498,9 +513,6 @@ function cimy_admin_define_extra_fields() {
 		// ADVANCED OPTIONS
 		if (isset($store_rule['advanced_options']))
 			$selected_input["advanced_options"] = $store_rule['advanced_options'];
-	}
-	// action is not "add"
-	else {
 	}
 
 	// CAN BE EMPTY
@@ -649,8 +661,8 @@ function cimy_admin_define_extra_fields() {
 		</td>
 		<td align="center" style="vertical-align: middle;">
 			<p class="submit" style="border-width: 0px;">
-			<input name="reset" type="reset" value="<?php _e("Clear", $cimy_uef_domain); ?>" /><br /><br />
-			<input class="button-primary" name="submit_add[0]" type="submit" value="<?php echo $add_caption ?>" />
+			<input class="button button-secondary" name="reset" type="reset" value="<?php _e("Clear", $cimy_uef_domain); ?>" /><br /><br />
+			<input class="button button-primary" name="submit_add[0]" type="submit" value="<?php echo $add_caption ?>" />
 			</p>
 		</td>
 		</tr>
@@ -750,11 +762,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 	else {
 		?>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
-		<input type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
-		<input name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
+		<input class="button" type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
+		<input class="button action" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
-			<input name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
+			<input class="button" name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 		<?php } ?>
 		</p>
 
@@ -964,11 +976,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			</td>
 			<td align="center" style="vertical-align: middle;">
 				<p class="submit" style="border-width: 0px;">
-				<input name="reset" type="reset" value="<?php _e("Reset", $cimy_uef_domain); ?>" /><br /><br />
-				<input class="button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" onclick="changeFormAction('<?php echo $form_id; ?>', '<?php echo $field_anchor.$order; ?>')" /><br /><br />
+				<input class="button button-secondary" name="reset" type="reset" value="<?php _e("Reset", $cimy_uef_domain); ?>" /><br /><br />
+				<input class="button button-primary" name="submit_edit[<?php echo $order ?>]" type="submit" value="<?php echo $edit_caption." #".$order ?>" onclick="changeFormAction('<?php echo $form_id; ?>', '<?php echo $field_anchor.$order; ?>')" /><br /><br />
 				
 				<?php if (!$wp_fields) { ?>
-					<input name="submit_del[<?php echo $order ?>]" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
+					<input class="button button-secondary" name="submit_del[<?php echo $order ?>]" type="submit" value="<?php echo $del_caption." #".$order ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 				<?php } ?>
 				</p>
 			</td>
@@ -979,11 +991,11 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		</tbody>
 		</table>
 		<p class="submit" style="border-width: 0px; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
-		<input type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
-		<input name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
+		<input class="button" type="button" value="<?php echo $invert_selection_label; ?>" onclick="this.value=invert_sel('<?php echo $form_id; ?>', 'check', '<?php echo $invert_selection_label; ?>')" />
+		<input class="button action" name="submit_order" type="submit" value="<?php echo $order_caption ?>" />
 		
 		<?php if (!$wp_fields) { ?>
-			<input name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
+			<input class="button" name="submit_del_sel" type="submit" value="<?php echo $delSel_caption ?>" onclick="return confirm('<?php echo $delete_fields_label; ?>');" />
 		<?php } ?>
 		</p>
 		<br />
@@ -1166,7 +1178,7 @@ function cimy_admin_users_list_page() {
 					'per_page' => $users_per_page,
 				));
 			}
-			function bulk_actions($which) {}
+			function bulk_actions() {}
 			function extra_tablenav($which) {
 				if ('top' != $which)
 					return;
@@ -1249,7 +1261,7 @@ function cimy_admin_users_list_page() {
 					'per_page' => $users_per_page,
 				));
 			}
-			function bulk_actions($which) {}
+			function bulk_actions() {}
 			function extra_tablenav($which) {
 				if ('top' != $which)
 					return;
@@ -1343,9 +1355,9 @@ function cimy_admin_users_list_page() {
 	_e("Users Extended", $cimy_uef_domain);
 
 	if (current_user_can('create_users')) { ?>
-		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x('Add New', 'user'); ?></a>
+		<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x('Add New', 'user'); ?></a>
 	<?php } elseif (is_multisite() && current_user_can('promote_users')) { ?>
-		<a href="user-new.php" class="button add-new-h2"><?php echo esc_html_x('Add Existing', 'user'); ?></a>
+		<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x('Add Existing', 'user'); ?></a>
 	<?php }
 	if (!empty($usersearch))
 		printf('<span class="subtitle">'.__('Search results for &#8220;%s&#8221;')." (%s)</span>", esc_html($usersearch), $users_found);
@@ -1455,13 +1467,11 @@ function cimy_admin_users_list_page() {
 			foreach ($extra_fields as $thisField) {
 				$rules = $thisField['RULES'];
 				if ($rules['show_in_aeu']) {
-		
 					$i++;
-					
-					$label = cimy_uef_sanitize_content($thisField['LABEL']);
 					$id = $thisField['ID'];
 					$name = $thisField['NAME'];
 					$name_esc_attr = esc_attr($thisField['NAME']);
+					$label = cimy_uef_sanitize_content(cimy_wpml_translate_string($name."_label", $thisField["LABEL"]));
 					$type = $thisField['TYPE'];
 					$fieldset = $thisField["FIELDSET"];
 
@@ -1839,5 +1849,3 @@ function cimy_save_field($action, $table, $data) {
 
 	$wpdb->query($sql);
 }
-
-?>

@@ -296,7 +296,7 @@ function cimy_registration_check_mu_wrapper($data) {
 	$errors = $data['errors'];
 
 	// no we don't want to check again at this stage
-	if (($_REQUEST['stage'] == "validate-blog-signup") && !empty($_REQUEST['confirm_form_nonce']) && ($_REQUEST['confirm_form_nonce'] == wp_create_nonce('confirm_form', 'confirm_form_nonce')))
+	if ((!empty($_REQUEST['stage']) && $_REQUEST['stage'] == "validate-blog-signup") && !empty($_REQUEST['confirm_form_nonce']) && ($_REQUEST['confirm_form_nonce'] == wp_create_nonce('confirm_form', 'confirm_form_nonce')))
 		return $data;
 
 	$errors = cimy_registration_check($user_login, $user_email, $errors);

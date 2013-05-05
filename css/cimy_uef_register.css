@@ -23,7 +23,7 @@
 	display: inline;
 }
 
-#pass-strength-result{
+#pass-strength-result {
 	padding-top: 3px;
 	padding-right: 5px;
 	padding-bottom: 3px;
@@ -40,4 +40,8 @@
 	border-left-style: solid;
 	display: block;
 	width: 93%;
+}
+
+.indicator-hint {
+	display: table;
 }

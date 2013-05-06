@@ -627,7 +627,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.5.1 - /05/2013
+v2.5.1 - 06/05/2013
 - Updated Securimage Captcha to v3.5.0
 - Fixed captcha check was performed on /wp-admin/user-new.php page even without a captcha showed (MS only) (thanks to KZeni)
 - Fixed strength password hint description is showed inline with the password strength when reCAPTCHA is also showed (thanks to coopersita)

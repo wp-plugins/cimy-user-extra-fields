@@ -627,6 +627,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.5.2 - /05/2013
+- Fixed cimy_uef_register.css file inclusion does not happen (MS only) (introduced in v2.5.0)
+
 v2.5.1 - 06/05/2013
 - Updated Securimage Captcha to v3.5.0
 - Fixed captcha check was performed on /wp-admin/user-new.php page even without a captcha showed (MS only) (thanks to KZeni)

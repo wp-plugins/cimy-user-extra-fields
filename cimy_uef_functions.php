@@ -953,3 +953,18 @@ function cimy_wpml_unregister_string($name) {
 	if (function_exists('icl_unregister_string'))
 		icl_unregister_string($cimy_uef_name, $name);
 }
+
+/**
+ * @return true on WordPress non-MS login pages (login, registration, lost password)
+ */
+function is_nonms_login_pages() {
+	if (is_multisite())
+		return false;
+
+	if (!empty($GLOBALS['theme_my_login']) && $GLOBALS['theme_my_login']->is_login_page())
+		return true;
+	$script_file = end(explode('/', $_SERVER['SCRIPT_NAME']));
+	if (stripos($script_file, "wp-login.php") !== false)
+		return true;
+	return false;
+}

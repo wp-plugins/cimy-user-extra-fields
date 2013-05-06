@@ -77,7 +77,7 @@ function cimy_uef_theme_my_login_fix() {
 
 function cimy_uef_register_css() {
 	global $cuef_css_webpath;
-	if (empty($_GET['action']) || $_GET['action'] != 'register')
+	if (is_nonms_login_pages() && (empty($_GET['action']) || $_GET['action'] != 'register'))
 		return;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");

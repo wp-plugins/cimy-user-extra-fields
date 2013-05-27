@@ -961,7 +961,7 @@ function is_registration_page() {
 	if (is_theme_my_login_register_page())
 		return true;
 	$script_file = end(explode('/', $_SERVER['SCRIPT_NAME']));
-	if (!is_multisite() && stripos($script_file, "wp-login.php") !== false && $_GET['action'] == 'register')
+	if (!is_multisite() && stripos($script_file, "wp-login.php") !== false && !empty($_GET['action']) && $_GET['action'] == 'register')
 		return true;
 	else if (is_multisite() && stripos($script_file, "wp-signup.php") !== false)
 		return true;

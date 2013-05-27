@@ -955,10 +955,11 @@ function cimy_wpml_unregister_string($name) {
 }
 
 /**
+ * @since 2.5.2
  * @return true on WordPress registration page
  */
-function is_registration_page() {
-	if (is_theme_my_login_register_page())
+function cimy_uef_is_register_page() {
+	if (cimy_uef_is_theme_my_login_register_page())
 		return true;
 	$script_file = end(explode('/', $_SERVER['SCRIPT_NAME']));
 	if (!is_multisite() && stripos($script_file, "wp-login.php") !== false && !empty($_GET['action']) && $_GET['action'] == 'register')
@@ -969,9 +970,10 @@ function is_registration_page() {
 }
 
 /**
+ * @since 2.5.2
  * @return true on Themed My Login - Themed Registration page
  */
-function is_theme_my_login_register_page() {
+function cimy_uef_is_theme_my_login_register_page() {
 	// Theme My Login <= v6.2.x
 	if (!empty($GLOBALS['theme_my_login']) && $GLOBALS['theme_my_login']->is_login_page())
 		return true;
@@ -982,9 +984,10 @@ function is_theme_my_login_register_page() {
 }
 
 /**
+ * @since 2.5.2
  * @return true on Themed My Login - Themed Profiles pages
  */
-function is_theme_my_login_profile_page() {
+function cimy_uef_is_theme_my_login_profile_page() {
 	if (!empty($GLOBALS['theme_my_login']) || function_exists('Theme_My_Login'))
 		return defined('IS_PROFILE_PAGE') && constant('IS_PROFILE_PAGE');
 	return false;

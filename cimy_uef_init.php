@@ -72,13 +72,13 @@ function cimy_uef_theme_my_login_fix() {
 			cimy_uef_register_css();
 	}
 	// Theme My Login - Themed Profiles module
-	if (is_theme_my_login_profile_page())
+	if (cimy_uef_is_theme_my_login_profile_page())
 		cimy_uef_admin_profile_init_js();
 }
 
 function cimy_uef_register_css() {
 	global $cuef_css_webpath;
-	if (!is_registration_page())
+	if (!cimy_uef_is_register_page())
 		return;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");

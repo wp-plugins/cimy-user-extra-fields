@@ -955,16 +955,37 @@ function cimy_wpml_unregister_string($name) {
 }
 
 /**
- * @return true on WordPress non-MS login pages (login, registration, lost password)
+ * @return true on WordPress registration page
  */
-function is_nonms_login_pages() {
-	if (is_multisite())
-		return false;
-
-	if (!empty($GLOBALS['theme_my_login']) && $GLOBALS['theme_my_login']->is_login_page())
+function is_registration_page() {
+	if (is_theme_my_login_register_page())
 		return true;
 	$script_file = end(explode('/', $_SERVER['SCRIPT_NAME']));
-	if (stripos($script_file, "wp-login.php") !== false)
+	if (!is_multisite() && stripos($script_file, "wp-login.php") !== false && $_GET['action'] == 'register')
 		return true;
+	else if (is_multisite() && stripos($script_file, "wp-signup.php") !== false)
+		return true;
+	return false;
+}
+
+/**
+ * @return true on Themed My Login - Themed Registration page
+ */
+function is_theme_my_login_register_page() {
+	// Theme My Login <= v6.2.x
+	if (!empty($GLOBALS['theme_my_login']) && $GLOBALS['theme_my_login']->is_login_page())
+		return true;
+	// Theme My Login >= v6.3.0
+	if (function_exists('Theme_My_Login') && Theme_My_Login::is_tml_page('register'))
+		return true;
+	return false;
+}
+
+/**
+ * @return true on Themed My Login - Themed Profiles pages
+ */
+function is_theme_my_login_profile_page() {
+	if (!empty($GLOBALS['theme_my_login']) || function_exists('Theme_My_Login'))
+		return defined('IS_PROFILE_PAGE') && constant('IS_PROFILE_PAGE');
 	return false;
 }

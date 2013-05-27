@@ -66,18 +66,19 @@ function cimy_uef_init_upload_js() {
 
 function cimy_uef_theme_my_login_fix() {
 	// Theme My Login spam with its css _all_ pages, we like it cleaner thanks!
+	// Seems not needed any longer for TML >= 6.3.x
 	if (!empty($GLOBALS['theme_my_login'])) {
 		if ($GLOBALS['theme_my_login']->is_login_page())
 			cimy_uef_register_css();
-		// Themed profile
-		if (defined('IS_PROFILE_PAGE') && constant('IS_PROFILE_PAGE'))
-			cimy_uef_admin_profile_init_js();
 	}
+	// Theme My Login - Themed Profiles module
+	if (is_theme_my_login_profile_page())
+		cimy_uef_admin_profile_init_js();
 }
 
 function cimy_uef_register_css() {
 	global $cuef_css_webpath;
-	if (is_nonms_login_pages() && (empty($_GET['action']) || $_GET['action'] != 'register'))
+	if (!is_registration_page())
 		return;
 	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
 	wp_enqueue_style("cimy_uef_register");

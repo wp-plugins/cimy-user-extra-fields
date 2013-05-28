@@ -1108,8 +1108,10 @@ function cimy_admin_users_list_page() {
 
 				$usersearch = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
 				$role = isset($_REQUEST['role']) ? $_REQUEST['role'] : '';
+				$users_per_page = $this->get_items_per_page( 'users_network_per_page' );
 
 				$args = array(
+					'number' => $users_per_page,
 					'role' => $role,
 					'search' => $usersearch,
 					'fields' => 'all_with_meta',
@@ -1210,8 +1212,11 @@ function cimy_admin_users_list_page() {
 
 				$usersearch = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
 				$role = isset($_REQUEST['role']) ? $_REQUEST['role'] : '';
+				$per_page = ( $this->is_site_users ) ? 'site_users_network_per_page' : 'users_per_page';
+				$users_per_page = $this->get_items_per_page( $per_page );
 
 				$args = array(
+					'number' => $users_per_page,
 					'role' => $role,
 					'search' => $usersearch,
 					'fields' => 'all_with_meta'

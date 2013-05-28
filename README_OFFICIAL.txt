@@ -629,6 +629,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.5.2 - /05/2013
 - Added support for Theme My Login v6.3.x
+- Fixed Users Extended page is blank when the WordPress installation hosts a lot (10.000+) of users (thanks to mightypixel, eArtboard and more)
 - Fixed cimy_uef_register.css file inclusion does not happen (MS only) (introduced in v2.5.0)
 
 v2.5.1 - 06/05/2013

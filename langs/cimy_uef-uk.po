@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cimy User Extra Fields\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-17 16:57-0800\n"
-"PO-Revision-Date: 2013-03-17 16:57-0800\n"
+"POT-Creation-Date: 2013-06-02 15:03-0800\n"
+"PO-Revision-Date: 2013-06-02 15:03-0800\n"
 "Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
 "Language-Team: Oleg Bondarenko <o.o.bondarenko@gmail.com>\n"
 "Language: \n"
@@ -54,14 +54,14 @@ msgid "isn&#8217;t correct"
 msgstr "не правильно"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:521
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1027
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1030
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1026
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1029
 msgid "YES"
 msgstr "ТАК"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:521
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1027
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1030
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1026
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1029
 msgid "NO"
 msgstr "НІ"
 
@@ -106,56 +106,56 @@ msgstr "не може мати довжину більш ніж"
 msgid "Typed code is not correct."
 msgstr "Введений код не правильний."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:723
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1433
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1434
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:722
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1448
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1449
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:192
 msgid "Username"
 msgstr "Ім'я користувача"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:750
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1443
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1444
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:749
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1458
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1459
 msgid "E-mail"
 msgstr "Ел. пошта"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1001
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1000
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:304
 msgid "Please upload a file with one of the following extensions"
 msgstr "Будь ласка, завантажте файл з одним з наступних розширень"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1007
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1006
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:310
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:282
 msgid "Please upload an image with one of the following extensions"
 msgstr "Будь ласка, завантажте файл з одним з наступних розширень"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1182
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1181
 msgid "Strength indicator"
 msgstr "Індикатор сили"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1183
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1182
 msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ &amp; )."
 msgstr "Підказка: пароль повинен бути не менше семи символів. Щоб зробити його сильнішим, використовуйте верхній та нижній регістр, цифри і символи, наприклад ! \" ? $ % ^ &amp; )."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1222
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1221
 msgid "Change image"
 msgstr "Змінити картинку"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1225
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1224
 msgid "Insert the code:"
 msgstr "Вставте код:"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1297
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1299
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1296
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1298
 msgid "Confirm your registration"
 msgstr "Підтвердіть реєстрацію"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1305
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1304
 msgid "A password will be e-mailed to you."
 msgstr "Пароль буде направлений до вас ел. поштою."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1313
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1312
 msgid "&larr; Back"
 msgstr "&larr; Назад"
 
@@ -350,8 +350,8 @@ msgstr "З <strong>файл<strong>: ви можете попередньо за
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:576
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:777
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:871
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1438
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1439
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1453
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1454
 msgid "Name"
 msgstr "Ім'я"
 
@@ -359,8 +359,8 @@ msgstr "Ім'я"
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:577
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:777
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:874
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1748
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1753
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1763
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1768
 msgid "Value"
 msgstr "Значення"
 
@@ -397,8 +397,8 @@ msgstr "Дії"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:591
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:888
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1192
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1275
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1199
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1290
 msgid "Fieldset"
 msgstr "Група полів"
 
@@ -519,8 +519,8 @@ msgid "WordPress Fields"
 msgstr "Поля WordPress"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:750
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1748
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1753
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1763
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1768
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:367
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:115
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:369
@@ -546,87 +546,87 @@ msgid "SUCCESSFUL"
 msgstr "УСПІШНО"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1063
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1775
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1790
 msgid "select"
 msgstr "вибрати"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1196
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1279
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1203
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1294
 msgid "Users per page"
 msgstr "Користувачів на сторінку"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1198
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1281
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1205
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1296
 msgid "Apply"
 msgstr "Застосувати"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1355
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1370
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:23
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:31
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:36
 msgid "Users Extended"
 msgstr "Користувачі (Розширене)"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1363
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1378
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
 msgstr "Шукати результати для &#8220;%s&#8221;"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1401
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1416
 #, php-format
 msgid "%1$s <span class=\"count\">(%2$s)</span>"
 msgstr "%1$s <span class=\"count\">(%2$s)</span>"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1410
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1425
 msgid "Search Users"
 msgstr "Пошук Користувачів"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1448
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1449
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1463
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1464
 msgid "Role"
 msgstr "Роль"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1453
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1454
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1468
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1469
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:324
 msgid "Website"
 msgstr "Веб-сайт"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1458
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1459
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1473
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1474
 msgid "Posts"
 msgstr "Дописи"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1581
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1596
 msgid "View posts by this author"
 msgstr "Переглянути всі дописи цього автора"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1606
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1621
 msgid "Super Admin"
 msgstr "Супер Адмін"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1617
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1632
 #, php-format
 msgid "e-mail: %s"
 msgstr "ел. пошта: %s"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1728
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1743
 msgid "Change"
 msgstr "Зміна"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1744
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1759
 msgid "Update selected users"
 msgstr "Оновлення вибраних користувачів"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1765
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1780
 msgid "Update"
 msgstr "Оновлення"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1780
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1795
 msgid "OK"
 msgstr "ОК"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1781
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1796
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -636,7 +636,7 @@ msgid "New user registration on your site %s:"
 msgstr "Реєстрація нового користувача на вашому сайті %s:"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:46
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:236
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:243
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:214
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:364
 #, php-format
@@ -683,52 +683,57 @@ msgstr ""
 "Після активації, ви отримаєте *ще одне повідомлення* з вашим логіном.\n"
 "\n"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:227
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:236
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:215
+#, php-format
+msgid "[%1$s] Activate %2$s"
+msgstr ""
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:234
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:243
 msgid "Your account is now active!"
 msgstr "Тепер ваш акаунт активний!"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:228
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:235
 #, php-format
 msgid "Your site at <a href=\"%1$s\">%2$s</a> is active. You may now log in to your site using your chosen username of &#8220;%3$s&#8221;.  Please check your email inbox at %4$s for your password and login instructions.  If you do not receive an email, please check your junk or spam folder.  If you still do not receive an email within an hour, you can <a href=\"%5$s\">reset your password</a></p>."
 msgstr "Ваш сайт за адресою <a href=\"%1$s\">%2$s</a> активний. Тепер ви можете увійти в свій сайт, використовуючи вибране вами ім'я користувача &#8220;%3$s&#8221;. Будь ласка, перевірте вашу ел. поштову скриньку на %4$s для отримання вашого пароля та логіну. Якщо ви не отримаєте ел. пошту, будь ласка, перевірте вашу папку зі спамом. Якщо ви все ще не отримали листа протягом години, ви можете <a href=\"%5$s\">скинути ваш пароль</a></p>."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:230
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:237
 msgid "An error occurred during the activation"
 msgstr "Помилка при активації"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:236
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:243
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:215
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:365
 #, php-format
 msgid "Password: %s"
 msgstr "Пароль: %s"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:250
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:257
 msgid "Invalid activation key."
 msgstr "Неприпустимий ключ активації."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:253
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:260
 msgid "The site is already active."
 msgstr "Сайт вже активний."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:273
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:280
 msgid "Could not create user"
 msgstr "Не вдається створити користувача"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:285
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:292
 msgid "That username is already activated."
 msgstr "Це ім'я користувача вже активовано."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:305
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:312
 msgid "That username is currently reserved but may be available in a couple of days."
 msgstr "Це ім'я користувача наразі зарезервовано, але може стати доступним впродовж пари днів."
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:308
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:315
 msgid "username and email used"
 msgstr "ім'я користувача та адреса ел. пошти використані"
 
-#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:318
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:325
 msgid "That email address has already been used. Please check your inbox for an activation email. It will become available in a couple of days if you do nothing."
 msgstr "Ця адреса ел. пошти вже використовується. Будь ласка, перевірте вашу поштову скриньку на предмет листа активації. Вона стане доступна через пару днів, якщо нічого не робити."
 

@@ -631,6 +631,7 @@ v2.5.2 - /05/2013
 - Added support for Theme My Login v6.3.x
 - Fixed Users Extended page is blank when the WordPress installation hosts a lot (10.000+) of users (thanks to mightypixel, eArtboard and more)
 - Fixed cimy_uef_register.css file inclusion does not happen (MS only) (introduced in v2.5.0)
+- Fixed strlen doesn't count correctly special accented character, changed to mb_strlen (thanks to Batischev Oleg)
 
 v2.5.1 - 06/05/2013
 - Updated Securimage Captcha to v3.5.0

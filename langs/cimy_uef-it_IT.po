@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cimy User Extra Fields\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-02 14:55-0800\n"
-"PO-Revision-Date: 2013-06-02 15:01-0800\n"
+"PO-Revision-Date: 2013-06-02 15:26-0800\n"
 "Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
 "Language-Team:  <cimmino.marco@gmail.com>\n"
 "Language: \n"
@@ -690,7 +690,7 @@ msgstr ""
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:215
 #, php-format
 msgid "[%1$s] Activate %2$s"
-msgstr "[%1$s] Attiva %2$s"
+msgstr "[%1$s] Attivazione %2$s"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:234
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:243

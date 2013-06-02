@@ -1108,6 +1108,11 @@ function cimy_admin_users_list_page() {
 
 				$usersearch = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
 				$role = isset($_REQUEST['role']) ? $_REQUEST['role'] : '';
+				if (isset($_POST["cimy_uef_users_per_page"])) {
+					$users_per_page = intval($_POST["cimy_uef_users_per_page"]);
+					if ($user = wp_get_current_user())
+						update_user_meta($user->ID, 'users_network_per_page', $users_per_page);
+				}
 				$users_per_page = $this->get_items_per_page( 'users_network_per_page' );
 
 				$args = array(
@@ -1213,6 +1218,11 @@ function cimy_admin_users_list_page() {
 				$usersearch = isset($_REQUEST['s']) ? $_REQUEST['s'] : '';
 				$role = isset($_REQUEST['role']) ? $_REQUEST['role'] : '';
 				$per_page = ( $this->is_site_users ) ? 'site_users_network_per_page' : 'users_per_page';
+				if (isset($_POST["cimy_uef_users_per_page"])) {
+					$users_per_page = intval($_POST["cimy_uef_users_per_page"]);
+					if ($user = wp_get_current_user())
+						update_user_meta($user->ID, $per_page, $users_per_page);
+				}
 				$users_per_page = $this->get_items_per_page( $per_page );
 
 				$args = array(

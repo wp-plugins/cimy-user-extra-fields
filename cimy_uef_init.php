@@ -53,6 +53,14 @@ function cimy_uef_admin_init() {
 	wp_register_script("cimy_uef_ajax_new_value", $cuef_js_webpath."/ajax_new_value.js", array(), false);
 }
 
+function cimy_uef_init() {
+	if (!cimy_uef_is_register_page())
+		return;
+	$options = cimy_get_options();
+	if ($options['captcha'] == "securimage")
+		session_start();
+}
+
 function cimy_uef_admin_init_js() {
 	wp_enqueue_script("cimy_uef_invert_sel");
 	cimy_uef_init_upload_js();

@@ -158,6 +158,7 @@ require_once($cuef_plugin_dir.'/cimy_uef_functions.php');
 require_once($cuef_plugin_dir.'/cimy_uef_profile.php');
 
 add_action('admin_init', 'cimy_uef_admin_init');
+add_action('init', 'cimy_uef_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
 $cimy_uef_version = "2.5.2.1";

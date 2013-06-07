@@ -14,7 +14,7 @@ function cimy_uef_i18n_setup() {
 }
 
 function cimy_admin_menu_custom() {
-	global $cimy_uef_name, $cimy_uef_domain, $cimy_top_menu, $cimy_uef_plugins_dir;
+	global $cimy_uef_name, $cimy_uef_domain, $cimy_top_menu;
 
 	$aue_page = "";
 	if (isset($cimy_top_menu) && (!is_multisite())) {
@@ -23,7 +23,7 @@ function cimy_admin_menu_custom() {
 		$aue_page = add_submenu_page('profile.php', __('Users Extended', $cimy_uef_domain), __('Users Extended', $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
 	}
 	else {
-		if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins")) {
+		if (cimy_uef_is_multisite_unique_installation()) {
 // 			$aue_page = add_submenu_page('wpmu-admin.php', __("Users Extended", $cimy_uef_domain), __("Users Extended", $cimy_uef_domain), 'list_users', "users_extended", 'cimy_admin_users_list_page');
 // 			add_submenu_page('wpmu-admin.php', $cimy_uef_name, $cimy_uef_name, 'manage_options', "user_extra_fields", 'cimy_admin_define_extra_fields');
 

@@ -627,6 +627,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.5.3 - /06/2013
+- Fixed updating extra fields from a different blog doesn't work (MS per-blog only) (thanks to GilesFarrow)
+
 v2.5.2 - 03/06/2013
 - Added support for Theme My Login v6.3.x
 - Fixed Users Extended page is blank when the WordPress installation hosts a lot (10.000+) of users (thanks to mightypixel, eArtboard and more)

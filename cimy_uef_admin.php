@@ -214,9 +214,12 @@ function cimy_admin_define_extra_fields() {
 			$errors['delete'] = __("Nothing selected", $cimy_uef_domain);
 	}
 
-	if (($action == "add") || ($action == "edit")) {
-		$store_rule = array();
+	// TODO add more defaults here and get rid of selected_input
+	$store_rule = array();
+	$store_rule['email'] = false;
+	$store_rule['email_admin'] = false;
 
+	if (($action == "add") || ($action == "edit")) {
 		// RETRIEVE DATA FROM THE FORM
 		$name = substr(stripslashes($_POST['name'][$field_order]), 0, $max_length_name);
 		$value = substr(stripslashes($_POST['value'][$field_order]), 0, $max_length_value);

@@ -631,6 +631,7 @@ v2.5.3 - 24/06/2013
 - Fixed updating extra fields from a different blog doesn't work (MS per-blog only) (thanks to GilesFarrow)
 - Fixed Securimage captcha sometimes does not validate correctly codes (thanks to websitesareus)
 - Fixed two PHP warnings produced in the plug-in's admin panel (thanks to Ov3rfly)
+- Fixed tabindex is no longer needed for WordPress 3.5 and Theme My Login users with Securimage captcha too
 
 v2.5.2 - 03/06/2013
 - Added support for Theme My Login v6.3.x

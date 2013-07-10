@@ -768,8 +768,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 				chmod($blog_path, FS_CHMOD_DIR);
 			}
 			else {
-				mkdir($blog_path, 0777);
-				chmod($blog_path, 0777);
+				wp_mkdir_p($blog_path);
 			}
 		}
 	}
@@ -808,8 +807,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($user_path, FS_CHMOD_DIR);
 		}
 		else {
-			mkdir($user_path, 0777);
-			chmod($user_path, 0777);
+			wp_mkdir_p($user_path);
 		}
 	}
 
@@ -820,8 +818,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($file_path, FS_CHMOD_DIR);
 		}
 		else {
-			mkdir($file_path, 0777);
-			chmod($file_path, 0777);
+			wp_mkdir_p($file_path);
 		}
 	}
 

@@ -629,6 +629,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.5.4 - /07/2013
 - Fixed extra fields were not shown on certain themes, like: 'Modular' theme and 'Emporium' theme for WooCommerce (thanks to eArtboard, detoner and Rinaldo Pavanello)
+- Fixed default directory's permissions on Unix servers was set to 0777, now is handled by WordPress if FS_CHMOD_DIR is not set (thanks to KZeni)
 
 v2.5.3 - 24/06/2013
 - Fixed updating extra fields from a different blog doesn't work (MS per-blog only) (thanks to GilesFarrow)

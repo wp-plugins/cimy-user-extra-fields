@@ -287,7 +287,7 @@ function cimy_show_options($results, $embedded) {
 				if (defined("FS_CHMOD_DIR"))
 					@mkdir($cuef_upload_path, FS_CHMOD_DIR);
 				else
-					@mkdir($cuef_upload_path, 0777);
+					wp_mkdir_p($cuef_upload_path);
 			}
 
 			if (is_multisite()) {
@@ -296,7 +296,7 @@ function cimy_show_options($results, $embedded) {
 						if (defined("FS_CHMOD_DIR"))
 							@mkdir(WP_CONTENT_DIR.'/mu-plugins', FS_CHMOD_DIR);
 						else
-							@mkdir(WP_CONTENT_DIR.'/mu-plugins', 0777);
+							wp_mkdir_p(WP_CONTENT_DIR.'/mu-plugins');
 					}
 					if (!is_file(WP_CONTENT_DIR.'/mu-plugins/cimy_uef_mu_activation.php'))
 						copy($cuef_plugin_dir.'/cimy_uef_mu_activation.php', WP_CONTENT_DIR.'/mu-plugins/cimy_uef_mu_activation.php');

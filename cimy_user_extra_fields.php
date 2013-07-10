@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.5.3
+Version: 2.5.3.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -161,19 +161,21 @@ add_action('admin_init', 'cimy_uef_admin_init');
 add_action('init', 'cimy_uef_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.5.3";
+$cimy_uef_version = "2.5.3.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
-$start_cimy_uef_comment = "<!--\n";
-$start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version."\n";
-$start_cimy_uef_comment .= "\tCopyright (c) 2006-2013 Marco Cimmino\n";
-$start_cimy_uef_comment .= "\t".$cimy_uef_url."\n";
-$start_cimy_uef_comment .= "-->\n";
+// No new lines in the html comment, otherwise wpautop makes them <br /> tags and then this bug of wptexturize messes with the end tag
+// see: http://core.trac.wordpress.org/ticket/8912
+$start_cimy_uef_comment = "<!--";
+$start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version;
+$start_cimy_uef_comment .= "\tCopyright (c) 2006-2013 Marco Cimmino";
+$start_cimy_uef_comment .= "\t".$cimy_uef_url;
+$start_cimy_uef_comment .= "\t-->\n";
 
-$end_cimy_uef_comment = "\n<!--\n";
-$end_cimy_uef_comment .= "\tEnd of code from ".$cimy_uef_name."\n";
-$end_cimy_uef_comment .= "-->\n";
+$end_cimy_uef_comment = "\n<!--";
+$end_cimy_uef_comment .= "\tEnd of code from ".$cimy_uef_name;
+$end_cimy_uef_comment .= "\t-->\n";
 
 $cimy_uef_domain = 'cimy_uef';
 $cimy_uef_i18n_is_setup = false;

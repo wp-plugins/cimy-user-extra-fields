@@ -627,6 +627,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.5.4 - /07/2013
+- Fixed extra fields were not shown on certain themes, like: 'Modular' theme and 'Emporium' theme for WooCommerce (thanks to eArtboard, detoner and Rinaldo Pavanello)
+
 v2.5.3 - 24/06/2013
 - Fixed updating extra fields from a different blog doesn't work (MS per-blog only) (thanks to GilesFarrow)
 - Fixed Securimage captcha sometimes does not validate correctly codes (thanks to websitesareus)

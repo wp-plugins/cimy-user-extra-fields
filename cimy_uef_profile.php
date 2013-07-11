@@ -28,6 +28,8 @@ function cimy_extract_ExtraFields() {
 	$options = cimy_get_options();
 
 	$extra_fields = get_cimyFields(false, true);
+	if (cimy_uef_is_multisite_per_blog_installation())
+		echo "<input type=\"hidden\" name=\"from_blog_id\" value=\"".strval(get_current_blog_id())."\" />\n";
 
 	if (!empty($extra_fields)) {
 		$upload_image_function = false;

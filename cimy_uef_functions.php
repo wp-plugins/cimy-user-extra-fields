@@ -406,9 +406,7 @@ function cimy_uef_sanitize_content($content, $override_allowed_tags=null) {
 }
 
 function cimy_check_admin($permission) {
-	global $cimy_uef_plugins_dir;
-
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		return is_super_admin();
 	else
 		return current_user_can($permission);
@@ -770,8 +768,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 				chmod($blog_path, FS_CHMOD_DIR);
 			}
 			else {
-				mkdir($blog_path, 0777);
-				chmod($blog_path, 0777);
+				wp_mkdir_p($blog_path);
 			}
 		}
 	}
@@ -810,8 +807,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($user_path, FS_CHMOD_DIR);
 		}
 		else {
-			mkdir($user_path, 0777);
-			chmod($user_path, 0777);
+			wp_mkdir_p($user_path);
 		}
 	}
 
@@ -822,8 +818,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($file_path, FS_CHMOD_DIR);
 		}
 		else {
-			mkdir($file_path, 0777);
-			chmod($file_path, 0777);
+			wp_mkdir_p($file_path);
 		}
 	}
 
@@ -991,4 +986,14 @@ function cimy_uef_is_theme_my_login_profile_page() {
 	if (!empty($GLOBALS['theme_my_login']) || function_exists('Theme_My_Login'))
 		return defined('IS_PROFILE_PAGE') && constant('IS_PROFILE_PAGE');
 	return false;
+}
+
+function cimy_uef_is_multisite_unique_installation() {
+	global $cimy_uef_plugins_dir;
+	return is_multisite() && $cimy_uef_plugins_dir == "mu-plugins";
+}
+
+function cimy_uef_is_multisite_per_blog_installation() {
+	global $cimy_uef_plugins_dir;
+	return is_multisite() && $cimy_uef_plugins_dir != "mu-plugins";
 }

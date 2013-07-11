@@ -2,6 +2,6 @@
 	display: none;
 }
 
-p:first-child {
+form#registerform>p:first-child {
 	display: none;
 }

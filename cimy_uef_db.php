@@ -513,7 +513,7 @@ if (!function_exists("cimy_rfr")) {
 }
 
 function cimy_delete_blog_info($blog_id, $drop) {
-	global $cuef_upload_path, $cimy_uef_plugins_dir;
+	global $cuef_upload_path;
 
 	$file_path = $cuef_upload_path.$blog_id."/";
 	
@@ -525,7 +525,7 @@ function cimy_delete_blog_info($blog_id, $drop) {
 		rmdir($file_path);
 
 	// in this case no need to delete anything, per blog tables are not created
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		$drop = false;
 
 	if ($drop) {
@@ -580,9 +580,9 @@ function cimy_insert_ExtraFields_if_not_exist($user_id, $field_id) {
 }
 
 function cimy_get_options() {
-	global $cimy_uef_options, $cimy_uef_plugins_dir;
+	global $cimy_uef_options;
 
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		$options = get_site_option($cimy_uef_options);
 	else
 		$options = get_option($cimy_uef_options);
@@ -591,9 +591,9 @@ function cimy_get_options() {
 }
 
 function cimy_set_options($options) {
-	global $cimy_uef_options, $cimy_uef_options_descr, $cimy_uef_plugins_dir;
+	global $cimy_uef_options, $cimy_uef_options_descr;
 
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		update_site_option($cimy_uef_options, $options);
 	else
 		update_option($cimy_uef_options, $options, $cimy_uef_options_descr, "no");

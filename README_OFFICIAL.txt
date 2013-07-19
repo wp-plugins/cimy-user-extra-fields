@@ -627,6 +627,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.5.5 - 22/07/2013
+- Fixed mb_strlen is not available by default on PHP, better to use it only if available (regressed on v2.5.2) (thanks to jrmihalick)
+
 v2.5.4 - 11/07/2013
 - Fixed extra fields were not shown on certain themes, like: 'Modular' theme and 'Emporium' theme for WooCommerce (thanks to eArtboard, detoner and Rinaldo Pavanello)
 - Fixed default directory's permissions on Unix servers was set to 0777, now is handled by WordPress if FS_CHMOD_DIR is not set (thanks to KZeni)

@@ -559,13 +559,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 					if (in_array($type, $cimy_uef_file_types)) {
 						if ($file_size < $minlen) {
-
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size less than', $cimy_uef_domain).' '.$minlen.' KB.');
 						}
 					}
 					else {
-						if (mb_strlen($value) < $minlen) {
-
+						if (cimy_strlen($value) < $minlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length less than', $cimy_uef_domain).' '.$minlen.'.');
 						}
 					}
@@ -577,13 +575,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 					if (in_array($type, $cimy_uef_file_types)) {
 						if ($file_size != $exactlen) {
-
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size different than', $cimy_uef_domain).' '.$exactlen.' KB.');
 						}
 					}
 					else {
-						if (mb_strlen($value) != $exactlen) {
-
+						if (cimy_strlen($value) != $exactlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length different than', $cimy_uef_domain).' '.$exactlen.'.');
 						}
 					}
@@ -599,7 +595,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 						}
 					}
 					else {
-						if (mb_strlen($value) > $maxlen) {
+						if (cimy_strlen($value) > $maxlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length more than', $cimy_uef_domain).' '.$maxlen.'.');
 						}
 					}

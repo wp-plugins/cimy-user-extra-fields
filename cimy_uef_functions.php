@@ -997,3 +997,9 @@ function cimy_uef_is_multisite_per_blog_installation() {
 	global $cimy_uef_plugins_dir;
 	return is_multisite() && $cimy_uef_plugins_dir != "mu-plugins";
 }
+
+function cimy_strlen($str) {
+	if (function_exists("mb_strlen"))
+		return mb_strlen($str);
+	return strlen($str);
+}

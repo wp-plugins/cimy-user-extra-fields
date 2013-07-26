@@ -56,7 +56,7 @@ function cimy_register_overwrite_password($password) {
 
 		if (!empty($key)) {
 			// seems useless since this code cannot be reached with a bad key anyway you never know
-			$key = $wpdb->escape($key);
+			$key = esc_sql($key);
 
 			$sql = "SELECT active, meta FROM ".$wpdb->signups." WHERE activation_key='".$key."'";
 			$data = $wpdb->get_results($sql);
@@ -215,7 +215,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 					$data = substr($data, 0, $max_length_value);
 			}
 		
-			$data = $wpdb->escape($data);
+			$data = esc_sql($data);
 
 			if ($user_signups)
 				$meta[$input_name] = $data;

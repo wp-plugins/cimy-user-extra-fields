@@ -366,7 +366,7 @@ function cimy_admin_define_extra_fields() {
 			$exist = array();
 
 			if ($type != "radio") {
-				$sql1 = "SELECT id FROM ".$fields_table." WHERE name='".$wpdb->escape($name)."' LIMIT 1";
+				$sql1 = "SELECT id FROM ".$fields_table." WHERE name='".esc_sql($name)."' LIMIT 1";
 				$exist = $wpdb->get_row($sql1);
 			}
 
@@ -741,8 +741,8 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 	$delSel_caption = $submit_msgs['delSel_caption'];
 	$order_caption = $submit_msgs['order_caption'];
 
-	$invert_selection_label = $wpdb->escape(__("Invert selection", $cimy_uef_domain));
-	$delete_fields_label = $wpdb->escape(__("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain));
+	$invert_selection_label = esc_sql(__("Invert selection", $cimy_uef_domain));
+	$delete_fields_label = esc_sql(__("Are you sure you want to delete field(s) and all data inserted into by users?", $cimy_uef_domain));
 	
 ?>
 	<div class="wrap" id="<?php echo $div_id; ?>">
@@ -1838,18 +1838,18 @@ function cimy_save_field($action, $table, $data) {
 		$fieldset_sql = ", fieldset=".$fieldset;
 	}
 	
-	$name = $wpdb->escape($data['name']);
-	$value = $wpdb->escape($data['value']);
-	$desc = $wpdb->escape($data['desc']);
+	$name = esc_sql($data['name']);
+	$value = esc_sql($data['value']);
+	$desc = esc_sql($data['desc']);
 
 	if ($wp_fields)
-		$label = $wpdb->escape(__($data['label']));
+		$label = esc_sql(__($data['label']));
 	else
-		$label = $wpdb->escape($data['label']);
+		$label = esc_sql($data['label']);
 	
-	$type = $wpdb->escape($data['type']);
-	$store_rule = $wpdb->escape(serialize($data['store_rule']));
-	$num_fields = $wpdb->escape($data['num_fields']);
+	$type = esc_sql($data['type']);
+	$store_rule = esc_sql(serialize($data['store_rule']));
+	$num_fields = esc_sql($data['num_fields']);
 
 	if ($action == "add")
 		$sql = "INSERT INTO ".$table." ";
@@ -1861,7 +1861,7 @@ function cimy_save_field($action, $table, $data) {
 	if ($action == "add")
 		$sql.= ", F_ORDER=".($num_fields + 1);
 	else if ($action == "edit") {
-		$field_order = $wpdb->escape($data['field_order']);
+		$field_order = esc_sql($data['field_order']);
 		$sql.= " WHERE F_ORDER=".$field_order;
 	}
 

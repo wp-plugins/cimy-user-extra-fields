@@ -45,7 +45,7 @@ function set_cimyFieldValue($user_id, $field_name, $field_value) {
 	if (empty($field_name))
 		return $results;
 
-	$field_name = $wpdb->escape(strtoupper($field_name));
+	$field_name = esc_sql(strtoupper($field_name));
 
 	$sql = "SELECT ID, TYPE, LABEL FROM $wpdb_fields_table WHERE NAME='$field_name'";
 	$efields = $wpdb->get_results($sql, ARRAY_A);
@@ -94,7 +94,7 @@ function set_cimyFieldValue($user_id, $field_name, $field_value) {
 	if (empty($users))
 		$users[]["ID"] = $user_id;
 
-	$field_value = $wpdb->escape($field_value);
+	$field_value = esc_sql($field_value);
 
 	foreach ($users as $user) {
 		if (!current_user_can('edit_user', $user["ID"]))
@@ -137,13 +137,13 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 	
 	if ($field_name) {
 		$field_name = strtoupper($field_name);
-		$field_name = $wpdb->escape($field_name);
+		$field_name = esc_sql($field_name);
 	}
 	
 	if ($field_value) {
 		if (is_array($field_value)) {
 			if (isset($field_value['value'])) {
-				$sql_field_value = $wpdb->escape($field_value['value']);
+				$sql_field_value = esc_sql($field_value['value']);
 				
 				if ($field_value['like'])
 					$sql_field_value = " AND data.VALUE LIKE '%".$sql_field_value."%'";
@@ -152,7 +152,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 			}
 		} else {
 		
-			$field_value = $wpdb->escape($field_value);
+			$field_value = esc_sql($field_value);
 			$sql_field_value = " AND data.VALUE='".$field_value."'";
 		}
 	}
@@ -700,7 +700,7 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 		// ...or we may have the email
 		$email = $id_or_email;
 
-		$sql = sprintf("SELECT ID, user_login FROM %s WHERE user_email='%s' LIMIT 1", $wpdb->users, $wpdb->escape($email));
+		$sql = sprintf("SELECT ID, user_login FROM %s WHERE user_email='%s' LIMIT 1", $wpdb->users, esc_sql($email));
 		$res = $wpdb->get_results($sql);
 
 		// something went wrong, aborting and returning normal avatar

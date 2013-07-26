@@ -627,8 +627,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.5.5 - 22/07/2013
+v2.5.5 - 29/07/2013
 - Fixed mb_strlen is not available by default on PHP, better to use it only if available (regressed on v2.5.2) (thanks to jrmihalick)
+- Fixed wpdb::escape warnings when using WordPress 3.6
 
 v2.5.4 - 11/07/2013
 - Fixed extra fields were not shown on certain themes, like: 'Modular' theme and 'Emporium' theme for WooCommerce (thanks to eArtboard, detoner and Rinaldo Pavanello)

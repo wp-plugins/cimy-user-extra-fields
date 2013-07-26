@@ -45,14 +45,14 @@ function cimy_plugin_install () {
 			
 			foreach ($fields as $field) {
 				$id = $field['ID'];
-				$name = $wpdb->escape(html_entity_decode($field['NAME'], ENT_QUOTES, "UTF-8"));
-				$label = $wpdb->escape(html_entity_decode($field['LABEL'], ENT_QUOTES, "UTF-8"));
-				$desc = $wpdb->escape(html_entity_decode($field['DESCRIPTION'], ENT_QUOTES, "UTF-8"));
-				$value = $wpdb->escape(html_entity_decode($field['VALUE'], ENT_QUOTES, "UTF-8"));
+				$name = esc_sql(html_entity_decode($field['NAME'], ENT_QUOTES, "UTF-8"));
+				$label = esc_sql(html_entity_decode($field['LABEL'], ENT_QUOTES, "UTF-8"));
+				$desc = esc_sql(html_entity_decode($field['DESCRIPTION'], ENT_QUOTES, "UTF-8"));
+				$value = esc_sql(html_entity_decode($field['VALUE'], ENT_QUOTES, "UTF-8"));
 				
 				$rules = unserialize($field['RULES']);
 				$rules['equal_to'] = html_entity_decode($rules['equal_to'], ENT_QUOTES, "UTF-8");
-				$rules = $wpdb->escape(serialize($rules));
+				$rules = esc_sql(serialize($rules));
 				
 				$sql = "UPDATE ".$wpdb_fields_table." SET name='".$name."', value='".$value."', description='".$desc."', label='".$label."', rules='".$rules."' WHERE ID=".$id;
 				
@@ -161,7 +161,7 @@ function cimy_plugin_install () {
 						if (!isset($rule_to_be_updated["show_in_search"]))
 							$rule_to_be_updated["show_in_search"] = true;
 		
-						$sql = "UPDATE ".$the_table." SET RULES='".$wpdb->escape(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
+						$sql = "UPDATE ".$the_table." SET RULES='".esc_sql(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
 						$wpdb->query($sql);
 					}
 				}
@@ -193,7 +193,7 @@ function cimy_plugin_install () {
 						if (empty($rule_to_be_updated["edit"]))
 							$rule_to_be_updated["edit"] = "ok_edit";
 		
-						$sql = "UPDATE ".$the_table." SET RULES='".$wpdb->escape(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
+						$sql = "UPDATE ".$the_table." SET RULES='".esc_sql(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
 						$wpdb->query($sql);
 					}
 				}

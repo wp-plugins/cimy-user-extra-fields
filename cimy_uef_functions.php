@@ -45,7 +45,7 @@ function set_cimyFieldValue($user_id, $field_name, $field_value) {
 	if (empty($field_name))
 		return $results;
 
-	$field_name = $wpdb->escape(strtoupper($field_name));
+	$field_name = esc_sql(strtoupper($field_name));
 
 	$sql = "SELECT ID, TYPE, LABEL FROM $wpdb_fields_table WHERE NAME='$field_name'";
 	$efields = $wpdb->get_results($sql, ARRAY_A);
@@ -94,7 +94,7 @@ function set_cimyFieldValue($user_id, $field_name, $field_value) {
 	if (empty($users))
 		$users[]["ID"] = $user_id;
 
-	$field_value = $wpdb->escape($field_value);
+	$field_value = esc_sql($field_value);
 
 	foreach ($users as $user) {
 		if (!current_user_can('edit_user', $user["ID"]))
@@ -137,13 +137,13 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 	
 	if ($field_name) {
 		$field_name = strtoupper($field_name);
-		$field_name = $wpdb->escape($field_name);
+		$field_name = esc_sql($field_name);
 	}
 	
 	if ($field_value) {
 		if (is_array($field_value)) {
 			if (isset($field_value['value'])) {
-				$sql_field_value = $wpdb->escape($field_value['value']);
+				$sql_field_value = esc_sql($field_value['value']);
 				
 				if ($field_value['like'])
 					$sql_field_value = " AND data.VALUE LIKE '%".$sql_field_value."%'";
@@ -152,7 +152,7 @@ function get_cimyFieldValue($user_id, $field_name, $field_value=false) {
 			}
 		} else {
 		
-			$field_value = $wpdb->escape($field_value);
+			$field_value = esc_sql($field_value);
 			$sql_field_value = " AND data.VALUE='".$field_value."'";
 		}
 	}
@@ -406,9 +406,7 @@ function cimy_uef_sanitize_content($content, $override_allowed_tags=null) {
 }
 
 function cimy_check_admin($permission) {
-	global $cimy_uef_plugins_dir;
-
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		return is_super_admin();
 	else
 		return current_user_can($permission);
@@ -702,7 +700,7 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 		// ...or we may have the email
 		$email = $id_or_email;
 
-		$sql = sprintf("SELECT ID, user_login FROM %s WHERE user_email='%s' LIMIT 1", $wpdb->users, $wpdb->escape($email));
+		$sql = sprintf("SELECT ID, user_login FROM %s WHERE user_email='%s' LIMIT 1", $wpdb->users, esc_sql($email));
 		$res = $wpdb->get_results($sql);
 
 		// something went wrong, aborting and returning normal avatar
@@ -770,8 +768,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 				chmod($blog_path, FS_CHMOD_DIR);
 			}
 			else {
-				mkdir($blog_path, 0777);
-				chmod($blog_path, 0777);
+				wp_mkdir_p($blog_path);
 			}
 		}
 	}
@@ -810,8 +807,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($user_path, FS_CHMOD_DIR);
 		}
 		else {
-			mkdir($user_path, 0777);
-			chmod($user_path, 0777);
+			wp_mkdir_p($user_path);
 		}
 	}
 
@@ -822,8 +818,7 @@ function cimy_manage_upload($input_name, $user_login, $rules, $old_file=false, $
 			chmod($file_path, FS_CHMOD_DIR);
 		}
 		else {
-			mkdir($file_path, 0777);
-			chmod($file_path, 0777);
+			wp_mkdir_p($file_path);
 		}
 	}
 
@@ -991,4 +986,20 @@ function cimy_uef_is_theme_my_login_profile_page() {
 	if (!empty($GLOBALS['theme_my_login']) || function_exists('Theme_My_Login'))
 		return defined('IS_PROFILE_PAGE') && constant('IS_PROFILE_PAGE');
 	return false;
+}
+
+function cimy_uef_is_multisite_unique_installation() {
+	global $cimy_uef_plugins_dir;
+	return is_multisite() && $cimy_uef_plugins_dir == "mu-plugins";
+}
+
+function cimy_uef_is_multisite_per_blog_installation() {
+	global $cimy_uef_plugins_dir;
+	return is_multisite() && $cimy_uef_plugins_dir != "mu-plugins";
+}
+
+function cimy_strlen($str) {
+	if (function_exists("mb_strlen"))
+		return mb_strlen($str);
+	return strlen($str);
 }

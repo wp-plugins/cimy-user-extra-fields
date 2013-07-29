@@ -28,6 +28,8 @@ function cimy_extract_ExtraFields() {
 	$options = cimy_get_options();
 
 	$extra_fields = get_cimyFields(false, true);
+	if (cimy_uef_is_multisite_per_blog_installation())
+		echo "<input type=\"hidden\" name=\"from_blog_id\" value=\"".strval(get_current_blog_id())."\" />\n";
 
 	if (!empty($extra_fields)) {
 		$upload_image_function = false;
@@ -301,13 +303,13 @@ function cimy_extract_ExtraFields() {
 
 					if ($type == "file") {
 						// if we do not escape then some translations can break
-						$warning_msg = $wpdb->escape(__("Please upload a file with one of the following extensions", $cimy_uef_domain));
+						$warning_msg = esc_js(__("Please upload a file with one of the following extensions", $cimy_uef_domain));
 
 						$obj_style = ' onchange="uploadFile(\'your-profile\', \''.$unique_id.'\', \''.$warning_msg.'\', Array('.$allowed_exts.'));"';
 					}
 					else {
 						// if we do not escape then some translations can break
-						$warning_msg = $wpdb->escape(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
+						$warning_msg = esc_js(__("Please upload an image with one of the following extensions", $cimy_uef_domain));
 						$allowed_exts = "'".implode("','", cimy_uef_get_allowed_image_extensions())."'";
 						$obj_style = ' onchange="uploadFile(\'your-profile\', \''.$unique_id.'\', \''.$warning_msg.'\', Array('.$allowed_exts.'));"';
 					}
@@ -577,7 +579,7 @@ function cimy_update_ExtraFields() {
 				continue;
 		}
 
-		$prev_value = $wpdb->escape(stripslashes($_POST[$input_name."_".$field_id."_prev_value"]));
+		$prev_value = esc_sql(stripslashes($_POST[$input_name."_".$field_id."_prev_value"]));
 		if (cimy_uef_is_field_disabled($type, $rules['edit'], $prev_value))
 			continue;
 
@@ -595,7 +597,7 @@ function cimy_update_ExtraFields() {
 			else
 				$field_value = substr($field_value, 0, $max_length_value);
 
-			$field_value = $wpdb->escape($field_value);
+			$field_value = esc_sql($field_value);
 
 			if ($i > 0)
 				$field_ids.= ", ";

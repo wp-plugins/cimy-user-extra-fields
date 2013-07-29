@@ -45,14 +45,14 @@ function cimy_plugin_install () {
 			
 			foreach ($fields as $field) {
 				$id = $field['ID'];
-				$name = $wpdb->escape(html_entity_decode($field['NAME'], ENT_QUOTES, "UTF-8"));
-				$label = $wpdb->escape(html_entity_decode($field['LABEL'], ENT_QUOTES, "UTF-8"));
-				$desc = $wpdb->escape(html_entity_decode($field['DESCRIPTION'], ENT_QUOTES, "UTF-8"));
-				$value = $wpdb->escape(html_entity_decode($field['VALUE'], ENT_QUOTES, "UTF-8"));
+				$name = esc_sql(html_entity_decode($field['NAME'], ENT_QUOTES, "UTF-8"));
+				$label = esc_sql(html_entity_decode($field['LABEL'], ENT_QUOTES, "UTF-8"));
+				$desc = esc_sql(html_entity_decode($field['DESCRIPTION'], ENT_QUOTES, "UTF-8"));
+				$value = esc_sql(html_entity_decode($field['VALUE'], ENT_QUOTES, "UTF-8"));
 				
 				$rules = unserialize($field['RULES']);
 				$rules['equal_to'] = html_entity_decode($rules['equal_to'], ENT_QUOTES, "UTF-8");
-				$rules = $wpdb->escape(serialize($rules));
+				$rules = esc_sql(serialize($rules));
 				
 				$sql = "UPDATE ".$wpdb_fields_table." SET name='".$name."', value='".$value."', description='".$desc."', label='".$label."', rules='".$rules."' WHERE ID=".$id;
 				
@@ -161,7 +161,7 @@ function cimy_plugin_install () {
 						if (!isset($rule_to_be_updated["show_in_search"]))
 							$rule_to_be_updated["show_in_search"] = true;
 		
-						$sql = "UPDATE ".$the_table." SET RULES='".$wpdb->escape(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
+						$sql = "UPDATE ".$the_table." SET RULES='".esc_sql(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
 						$wpdb->query($sql);
 					}
 				}
@@ -193,7 +193,7 @@ function cimy_plugin_install () {
 						if (empty($rule_to_be_updated["edit"]))
 							$rule_to_be_updated["edit"] = "ok_edit";
 		
-						$sql = "UPDATE ".$the_table." SET RULES='".$wpdb->escape(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
+						$sql = "UPDATE ".$the_table." SET RULES='".esc_sql(serialize($rule_to_be_updated))."' WHERE ID=".$rule_id;
 						$wpdb->query($sql);
 					}
 				}
@@ -513,7 +513,7 @@ if (!function_exists("cimy_rfr")) {
 }
 
 function cimy_delete_blog_info($blog_id, $drop) {
-	global $cuef_upload_path, $cimy_uef_plugins_dir;
+	global $cuef_upload_path;
 
 	$file_path = $cuef_upload_path.$blog_id."/";
 	
@@ -525,7 +525,7 @@ function cimy_delete_blog_info($blog_id, $drop) {
 		rmdir($file_path);
 
 	// in this case no need to delete anything, per blog tables are not created
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		$drop = false;
 
 	if ($drop) {
@@ -580,9 +580,9 @@ function cimy_insert_ExtraFields_if_not_exist($user_id, $field_id) {
 }
 
 function cimy_get_options() {
-	global $cimy_uef_options, $cimy_uef_plugins_dir;
+	global $cimy_uef_options;
 
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		$options = get_site_option($cimy_uef_options);
 	else
 		$options = get_option($cimy_uef_options);
@@ -591,9 +591,9 @@ function cimy_get_options() {
 }
 
 function cimy_set_options($options) {
-	global $cimy_uef_options, $cimy_uef_options_descr, $cimy_uef_plugins_dir;
+	global $cimy_uef_options, $cimy_uef_options_descr;
 
-	if ((is_multisite()) && ($cimy_uef_plugins_dir == "mu-plugins"))
+	if (cimy_uef_is_multisite_unique_installation())
 		update_site_option($cimy_uef_options, $options);
 	else
 		update_option($cimy_uef_options, $options, $cimy_uef_options_descr, "no");

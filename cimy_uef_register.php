@@ -56,7 +56,7 @@ function cimy_register_overwrite_password($password) {
 
 		if (!empty($key)) {
 			// seems useless since this code cannot be reached with a bad key anyway you never know
-			$key = $wpdb->escape($key);
+			$key = esc_sql($key);
 
 			$sql = "SELECT active, meta FROM ".$wpdb->signups." WHERE activation_key='".$key."'";
 			$data = $wpdb->get_results($sql);
@@ -215,7 +215,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 					$data = substr($data, 0, $max_length_value);
 			}
 		
-			$data = $wpdb->escape($data);
+			$data = esc_sql($data);
 
 			if ($user_signups)
 				$meta[$input_name] = $data;
@@ -559,13 +559,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 					if (in_array($type, $cimy_uef_file_types)) {
 						if ($file_size < $minlen) {
-
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size less than', $cimy_uef_domain).' '.$minlen.' KB.');
 						}
 					}
 					else {
-						if (mb_strlen($value) < $minlen) {
-
+						if (cimy_strlen($value) < $minlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length less than', $cimy_uef_domain).' '.$minlen.'.');
 						}
 					}
@@ -577,13 +575,11 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 
 					if (in_array($type, $cimy_uef_file_types)) {
 						if ($file_size != $exactlen) {
-
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size different than', $cimy_uef_domain).' '.$exactlen.' KB.');
 						}
 					}
 					else {
-						if (mb_strlen($value) != $exactlen) {
-
+						if (cimy_strlen($value) != $exactlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length different than', $cimy_uef_domain).' '.$exactlen.'.');
 						}
 					}
@@ -599,7 +595,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 						}
 					}
 					else {
-						if (mb_strlen($value) > $maxlen) {
+						if (cimy_strlen($value) > $maxlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length more than', $cimy_uef_domain).' '.$maxlen.'.');
 						}
 					}
@@ -1218,10 +1214,10 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			<img id="captcha" align="left" style="padding-right: 5px; border: 0" src="<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php" alt="CAPTCHA Image" />
 			<object type="application/x-shockwave-flash" data="<?php echo $cuef_securimage_webpath; ?>/securimage_play.swf?audio_file=<?php echo $cuef_securimage_webpath; ?>/securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" height="19" width="19"><param name="movie" value="<?php echo $cuef_securimage_webpath; ?>/securimage_play.swf?audio_file=<?php echo $cuef_securimage_webpath; ?>/securimage_play.php&#038;bgColor1=#fff&#038;bgColor2=#fff&#038;iconColor=#777&#038;borderWidth=1&#038;borderColor=#000" /></object>
 			<br /><br /><br />
-			<a align="right" <?php if (!empty($obj_tabindex)) echo "tabindex=\"".$tabindex."\""; $tabindex++; ?> style="border-style: none" href="#" onclick="document.getElementById('captcha').src = '<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php?' + Math.random(); return false"><img src="<?php echo $cuef_securimage_webpath; ?>/images/refresh.png" alt="<?php _e("Change image", $cimy_uef_domain); ?>" border="0" onclick="this.blur()" align="bottom" height="19" width="19" /></a>
+			<a align="right"<?php if (!empty($obj_tabindex)) echo " tabindex=\"".$tabindex."\""; $tabindex++; ?> style="border-style: none" href="#" onclick="document.getElementById('captcha').src = '<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php?' + Math.random(); return false"><img src="<?php echo $cuef_securimage_webpath; ?>/images/refresh.png" alt="<?php _e("Change image", $cimy_uef_domain); ?>" border="0" onclick="this.blur()" align="bottom" height="19" width="19" /></a>
 		</div>
 		<div style="width: <?php echo $width; ?>px; float: left; height: 50px; vertical-align: bottom; padding: 5px;">
-			<?php _e("Insert the code:", $cimy_uef_domain); ?>&nbsp;<input type="text" name="securimage_response_field" size="12" maxlength="16" tabindex="<?php echo $tabindex; $tabindex++; ?>" />
+			<?php _e("Insert the code:", $cimy_uef_domain); ?>&nbsp;<input type="text" name="securimage_response_field" size="12" maxlength="16"<?php if (!empty($obj_tabindex)) echo " tabindex=\"".$tabindex."\""; $tabindex++; ?> />
 		</div>
 <?php
 	}

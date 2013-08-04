@@ -956,7 +956,7 @@ function cimy_wpml_unregister_string($name) {
 function cimy_uef_is_register_page() {
 	if (cimy_uef_is_theme_my_login_register_page())
 		return true;
-	$script_file = end(explode('/', $_SERVER['SCRIPT_NAME']));
+	$script_file = basename($_SERVER['SCRIPT_NAME']);
 	if (!is_multisite() && stripos($script_file, "wp-login.php") !== false && !empty($_GET['action']) && $_GET['action'] == 'register')
 		return true;
 	else if (is_multisite() && stripos($script_file, "wp-signup.php") !== false)

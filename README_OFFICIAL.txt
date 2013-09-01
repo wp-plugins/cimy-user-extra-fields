@@ -629,6 +629,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 CHANGELOG:
 v2.5.6 - /08/2013
 - Fixed PHP warning 'Only variables should be passed by reference on line 959' (regressed on v2.5.2) (thanks to badarong for the patch)
+- Fixed clicking on options' labels were not triggering the option change
 
 v2.5.5 - 29/07/2013
 - Fixed mb_strlen is not available by default on PHP, better to use it only if available (regressed on v2.5.2) (thanks to jrmihalick)

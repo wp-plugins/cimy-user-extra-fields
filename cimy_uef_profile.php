@@ -444,14 +444,14 @@ function cimy_extract_ExtraFields() {
 						$imgarea_options.= ", aspectRatio: '1:1'";
 					echo "<script type='text/javascript'>jQuery(document).ready(function () { jQuery('#".esc_js($field_id_data)."').imgAreaSelect({ ".$imgarea_options." }); });</script>";
 				}
-				echo '<input type="checkbox" name="'.$input_name.'_del" value="1" style="width:auto; border:0; background:white;"'.$dis_delete_img.' />';
+				echo '<input type="checkbox" name="'.$input_name.'_del" id="'.$input_name.'_del" value="1" style="width:auto; border:0; background:white;"'.$dis_delete_img.' />';
 
 				if ($type == "file") {
-					echo " ".__("Delete the file", $cimy_uef_domain)."<br /><br />";
+					echo " <label for=\"".$input_name."_del\">".__("Delete the file", $cimy_uef_domain)."</label><br /><br />";
 					echo "\n\t\t".__("Update the file", $cimy_uef_domain)."<br />";
 				}
 				else {
-					echo " ".__("Delete the picture", $cimy_uef_domain)."<br /><br />";
+					echo " <label for=\"".$input_name."_del\">".__("Delete the picture", $cimy_uef_domain)."</label><br /><br />";
 					echo "\n\t\t".__("Update the picture", $cimy_uef_domain)."<br />";
 				}
 				echo "\n\t\t";

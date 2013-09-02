@@ -717,7 +717,6 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 
 	if (isset($id)) {
 		$sql = "SELECT data.VALUE FROM $wpdb_data_table as data JOIN $wpdb_fields_table as efields ON efields.id=data.field_id WHERE (efields.TYPE='avatar' AND data.USER_ID=$id) LIMIT 1";
-
 		$value = $wpdb->get_var($sql);
 
 		if ( false === $alt)
@@ -727,9 +726,9 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 
 		// max $size allowed is 512
 		if (isset($value)) {
-			if ($value == "") {
+			if (empty($value)) {
 				// apply default only here or below, as we are sure to have an user that did not set anything
-				if ($overwrite_default != "")
+				if (!empty($overwrite_default))
 					return $overwrite_default;
 				else
 					return $avatar;
@@ -744,7 +743,7 @@ function cimy_uef_avatar_filter($avatar, $id_or_email, $size, $default, $alt="")
 			$avatar = "<img alt='{$safe_alt}' src='{$value}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' />";
 		}
 		// apply default only here, as we are sure to have an user that did not set anything
-		else if ($overwrite_default != "")
+		else if (!empty($overwrite_default))
 			return $overwrite_default;
 	}
 

@@ -134,6 +134,7 @@ function cimy_uef_init_javascripts($rule_name) {
 		// Themes list: http://blog.jqueryui.com/
 		wp_register_style('jquery-ui-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css', array());
 		wp_enqueue_style('jquery-ui-style');
+		// Fix for the following bug: http://forum.jquery.com/topic/jquery-ui-datepicker-initial-display-none-fixup
 		wp_register_style('cimy_uef_datepicker', $cuef_css_webpath.'/cimy_uef_datepicker.css', array());
 		wp_enqueue_style('cimy_uef_datepicker');
 

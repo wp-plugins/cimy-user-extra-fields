@@ -746,6 +746,13 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			'show_in_aeu' => 0,
 			'show_in_blog' => 0,
 			'show_in_search' => 0
+		),
+		'date_fields' => array(
+			'show_in_reg' => 0,
+			'show_in_profile' => 0,
+			'show_in_aeu' => 0,
+			'show_in_blog' => 0,
+			'show_in_search' => 0
 		));
 	}
 	
@@ -1044,6 +1051,7 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 		$options['file_fields'] = $javascripts_dep['file_fields'];
 		$options['image_fields'] = $javascripts_dep['image_fields'];
 		$options['tinymce_fields'] = $javascripts_dep['tinymce_fields'];
+		$options['date_fields'] = $javascripts_dep['date_fields'];
 		cimy_set_options($options);
 	}
 }
@@ -1557,6 +1565,7 @@ function cimy_admin_users_list_page() {
 							$search_input = '<select name="ef_search['.$name_esc_attr.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret['html'].'</select>';
 							$write_input[$i] = '<td>'.$label.'</td><td id="ef-new-value-'.$name_esc_attr.'"><select name="ef_write['.$name_esc_attr.'][]" multiple="multiple" style="height: 6em;"><option>'.$dropdown_first_item.'</option>'.$ret2.'</select>';
 							break;
+						case "date":
 						case "text":
 						case "textarea":
 						case "textarea-rich":

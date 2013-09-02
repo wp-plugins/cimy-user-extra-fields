@@ -1,7 +1,7 @@
 <?php
 
 function cimy_extract_ExtraFields() {
-	global $wpdb, $user_ID, $wpdb_data_table, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_profile_value, $cimy_uef_options, $rule_maxlen_needed, $fields_name_prefix, $cuef_upload_path, $cimy_uef_domain, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level;
+	global $wpdb, $user_ID, $wpdb_data_table, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_profile_value, $cimy_uef_options, $rule_maxlen_needed, $fields_name_prefix, $cuef_upload_path, $cimy_uef_domain, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $cimy_uef_text_types, $user_level;
 
 	// if editing a different user (only admin)
 	if (isset($_GET['user_id'])) {
@@ -137,19 +137,22 @@ function cimy_extract_ExtraFields() {
 			$value = esc_attr($value);
 			$old_value = esc_attr($old_value);
 			$obj_class = '';
+			$obj_class2 = '';
 			if ($rules['can_be_empty'])
 				$required = '' ;
 			else
 				$required = ' <span class="description">'.__("(required)").'</span>' ;
 
 			switch($type) {
+				case "date":
+					$obj_class2 = " datepicker";
 				case "picture-url":
 				case "password":
 				case "text":
 					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).$required.'</label>';
 					$obj_name = ' name="'.$input_name.'"';
 
-					if ($type == "picture-url")
+					if (in_array($type, $cimy_uef_text_types))
 						$obj_type = ' type="text"';
 					else
 						$obj_type = ' type="'.$type.'"';
@@ -159,7 +162,8 @@ function cimy_extract_ExtraFields() {
 					$obj_checked = "";
 					$obj_tag = "input";
 					$obj_closing_tag = false;
-					$obj_style = ' class="regular-text"';
+					$obj_style = "";
+					$obj_class = ' class="regular-text'.$obj_class2.'"';
 
 					if (cimy_uef_is_field_disabled($type, $rules['edit'], $old_value))
 						$obj_disabled = ' disabled="disabled"';
@@ -613,6 +617,7 @@ function cimy_update_ExtraFields() {
 				case 'dropdown-multi':
 					$ret = cimy_dropDownOptions($label, $field_value);
 					$label = $ret['label'];
+				case 'date':
 				case 'picture-url':
 				case 'textarea':
 				case 'textarea-rich':

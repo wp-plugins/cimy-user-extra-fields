@@ -223,6 +223,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 				$sql = "INSERT INTO ".$wpdb_data_table." SET USER_ID = ".$user_id.", FIELD_ID=".$field_id.", ";
 	
 				switch ($type) {
+					case 'date':
 					case 'avatar':
 					case 'picture-url':
 					case 'picture':
@@ -878,6 +879,8 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			echo "\n\t";
 	
 			switch($type) {
+				case "date":
+					$input_class .= " datepicker";
 				case "picture-url":
 				case "password":
 				case "text":

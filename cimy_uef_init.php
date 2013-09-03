@@ -128,9 +128,23 @@ function cimy_uef_init_javascripts($rule_name) {
 		cimy_uef_init_upload_js();
 	}
 
+	if (($options['date_fields'][$rule_name]) > 0) {
+		wp_register_script("cimy_uef_datepicker", $cuef_js_webpath."/datepicker.js", array("jquery-ui-core", "jquery-ui-datepicker"), false, true);
+		wp_enqueue_script('cimy_uef_datepicker');
+		// Themes list: http://blog.jqueryui.com/
+		wp_register_style('jquery-ui-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css', array());
+		wp_enqueue_style('jquery-ui-style');
+		// Fix for the following bug: http://forum.jquery.com/topic/jquery-ui-datepicker-initial-display-none-fixup
+		wp_register_style('cimy_uef_datepicker', $cuef_css_webpath.'/cimy_uef_datepicker.css', array());
+		wp_enqueue_style('cimy_uef_datepicker');
+
+		// Pass the array to the enqueued JS
+		wp_localize_script('cimy_uef_datepicker', 'datepickerL10n', cimy_uef_date_picker_l10n());
+	}
+
 	if ($rule_name == "show_in_profile") {
 		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor")) {
-			wp_register_style("cimy_uef_tinymce", $cuef_css_webpath."/cimy_uef_tinymce.css", false, false);
+			wp_register_style("cimy_uef_tinymce", $cuef_css_webpath."/cimy_uef_tinymce.css", array(), false);
 			wp_enqueue_style('cimy_uef_tinymce');
 		}
 	}

@@ -21,6 +21,7 @@ As for now the plug-in supports:
  * registration-date
  * avatar
  * file
+ * date
 
 future versions can have more.
 
@@ -63,13 +64,13 @@ Rules are:
 	[only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
 
     * field can be empty
-	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file]
+	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file, date]
 
     * check for e-mail address syntax
 	[only for text, textarea, textarea-rich, password]
 
     * field can be modified after the registration
-	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file]
+	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file, date]
 	[for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
 
     * field equal to some value (for example accept terms and conditions)
@@ -627,8 +628,10 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.5.6 - /08/2013
+v2.6.0 - 03/09/2013
+- Added date picker support, extra field's type is called: 'date'
 - Fixed PHP warning 'Only variables should be passed by reference on line 959' (regressed on v2.5.2) (thanks to badarong for the patch)
+- Fixed clicking on options' labels were not triggering the option change
 
 v2.5.5 - 29/07/2013
 - Fixed mb_strlen is not available by default on PHP, better to use it only if available (regressed on v2.5.2) (thanks to jrmihalick)

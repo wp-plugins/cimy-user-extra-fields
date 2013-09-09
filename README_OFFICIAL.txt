@@ -628,6 +628,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.6.1 - 10/09/2013
+- Fixed date picker popup was appearing in the registration for all the extra fields below the date itself (thanks to Claudio)
+
 v2.6.0 - 03/09/2013
 - Added date picker support, extra field's type is called: 'date'
 - Fixed PHP warning 'Only variables should be passed by reference on line 959' (regressed on v2.5.2) (thanks to badarong for the patch)

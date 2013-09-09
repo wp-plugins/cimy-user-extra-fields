@@ -877,15 +877,16 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			echo "\t";
 			echo '<p id="'.$prefix.'p_field_'.$field_id.'">';
 			echo "\n\t";
+			$obj_class = "";
 	
 			switch($type) {
 				case "date":
-					$input_class .= " datepicker";
+					$obj_class = " datepicker";
 				case "picture-url":
 				case "password":
 				case "text":
 					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).'</label>';
-					$obj_class = ' class="'.$input_class.'"';
+					$obj_class = ' class="'.$input_class.$obj_class.'"';
 					$obj_name = ' name="'.$input_name.'"';
 
 					if ($type == "picture-url")

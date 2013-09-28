@@ -637,6 +637,7 @@ v2.6.1 - 30/09/2013
 - Updated Securimage Captcha to v3.5.1
 - Fixed date picker popup was appearing in the registration for all the extra fields below the date itself (thanks to Claudio)
 - Added Persian translation (Negin Nickparsa)
+- Added Czech translation (Tomas Hegr)
 
 v2.6.0 - 03/09/2013
 - Added date picker support, extra field's type is called: 'date'

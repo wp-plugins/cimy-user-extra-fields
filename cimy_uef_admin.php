@@ -592,7 +592,7 @@ function cimy_admin_define_extra_fields() {
 			<li><?php _e("With <strong>registration-date</strong>: <em>equal TO</em> means date and time format", $cimy_uef_domain); ?></li>
 			<li><?php _e("With <strong>avatar</strong>: you can preload a default image putting url in <em>Value</em>; 'min,exact,max size' are in KB; <em>equal TO</em> is automatically set to 512 pixels", $cimy_uef_domain); ?></li>
 			<li><?php _e("With <strong>file</strong>: you can preload a default file putting url in <em>Value</em>; 'min,exact,max size' are in KB; under <em>equal TO</em> can be specified allowed extensions separated by comma, example: zip,pdf,doc", $cimy_uef_domain); ?></li>
-			<li><?php _e("With <strong>date</strong>: you can preload a default date in <em>Value</em>; 'min date' can be relative: -1d, -1m, -1y or a specific date; 'max date' can be: +1d, +1m, +1y or a specific date; <em>equal TO</em> can be a specific date", $cimy_uef_domain); ?></li>
+			<li><?php _e("With <strong>date</strong>: you can preload a default date in <em>Value</em>; 'min date' can be relative: -1d, -1m, -1y or a specific date; 'max date' can be relative: +1d, +1m, +1y or a specific date; <em>equal TO</em> can be a specific date", $cimy_uef_domain); ?></li>
 		</ul>
 		<br />
 

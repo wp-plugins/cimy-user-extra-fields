@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cimy User Extra Fields\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-28 06:07-0800\n"
-"PO-Revision-Date: 2013-09-28 06:07-0800\n"
+"POT-Creation-Date: 2013-09-28 06:19-0800\n"
+"PO-Revision-Date: 2013-09-28 06:19-0800\n"
 "Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
 "Language-Team:  <pik256@gmail.com>\n"
 "Language: pl_PL\n"
@@ -367,7 +367,7 @@ msgstr "Pro <strong>soubor</strong>: můžete nahrát výchozí soubor zadáním
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:595
 #, fuzzy
-msgid "With <strong>date</strong>: you can preload a default date in <em>Value</em>; 'min date' can be relative: -1d, -1m, -1y or a specific date; 'max date' can be: +1d, +1m, +1y or a specific date; <em>equal TO</em> can be a specific date"
+msgid "With <strong>date</strong>: you can preload a default date in <em>Value</em>; 'min date' can be relative: -1d, -1m, -1y or a specific date; 'max date' can be relative: +1d, +1m, +1y or a specific date; <em>equal TO</em> can be a specific date"
 msgstr "Pro <strong>avatara</strong>: můžete nahrát výchozí obrázek zadáním url do <em>Hodnota</em>; 'Min,Přesný,Max rozměr' jsou v KB; <em>Rovný</em> je automaticky nastaven na 512 pixelů."
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:602

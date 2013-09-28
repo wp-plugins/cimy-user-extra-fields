@@ -88,9 +88,9 @@ function cimy_uef_register_css() {
 	global $cuef_css_webpath;
 	if (!cimy_uef_is_register_page())
 		return;
-	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
+	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", array(), false);
 	wp_enqueue_style("cimy_uef_register");
-	wp_register_style("cimy_uef_register_nousername", $cuef_css_webpath."/cimy_uef_register_nousername.css", false, false);
+	wp_register_style("cimy_uef_register_nousername", $cuef_css_webpath."/cimy_uef_register_nousername.css", array(), false);
 
 	if (!is_multisite()) {
 		$options = cimy_get_options();
@@ -99,7 +99,7 @@ function cimy_uef_register_css() {
 		}
 		if (in_array("password", $options["wp_hidden_fields"])) {
 			// this CSS will hide the label "A password will be e-mailed to you."
-			wp_register_style("cimy_uef_register_nopasswordlabel", $cuef_css_webpath."/cimy_uef_register_nopasswordlabel.css", false, false);
+			wp_register_style("cimy_uef_register_nopasswordlabel", $cuef_css_webpath."/cimy_uef_register_nopasswordlabel.css", array(), false);
 			wp_enqueue_style("cimy_uef_register_nopasswordlabel");
 		}
 	}
@@ -118,9 +118,8 @@ function cimy_uef_init_javascripts($rule_name) {
 
 	$options = cimy_get_options();
 	if ($options['image_fields'][$rule_name] > 0) {
-		wp_enqueue_script('imgareaselect', "", array("jquery"));
 		wp_enqueue_style('imgareaselect');
-		wp_register_script('cimy_uef_img_selection', $cuef_js_webpath."/img_selection.js", array(), false);
+		wp_register_script('cimy_uef_img_selection', $cuef_js_webpath."/img_selection.js", array("imgareaselect", "jquery"), false);
 		wp_enqueue_script('cimy_uef_img_selection');
 	}
 

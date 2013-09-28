@@ -1100,3 +1100,21 @@ function cimy_uef_dateformat_PHP_to_jQueryUI($php_format)
     }
     return $jqueryui_format;
 }
+
+/**
+ * @return JavaScript string containing date picker options based on given id and rules
+ * @since 2.6.1
+ */
+function cimy_uef_date_picker_options($unique_id, $rules) {
+	$js_date = "";
+	if (isset($rules["min_length"])) {
+		$js_date .= "jQuery('#".esc_js($unique_id)."').datepicker(\"option\", \"minDate\", \"".esc_js($rules["min_length"])."\");";
+	}
+	if (isset($rules["max_length"])) {
+		$js_date .= "jQuery('#".esc_js($unique_id)."').datepicker(\"option\", \"maxDate\", \"".esc_js($rules["max_length"])."\");";
+	}
+	if (!empty($js_date)) {
+		$js_date = "\n\t\t<script type='text/javascript'>jQuery(document).ready(function() {".$js_date."});</script>";
+	}
+	return $js_date;
+}

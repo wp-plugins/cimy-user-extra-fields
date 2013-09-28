@@ -628,8 +628,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.6.1 - 10/09/2013
+v2.6.1 - 30/09/2013
 - Added dropdowns for the year and the month selectors to the date picker
+- Added Min and Max date support for the new 'date' extra field (no backend support yet)
 - Fixed date picker popup was appearing in the registration for all the extra fields below the date itself (thanks to Claudio)
 - Added Persian translation (Negin Nickparsa)
 

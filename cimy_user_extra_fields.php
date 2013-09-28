@@ -3,7 +3,7 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.6.0.1
+Version: 2.6.1
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
@@ -162,7 +162,7 @@ add_action('admin_init', 'cimy_uef_admin_init');
 add_action('init', 'cimy_uef_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.6.0";
+$cimy_uef_version = "2.6.1";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -442,10 +442,13 @@ $apply_equalto_rule = array("text", "textarea", "textarea-rich", "password", "ch
 $rule_canbeempty = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "dropdown", "dropdown-multi", "avatar", "file", "date");
 
 // common for min, exact and max length
-$rule_maxlen = array("text", "password", "textarea", "textarea-rich", "picture", "picture-url", "avatar", "file");
+$rule_maxlen = array("text", "password", "textarea", "textarea-rich", "picture", "picture-url", "avatar", "file", "date");
 
 // common for min, exact and max length
 $rule_maxlen_needed = array("text", "password", "picture", "picture-url", "avatar", "file");
+
+// common for min, exact and max length
+$rule_maxlen_is_str = array("date");
 
 // types that can have 'check for email syntax' rule
 $rule_email = array("text", "textarea", "textarea-rich", "password");

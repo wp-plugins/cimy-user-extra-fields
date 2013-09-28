@@ -1,7 +1,7 @@
 <?php
 
 function cimy_admin_define_extra_fields() {
-	global $wpdb, $wpdb_fields_table, $wpdb_wp_fields_table, $rule_canbeempty, $rule_email, $rule_maxlen, $rule_maxlen_needed, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $rule_equalto, $rule_equalto_case_sensitive, $cimy_uef_domain, $cuef_plugin_path, $cimy_uef_file_types, $rule_equalto_regex;
+	global $wpdb, $wpdb_fields_table, $wpdb_wp_fields_table, $rule_canbeempty, $rule_email, $rule_maxlen, $rule_maxlen_needed, $available_types, $max_length_name, $max_length_label, $max_length_desc, $max_length_value, $max_size_file, $rule_equalto, $rule_equalto_case_sensitive, $cimy_uef_domain, $cuef_plugin_path, $cimy_uef_file_types, $rule_equalto_regex, $rule_maxlen_is_str;
 	
 	if (!cimy_check_admin('manage_options'))
 		return;
@@ -248,18 +248,45 @@ function cimy_admin_define_extra_fields() {
 			
 			$exact_or_max_length_capton = __("Exact or Max size", $cimy_uef_domain)." (KB)";
 		}
-		else
+		else if ($type == "date") {
+			$min_length_caption = __("Min date", $cimy_uef_domain)." (days|months|years)";
+			$exact_length_caption = __("Exact date", $cimy_uef_domain)." (days|months|years)";
+			$max_length_caption = __("Max date", $cimy_uef_domain)." (days|months|years)";
+			
+			$minLen = "-0d0m20y";
+			$maxLen = "+0d0m20y";
+		}
+		else {
 			$maxLen = $max_length_value;
+		}
 		/* end overwrite previous values */
-		
-		if (!empty($minlen))
-			$store_rule['min_length'] = intval($_POST['minlength'][$field_order]);
-		
-		if (!empty($exactlen))
-			$store_rule['exact_length'] = intval($_POST['exactlength'][$field_order]);
 
-		if (!empty($maxlen))
-			$store_rule['max_length'] = intval($_POST['maxlength'][$field_order]);
+		if (!empty($minlen)) {
+			if (in_array($type, $rule_maxlen_is_str)) {
+				$store_rule['min_length'] = strval($_POST['minlength'][$field_order]);
+			}
+			else {
+				$store_rule['min_length'] = intval($_POST['minlength'][$field_order]);
+			}
+		}
+
+		if (!empty($exactlen)) {
+			if (in_array($type, $rule_maxlen_is_str)) {
+				$store_rule['exact_length'] = strval($_POST['exactlength'][$field_order]);
+			}
+			else {
+				$store_rule['exact_length'] = intval($_POST['exactlength'][$field_order]);
+			}
+		}
+
+		if (!empty($maxlen)) {
+			if (in_array($type, $rule_maxlen_is_str)) {
+				$store_rule['max_length'] = strval($_POST['maxlength'][$field_order]);
+			}
+			else {
+				$store_rule['max_length'] = intval($_POST['maxlength'][$field_order]);
+			}
+		}
 
 		$store_rule['can_be_empty'] = empty($_POST['empty'][$field_order]) ? false : true;
 		$store_rule['edit'] = $_POST['edit'][$field_order];
@@ -303,20 +330,22 @@ function cimy_admin_define_extra_fields() {
 			if ((!empty($maxlen) || !empty($minlen)) && !empty($exactlen))
 				$errors['exactlength1'] = __("If you select", $cimy_uef_domain)." ".$exact_length_caption." ".__("you cannot select Min or Max", $cimy_uef_domain);
 
-			// MIN LEN
-			if (!empty($minlen))
-				if (($store_rule['min_length'] < $minLen) || ($store_rule['min_length'] > $maxLen))
-					$errors['minlength3'] = $min_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
+			if (!in_array($type, $rule_maxlen_is_str)) {
+				// MIN LEN
+				if (!empty($minlen))
+					if (($store_rule['min_length'] < $minLen) || ($store_rule['min_length'] > $maxLen))
+						$errors['minlength3'] = $min_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
 			
-			// EXACT LEN
-			if (!empty($exactlen))
-				if (($store_rule['exact_length'] < $minLen) || ($store_rule['exact_length'] > $maxLen))
-					$errors['exactlength3'] = $exact_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
+				// EXACT LEN
+				if (!empty($exactlen))
+					if (($store_rule['exact_length'] < $minLen) || ($store_rule['exact_length'] > $maxLen))
+						$errors['exactlength3'] = $exact_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
 
-			// MAX LEN
-			if (!empty($maxlen))
-				if (($store_rule['max_length'] < $minLen) || ($store_rule['max_length'] > $maxLen))
-					$errors['maxlength3'] = $max_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
+				// MAX LEN
+				if (!empty($maxlen))
+					if (($store_rule['max_length'] < $minLen) || ($store_rule['max_length'] > $maxLen))
+						$errors['maxlength3'] = $max_length_caption." ".__("should be in the range of", $cimy_uef_domain)." ".$minLen. "-".$maxLen;
+			}
 		}
 		else {
 			$minlen = "";
@@ -546,6 +575,9 @@ function cimy_admin_define_extra_fields() {
 	$selected_input["value"] = esc_html($selected_input["value"]);
 	$selected_input["label"] = esc_html($selected_input["label"]);
 	$selected_input["desc"] = esc_html($selected_input["desc"]);
+	$selected_input["min_length"] = esc_html($selected_input["min_length"]);
+	$selected_input["exact_length"] = esc_attr($selected_input["exact_length"]);
+	$selected_input["max_length"] = esc_attr($selected_input["max_length"]);
 	$selected_input["equal_to"] = esc_attr($selected_input["equal_to"]);
 	?>
 	
@@ -560,6 +592,7 @@ function cimy_admin_define_extra_fields() {
 			<li><?php _e("With <strong>registration-date</strong>: <em>equal TO</em> means date and time format", $cimy_uef_domain); ?></li>
 			<li><?php _e("With <strong>avatar</strong>: you can preload a default image putting url in <em>Value</em>; 'min,exact,max size' are in KB; <em>equal TO</em> is automatically set to 512 pixels", $cimy_uef_domain); ?></li>
 			<li><?php _e("With <strong>file</strong>: you can preload a default file putting url in <em>Value</em>; 'min,exact,max size' are in KB; under <em>equal TO</em> can be specified allowed extensions separated by comma, example: zip,pdf,doc", $cimy_uef_domain); ?></li>
+			<li><?php _e("With <strong>date</strong>: you can preload a default date in <em>Value</em>; 'min date' can be relative: -1d, -1m, -1y or a specific date; 'max date' can be: +1d, +1m, +1y or a specific date; <em>equal TO</em> can be a specific date", $cimy_uef_domain); ?></li>
 		</ul>
 		<br />
 
@@ -602,15 +635,15 @@ function cimy_admin_define_extra_fields() {
 		<td style="vertical-align: middle;">
 			<!-- MIN LENGTH -->
 			<input type="checkbox" name="minlen[0]" id="minlen[0]" value="1"<?php echo $selected_input["minlen"]; ?> />
-			<label for="minlen[0]"><?php echo $min_length_caption; ?> [1-<?php echo $maxLen; ?>]:</label> &nbsp;&nbsp;&nbsp;<input type="text" name="minlength[0]" value="<?php echo $selected_input["min_length"]; ?>" maxlength="5" size="5" /><br />
+			<label for="minlen[0]"><?php echo $min_length_caption; ?> [<?php echo $minLen."-".$maxLen; ?>]:</label> &nbsp;&nbsp;&nbsp;<input type="text" name="minlength[0]" value="<?php echo $selected_input["min_length"]; ?>" maxlength="30" size="20" /><br />
 			
 			<!-- EXACT LENGTH -->
 			<input type="checkbox" name="exactlen[0]" id="exactlen[0]" value="1"<?php echo $selected_input["exactlen"]; ?> />
-			<label for="exactlen[0]"><?php echo $exact_length_caption; ?> [1-<?php echo $maxLen; ?>]:</label> <input type="text" name="exactlength[0]" value="<?php echo $selected_input["exact_length"]; ?>" maxlength="5" size="5" /><br />
+			<label for="exactlen[0]"><?php echo $exact_length_caption; ?> [<?php echo $minLen."-".$maxLen; ?>]:</label> <input type="text" name="exactlength[0]" value="<?php echo $selected_input["exact_length"]; ?>" maxlength="30" size="20" /><br />
 
 			<!-- MAX LENGTH -->
 			<input type="checkbox" name="maxlen[0]" id="maxlen[0]" value="1"<?php echo $selected_input["maxlen"]; ?> />
-			<label for="maxlen[0]"><?php echo $max_length_caption; ?> [1-<?php echo $maxLen; ?>]:</label> &nbsp;&nbsp;<input type="text" name="maxlength[0]" value="<?php echo $selected_input["max_length"]; ?>" maxlength="5" size="5" /><br />
+			<label for="maxlen[0]"><?php echo $max_length_caption; ?> [<?php echo $minLen."-".$maxLen; ?>]:</label> &nbsp;&nbsp;<input type="text" name="maxlength[0]" value="<?php echo $selected_input["max_length"]; ?>" maxlength="30" size="20" /><br />
 			
 			<input type="checkbox" name="empty[0]" id="empty[0]" value="1"<?php echo $selected_input["empty"]; ?> />
 			<label for="empty[0]"><?php _e("Can be empty", $cimy_uef_domain); ?></label><br />
@@ -855,6 +888,9 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			else
 				$equalTo = "";
 
+			$minLength = esc_attr($minLength);
+			$exactLength = esc_attr($exactLength);
+			$maxLength = esc_attr($maxLength);
 			$equalTo = esc_attr($equalTo);
 			$advanced_options = $rules['advanced_options'];
 
@@ -864,14 +900,25 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 				$max_length_caption = __("Max size", $cimy_uef_domain)." (KB)";
 				
 				// overwrite max length but in another variable otherwise (bug)
-				$max_length_value_caption = $max_size_file;
+				$min_length_value_caption = "1-".strval($max_size_file);
+				$max_length_value_caption = $min_length_value_caption;
+			}
+			else if ($type == "date") {
+				$min_length_caption = __("Min date", $cimy_uef_domain)." (days|months|years)";
+				$exact_length_caption = __("Exact date", $cimy_uef_domain)." (days|months|years)";
+				$max_length_caption = __("Max date", $cimy_uef_domain)." (days|months|years)";
+				
+				// overwrite max length but in another variable otherwise (bug)
+				$min_length_value_caption = "-1d0m0y -0d0m20y";
+				$max_length_value_caption = "+1d0m0y +0d0m20y";
 			}
 			else {
 				$min_length_caption = __("Min length", $cimy_uef_domain);
 				$exact_length_caption = __("Exact length", $cimy_uef_domain);
 				$max_length_caption = __("Max length", $cimy_uef_domain);
 
-				$max_length_value_caption = $max_length_value;
+				$min_length_value_caption = "1-".strval($max_length_value);
+				$max_length_value_caption = $min_length_value_caption;
 			}
 
 			$style = ('class="alternate"' == $style) ? '' : 'class="alternate"';
@@ -925,15 +972,15 @@ function cimy_admin_show_extra_fields($allFields, $submit_msgs, $wp_fields, $err
 			<td style="vertical-align: middle;">
 				<!-- MIN LENGTH -->
 				<input type="checkbox" name="minlen[<?php echo $order ?>]" id="minlen[<?php echo $order ?>]" value="1"<?php checked(true, isset($rules['min_length']), true); disabled(false, in_array($type, $rule_maxlen), true); ?> />
-				<label for="minlen[<?php echo $order ?>]"><?php echo $min_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]:</label> &nbsp;&nbsp;&nbsp;<input type="text" name="minlength[<?php echo $order ?>]" value="<?php echo $minLength ?>" maxlength="5" size="5"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
+				<label for="minlen[<?php echo $order ?>]"><?php echo $min_length_caption; ?> [<?php echo $min_length_value_caption; ?>]:</label> &nbsp;&nbsp;&nbsp;<input type="text" name="minlength[<?php echo $order ?>]" value="<?php echo $minLength ?>" maxlength="30" size="20"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
 
 				<!-- EXACT LENGTH -->
 				<input type="checkbox" name="exactlen[<?php echo $order ?>]" id="exactlen[<?php echo $order ?>]" value="1"<?php checked(true, isset($rules['exact_length']), true); disabled(false, in_array($type, $rule_maxlen), true); ?> />
-				<label for="exactlen[<?php echo $order ?>]"><?php echo $exact_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]:</label> <input type="text" name="exactlength[<?php echo $order ?>]" value="<?php echo $exactLength ?>" maxlength="5" size="5"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
+				<label for="exactlen[<?php echo $order ?>]"><?php echo $exact_length_caption; ?> [<?php echo $max_length_value_caption; ?>]:</label> <input type="text" name="exactlength[<?php echo $order ?>]" value="<?php echo $exactLength ?>" maxlength="30" size="20"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
 				
 				<!-- MAX LENGTH -->
 				<input type="checkbox" name="maxlen[<?php echo $order ?>]" id="maxlen[<?php echo $order ?>]" value="1"<?php checked(true, isset($rules['max_length']), true); disabled(false, in_array($type, $rule_maxlen), true); ?> />
-				<label for="maxlen[<?php echo $order ?>]"><?php echo $max_length_caption; ?> [1-<?php echo $max_length_value_caption; ?>]:</label> &nbsp;&nbsp;<input type="text" name="maxlength[<?php echo $order ?>]" value="<?php echo $maxLength ?>" maxlength="5" size="5"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
+				<label for="maxlen[<?php echo $order ?>]"><?php echo $max_length_caption; ?> [<?php echo $max_length_value_caption; ?>]:</label> &nbsp;&nbsp;<input type="text" name="maxlength[<?php echo $order ?>]" value="<?php echo $maxLength ?>" maxlength="30" size="20"<?php disabled(false, in_array($type, $rule_maxlen), true); ?> /><br />
 				
 				<input type="checkbox" name="empty[<?php echo $order ?>]" id="empty[<?php echo $order ?>]" value="1"<?php checked(true, $rules['can_be_empty'], true); disabled(false, in_array($type, $rule_canbeempty), true); ?> />
 				<label for="empty[<?php echo $order ?>]"><?php _e("Can be empty", $cimy_uef_domain); ?></label><br />

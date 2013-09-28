@@ -502,6 +502,10 @@ function cimy_extract_ExtraFields() {
 			else
 				echo $obj_value;
 
+			if ($type == "date") {
+				echo cimy_uef_date_picker_options($unique_id, $rules);
+			}
+
 			if ((!empty($description)) && ($type != "picture") && ($type != "picture-url")) {
 				if (($type == "textarea") || ($type == "textarea-rich"))
 					echo "<br />";
@@ -526,7 +530,7 @@ function cimy_extract_ExtraFields() {
 }
 
 function cimy_update_ExtraFields() {
-	global $wpdb, $wpdb_data_table, $user_ID, $max_length_value, $fields_name_prefix, $cimy_uef_file_types, $user_level, $cimy_uef_domain;
+	global $wpdb, $wpdb_data_table, $user_ID, $max_length_value, $fields_name_prefix, $cimy_uef_file_types, $user_level, $cimy_uef_domain, $rule_maxlen_is_str;
 
 	// if updating meta-data from registration post then exit
 	if (isset($_POST['cimy_post']))
@@ -596,10 +600,12 @@ function cimy_update_ExtraFields() {
 			if ($type == "picture-url")
 				$field_value = str_replace('../', '', $field_value);
 
-			if (isset($rules['max_length']))
-				$field_value = substr($field_value, 0, $rules['max_length']);
-			else
-				$field_value = substr($field_value, 0, $max_length_value);
+			if (!in_array($type, $rule_maxlen_is_str)) {
+				if (isset($rules['max_length']))
+					$field_value = substr($field_value, 0, $rules['max_length']);
+				else
+					$field_value = substr($field_value, 0, $max_length_value);
+			}
 
 			$field_value = esc_sql($field_value);
 

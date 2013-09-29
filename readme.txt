@@ -5,7 +5,7 @@ Website link: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra
 Tags: cimy, admin, registration, profile, extra fields, avatar, gravatar, recaptcha, captcha
 Requires at least: 3.1
 Tested up to: 3.6
-Stable tag: 2.5.5
+Stable tag: 2.6.1
 
 Add some useful fields to registration and user's info
 
@@ -28,6 +28,7 @@ WordPress is becoming more than ever a tool to open blog/websites and CMSs in an
  * registration-date
  * avatar
  * file
+ * date
 
 future versions can have more.
 
@@ -66,43 +67,46 @@ The plug-in adds two new menu voices in the admin for the administrator and two 
 
 = Rules are: =
 
-    * min/exact/max length admitted
-	[only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
+    * min/max length admitted
+        [only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file, date]
+
+    * exact length admitted
+        [only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
 
     * field can be empty
-	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file]
+        [only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file]
 
     * check for e-mail address syntax
-	[only for text, textarea, textarea-rich, password]
+        [only for text, textarea, textarea-rich, password]
 
     * field can be modified after the registration
-	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file]
-	[for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
+        [only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file]
+        [for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
 
     * field equal to some value (for example accept terms and conditions)
-	[all except avatar by default set to 512]
+        [all except avatar by default set to 512]
 
       * equal to can be or not case sensitive
-	[only for text, textarea, textarea-rich, password, dropdown, dropdown-multi]
+        [only for text, textarea, textarea-rich, password, dropdown, dropdown-multi]
 
 = Visualization rules: =
     * field can be hidden during registration
-	[all except the email address]
+        [all except the email address]
 
     * field can be hidden in user's profile
-	[all except the WordPress fields]
+        [all except the WordPress fields]
 
     * field can be hidden in Users Extended page
-	[all]
+        [all]
 
     * field can be hidden in Search Engine (only if you installed the template)
-	[all]
+        [all]
 
     * field can be hidden in Blog's public page (only if you installed the template)
-	[all]
+        [all]
 
     * all visualization rules can be overridden if an user has certain rights (default=no override)
-	[all]
+        [all]
 
 == Frequently Asked Questions ==
 

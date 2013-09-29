@@ -79,7 +79,7 @@ function cimy_register_overwrite_password($password) {
 }
 
 function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) {
-	global $wpdb_data_table, $wpdb, $max_length_value, $fields_name_prefix, $wp_fields_name_prefix, $wp_hidden_fields, $cimy_uef_file_types, $user_level, $cimy_uef_file_images_types;
+	global $wpdb_data_table, $wpdb, $max_length_value, $fields_name_prefix, $wp_fields_name_prefix, $wp_hidden_fields, $cimy_uef_file_types, $user_level, $cimy_uef_file_images_types, $rule_maxlen_is_str;
 
 	if (isset($meta["blog_id"]) || isset($meta["from_blog_id"]))
 		cimy_switch_to_blog($meta);
@@ -205,10 +205,10 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 				else
 					$data = cimy_manage_upload($input_name, $user_login_sanitized, $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 			}
-			else {
+			else if (!in_array($type, $rule_maxlen_is_str)) {
 				if ($type == "picture-url")
 					$data = str_replace('../', '', $data);
-					
+
 				if (isset($rules['max_length']))
 					$data = substr($data, 0, $rules['max_length']);
 				else
@@ -223,6 +223,7 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 				$sql = "INSERT INTO ".$wpdb_data_table." SET USER_ID = ".$user_id.", FIELD_ID=".$field_id.", ";
 	
 				switch ($type) {
+					case 'date':
 					case 'avatar':
 					case 'picture-url':
 					case 'picture':
@@ -315,7 +316,7 @@ function cimy_profile_check_wrapper($errors, $update, $user) {
 }
 
 function cimy_registration_check($user_login, $user_email, $errors) {
-	global $wpdb, $rule_canbeempty, $rule_email, $rule_maxlen, $fields_name_prefix, $wp_fields_name_prefix, $rule_equalto_case_sensitive, $apply_equalto_rule, $cimy_uef_domain, $cimy_uef_file_types, $rule_equalto_regex, $user_level, $cimy_uef_file_images_types, $wp_hidden_fields;
+	global $wpdb, $rule_canbeempty, $rule_email, $rule_maxlen, $fields_name_prefix, $wp_fields_name_prefix, $rule_equalto_case_sensitive, $apply_equalto_rule, $cimy_uef_domain, $cimy_uef_file_types, $rule_equalto_regex, $user_level, $cimy_uef_file_images_types, $wp_hidden_fields, $rule_maxlen_is_str;
 
 	if (cimy_is_at_least_wordpress35())
 		cimy_switch_to_blog();
@@ -562,7 +563,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size less than', $cimy_uef_domain).' '.$minlen.' KB.');
 						}
 					}
-					else {
+					else if (!in_array($type, $rule_maxlen_is_str)) {
 						if (cimy_strlen($value) < $minlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length less than', $cimy_uef_domain).' '.$minlen.'.');
 						}
@@ -578,7 +579,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size different than', $cimy_uef_domain).' '.$exactlen.' KB.');
 						}
 					}
-					else {
+					else if (!in_array($type, $rule_maxlen_is_str)) {
 						if (cimy_strlen($value) != $exactlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length different than', $cimy_uef_domain).' '.$exactlen.'.');
 						}
@@ -594,7 +595,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have size more than', $cimy_uef_domain).' '.$maxlen.' KB.');
 						}
 					}
-					else {
+					else if (!in_array($type, $rule_maxlen_is_str)) {
 						if (cimy_strlen($value) > $maxlen) {
 							$errors->add($unique_id, '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.$label.' '.__('couldn&#8217;t have length more than', $cimy_uef_domain).' '.$maxlen.'.');
 						}
@@ -876,13 +877,16 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			echo "\t";
 			echo '<p id="'.$prefix.'p_field_'.$field_id.'">';
 			echo "\n\t";
+			$obj_class = "";
 	
 			switch($type) {
+				case "date":
+					$obj_class = " datepicker";
 				case "picture-url":
 				case "password":
 				case "text":
 					$obj_label = '<label for="'.$unique_id.'">'.cimy_uef_sanitize_content($label).'</label>';
-					$obj_class = ' class="'.$input_class.'"';
+					$obj_class = ' class="'.$input_class.$obj_class.'"';
 					$obj_name = ' name="'.$input_name.'"';
 
 					if ($type == "picture-url")
@@ -1168,6 +1172,10 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			// write to the html the form object built
 			else
 				echo $form_object;
+
+			if ($type == "date") {
+				echo cimy_uef_date_picker_options($unique_id, $rules);
+			}
 
 			if (($show_type == 0) && ($i == 1) && ($options['password_meter'])) {
 				if ($input_name == ($prefix."PASSWORD"))

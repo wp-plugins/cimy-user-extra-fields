@@ -636,6 +636,7 @@ v2.6.1 - 30/09/2013
 - Added Min and Max date support for the new 'date' extra field (no backend support yet)
 - Updated Securimage Captcha to v3.5.1
 - Fixed date picker popup was appearing in the registration for all the extra fields below the date itself (thanks to Claudio)
+- Fixed PHP error when user creation fails with email confirmation enabled (thanks to Francesco)
 - Added Persian translation (Negin Nickparsa)
 - Added Czech translation (Tomas Hegr)
 

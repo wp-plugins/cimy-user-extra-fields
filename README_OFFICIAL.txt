@@ -631,6 +631,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.6.2 - /02/2014
+- Updated Securimage Captcha to v3.5.2
+
 v2.6.1 - 30/09/2013
 - Added dropdowns for the year and the month selectors to the date picker
 - Added Min and Max date support for the new 'date' extra field (no backend support yet)

@@ -672,7 +672,7 @@ function cimy_uef_validate_username($valid, $username) {
 // show_type == 1 - search form, all fields are text, password fields are skipped
 // show_type == 2 - confirmation form, all fields are plain text, images can be cropped
 function cimy_registration_form($errors=null, $show_type=0) {
-	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level, $cimy_uef_domain, $cimy_uef_file_images_types;
+	global $wpdb, $start_cimy_uef_comment, $end_cimy_uef_comment, $rule_maxlen_needed, $fields_name_prefix, $wp_fields_name_prefix, $cuef_plugin_dir, $cimy_uef_file_types, $cimy_uef_textarea_types, $user_level, $cimy_uef_domain, $cimy_uef_file_images_types, $cimy_uef_text_types;
 
 	if (cimy_is_at_least_wordpress35())
 		cimy_switch_to_blog();
@@ -889,7 +889,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 					$obj_class = ' class="'.$input_class.$obj_class.'"';
 					$obj_name = ' name="'.$input_name.'"';
 
-					if ($type == "picture-url")
+					if (in_array($type, $cimy_uef_text_types))
 						$obj_type = ' type="text"';
 					else
 						$obj_type = ' type="'.$type.'"';
@@ -1224,7 +1224,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 			<br /><br /><br />
 			<a align="right"<?php if (!empty($obj_tabindex)) echo " tabindex=\"".$tabindex."\""; $tabindex++; ?> style="border-style: none" href="#" onclick="document.getElementById('captcha').src = '<?php echo $cuef_securimage_webpath; ?>/securimage_show_captcha.php?' + Math.random(); return false"><img src="<?php echo $cuef_securimage_webpath; ?>/images/refresh.png" alt="<?php _e("Change image", $cimy_uef_domain); ?>" border="0" onclick="this.blur()" align="bottom" height="19" width="19" /></a>
 		</div>
-		<div style="width: <?php echo $width; ?>px; float: left; height: 50px; vertical-align: bottom; padding: 5px;">
+		<div style="width: <?php echo $width; ?>px; float: left; height: 70px; vertical-align: bottom; padding: 5px;">
 			<?php _e("Insert the code:", $cimy_uef_domain); ?>&nbsp;<input type="text" name="securimage_response_field" size="12" maxlength="16"<?php if (!empty($obj_tabindex)) echo " tabindex=\"".$tabindex."\""; $tabindex++; ?> />
 		</div>
 <?php

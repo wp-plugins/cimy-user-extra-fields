@@ -88,9 +88,9 @@ function cimy_uef_register_css() {
 	global $cuef_css_webpath;
 	if (!cimy_uef_is_register_page())
 		return;
-	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", false, false);
+	wp_register_style("cimy_uef_register", $cuef_css_webpath."/cimy_uef_register.css", array(), false);
 	wp_enqueue_style("cimy_uef_register");
-	wp_register_style("cimy_uef_register_nousername", $cuef_css_webpath."/cimy_uef_register_nousername.css", false, false);
+	wp_register_style("cimy_uef_register_nousername", $cuef_css_webpath."/cimy_uef_register_nousername.css", array(), false);
 
 	if (!is_multisite()) {
 		$options = cimy_get_options();
@@ -99,7 +99,7 @@ function cimy_uef_register_css() {
 		}
 		if (in_array("password", $options["wp_hidden_fields"])) {
 			// this CSS will hide the label "A password will be e-mailed to you."
-			wp_register_style("cimy_uef_register_nopasswordlabel", $cuef_css_webpath."/cimy_uef_register_nopasswordlabel.css", false, false);
+			wp_register_style("cimy_uef_register_nopasswordlabel", $cuef_css_webpath."/cimy_uef_register_nopasswordlabel.css", array(), false);
 			wp_enqueue_style("cimy_uef_register_nopasswordlabel");
 		}
 	}
@@ -118,9 +118,8 @@ function cimy_uef_init_javascripts($rule_name) {
 
 	$options = cimy_get_options();
 	if ($options['image_fields'][$rule_name] > 0) {
-		wp_enqueue_script('imgareaselect', "", array("jquery"));
 		wp_enqueue_style('imgareaselect');
-		wp_register_script('cimy_uef_img_selection', $cuef_js_webpath."/img_selection.js", array(), false);
+		wp_register_script('cimy_uef_img_selection', $cuef_js_webpath."/img_selection.js", array("imgareaselect", "jquery"), false);
 		wp_enqueue_script('cimy_uef_img_selection');
 	}
 
@@ -128,9 +127,23 @@ function cimy_uef_init_javascripts($rule_name) {
 		cimy_uef_init_upload_js();
 	}
 
+	if (($options['date_fields'][$rule_name]) > 0) {
+		wp_register_script("cimy_uef_datepicker", $cuef_js_webpath."/datepicker.js", array("jquery-ui-core", "jquery-ui-datepicker"), false, true);
+		wp_enqueue_script('cimy_uef_datepicker');
+		// Themes list: http://blog.jqueryui.com/
+		wp_register_style('jquery-ui-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css', array());
+		wp_enqueue_style('jquery-ui-style');
+		// Fix for the following bug: http://forum.jquery.com/topic/jquery-ui-datepicker-initial-display-none-fixup
+		wp_register_style('cimy_uef_datepicker', $cuef_css_webpath.'/cimy_uef_datepicker.css', array());
+		wp_enqueue_style('cimy_uef_datepicker');
+
+		// Pass the array to the enqueued JS
+		wp_localize_script('cimy_uef_datepicker', 'datepickerL10n', cimy_uef_date_picker_l10n());
+	}
+
 	if ($rule_name == "show_in_profile") {
 		if ($options['tinymce_fields'][$rule_name] > 0 && function_exists("wp_editor")) {
-			wp_register_style("cimy_uef_tinymce", $cuef_css_webpath."/cimy_uef_tinymce.css", false, false);
+			wp_register_style("cimy_uef_tinymce", $cuef_css_webpath."/cimy_uef_tinymce.css", array(), false);
 			wp_enqueue_style('cimy_uef_tinymce');
 		}
 	}

@@ -632,6 +632,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 CHANGELOG:
 v2.6.3 - /06/2014
+- Fixed the upload of files when 'Form confirmation' is enabled
 - Updated Swedish (Hugo Krantz)
 
 v2.6.2 - 18/04/2014

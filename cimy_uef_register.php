@@ -1036,14 +1036,14 @@ function cimy_registration_form($errors=null, $show_type=0) {
 						case 'picture':
 						case 'avatar':
 						case 'file':
-							$value = cimy_manage_upload($input_name, $temp_user_login, $rules, false, false, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
+							$value = cimy_manage_upload($input_name, $temp_user_login, $rules, false, false, $old_type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 							$file_on_server = cimy_uef_get_dir_or_filename($temp_user_login, $value, false);
 							$file_thumb = cimy_uef_get_dir_or_filename($temp_user_login, $value, true);
 							if ((!empty($advanced_options["no-thumb"])) && (is_file($file_thumb)))
 								rename($file_thumb, $file_on_server);
 
 							// yea little trick
-							$obj_value2 = "&nbsp;";
+							empty($value) ? $obj_value2 = "&nbsp;" : $obj_value2 = esc_html(basename($value));
 							break;
 					}
 					if ($old_type != "password") {
@@ -1075,7 +1075,7 @@ function cimy_registration_form($errors=null, $show_type=0) {
 	
 			$obj_id = ' id="'.$unique_id.'"';
 
-			// tabindex not used in MU, WordPress 3.5+ and Theme My Login  dropping...
+			// tabindex not used in MU, WordPress 3.5+ and Theme My Login dropping...
 			if (is_multisite() || cimy_is_at_least_wordpress35() || cimy_uef_is_theme_my_login_register_page())
 				$obj_tabindex = "";
 			else {

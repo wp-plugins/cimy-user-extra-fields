@@ -631,6 +631,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.6.3 - /06/2014
+- Updated Swedish (Hugo Krantz)
+
 v2.6.2 - 18/04/2014
 - Fixed date picker on registration page was conflicting with Google Chrome's one (thanks to Francesca)
 - Updated Securimage Captcha to v3.5.2

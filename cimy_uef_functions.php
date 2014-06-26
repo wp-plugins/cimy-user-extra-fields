@@ -1113,6 +1113,31 @@ function cimy_uef_date_picker_options($unique_id, $rules) {
 	if (isset($rules["max_length"])) {
 		$js_date .= "jQuery('#".esc_js($unique_id)."').datepicker(\"option\", \"maxDate\", \"".esc_js($rules["max_length"])."\");";
 	}
+	$found_year_min = preg_match("/[\+|\-]{1}(\d)+y(\.)*/i", $rules["min_length"], $year_min);
+	$found_year_max = preg_match("/[\+|\-]{1}(\d)+y(\.)*/i", $rules["max_length"], $year_max);
+	if (!$found_year_min) {
+		$found_year_min = strtotime($rules["min_length"]);
+		if ($found_year_min !== false && $found_year_min != -1) {
+			$year_rel = getdate($found_year_min);
+			$year_now = getdate();
+			$year_min[0] = sprintf("%+d", $year_rel["year"] - $year_now["year"]);
+		}
+	}
+
+	if (!$found_year_max) {
+		$found_year_max = strtotime($rules["max_length"]);
+		if ($found_year_max !== false && $found_year_max != -1) {
+			$year_rel = getdate($found_year_max);
+			$year_now = getdate();
+			$year_max[0] = sprintf("%+d", $year_rel["year"] - $year_now["year"]);
+		}
+	}
+
+	if (!empty($year_min) || !empty($year_max)) {
+		$year_range = sprintf("c%s:c%s", empty($year_min) ? "-10y" : $year_min[0], empty($year_max) ? "+10y" : $year_max[0]);
+		$js_date .= "jQuery('#".esc_js($unique_id)."').datepicker(\"option\", \"yearRange\", \"".esc_js($year_range)."\");";
+	}
+
 	if (!empty($js_date)) {
 		$js_date = "\n\t\t<script type='text/javascript'>jQuery(document).ready(function() {".$js_date."});</script>";
 	}

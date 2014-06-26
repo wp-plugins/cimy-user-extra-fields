@@ -174,7 +174,7 @@ msgstr "Ta bort f&auml;lt"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:20
 msgid "Delete selected fields"
-msgstr "Ta bort valda f&auml;lter"
+msgstr "Ta bort valda f&auml;lt"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:21
 msgid "Change order"
@@ -336,7 +336,7 @@ msgstr "F&ouml;r att l&auml;gga till ett nytt f&auml;lt, m&aring;ste du v&auml;l
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:588
 msgid "With <strong>radio</strong> and <strong>checkbox</strong>: <em>Value</em> and <em>equal TO</em> can only be 'Yes' or 'No' that means 'selected' or 'not selected'"
-msgstr "Med <strong>radio</strong> och <strong>checkbox</strong>: <em>V&auml;red</em> och <em>LIKA MED</em> kan bara vara 'Yes' eller 'No', som betyder vald  eller ej vald."
+msgstr "Med <strong>radio</strong> och <strong>checkbox</strong>: <em>V&auml;rde</em> och <em>LIKA MED</em> kan bara vara 'Yes' eller 'No', som betyder vald  eller ej vald."
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:589
 msgid "With <strong>drop-down</strong>: you have to add all options into label for example: label/item1,item2,item3"
@@ -360,7 +360,7 @@ msgstr "Med <strong>avatar</strong>:  kan du anv&auml;nda en standardbild med (U
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:594
 msgid "With <strong>file</strong>: you can preload a default file putting url in <em>Value</em>; 'min,exact,max size' are in KB; under <em>equal TO</em> can be specified allowed extensions separated by comma, example: zip,pdf,doc"
-msgstr "Med <strong>fil</strong>: Du kan anv&auml;nda en standardfil genom att sätta URL under <em>V&auml;red</em>; 'min, exakt, max storlek' angiven i KB; <em>LIKA MED</em> kan användas för att bestämma tillåtna filtillägg separerade med komma, t.ex: zip,pdf,doc"
+msgstr "Med <strong>fil</strong>: Du kan anv&auml;nda en standardfil genom att sätta URL under <em>V&auml;rde</em>; 'min, exakt, max storlek' angiven i KB; <em>LIKA MED</em> kan användas för att bestämma tillåtna filtillägg separerade med komma, t.ex: zip,pdf,doc"
 
 #: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:595
 msgid "With <strong>date</strong>: you can preload a default date in <em>Value</em>; 'min date' can be relative: -1d, -1m, -1y or a specific date; 'max date' can be relative: +1d, +1m, +1y or a specific date; <em>equal TO</em> can be a specific date"

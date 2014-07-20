@@ -458,8 +458,8 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 					$file_size = 0;
 					$file_type1 = "";
 					$value = "";
-					$old_file = $from_profile ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
-					$del_old_file = $from_profile ? $_POST[$input_name."_del"] : '';
+					$old_file = $from_profile && !empty($_POST[$input_name."_".$field_id."_prev_value"]) ? $_POST[$input_name."_".$field_id."_prev_value"] : '';
+					$del_old_file = $from_profile && !empty($_POST[$input_name."_del"]) ? $_POST[$input_name."_del"] : '';
 				}
 			}
 

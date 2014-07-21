@@ -1038,6 +1038,10 @@ function cimy_registration_form($errors=null, $show_type=0) {
 						case 'picture':
 						case 'avatar':
 						case 'file':
+							if ($old_type == "avatar") {
+								// since avatars are drawn max to 512px then we can save bandwith resizing, do it!
+								$rules['equal_to'] = 512;
+							}
 							$value = cimy_manage_upload($input_name, $temp_user_login, $rules, false, false, $old_type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 							$file_on_server = cimy_uef_get_dir_or_filename($temp_user_login, $value, false);
 							$file_thumb = cimy_uef_get_dir_or_filename($temp_user_login, $value, true);

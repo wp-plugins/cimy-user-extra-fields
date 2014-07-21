@@ -637,6 +637,8 @@ v2.6.3 - /07/2014
 - Fixed PHP notice when updating an user in its profile and a file/picture/avatar is not uploaded (thanks to Adrian)
 - Fixed PHP error on multiple files upload when 'Form confirmation' is enabled
 - Fixed PHP warning when using dropdown-multi and 'Form confirmation' is enabled
+- Fixed avatar thumbnail was not automatically created when 'Form configuration' is enabled
+- Fixed use of deprecated function 'image_resize'
 - Added Dutch (Wietse Stienstra)
 - Updated Swedish (Hugo Krantz)
 

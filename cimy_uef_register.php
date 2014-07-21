@@ -195,7 +195,9 @@ function cimy_register_user_extra_fields($user_id, $password="", $meta=array()) 
 					$temp_user_login = $_POST["temp_user_login"];
 					$temp_dir = cimy_uef_get_dir_or_filename($temp_user_login);
 					$final_dir = cimy_uef_get_dir_or_filename($user_login_sanitized);
-					rename($temp_dir, $final_dir);
+					if (is_dir($temp_dir)) {
+						rename($temp_dir, $final_dir);
+					}
 					$data = str_replace("/".$temp_user_login."/", "/".$user_login_sanitized."/", $data);
 					$file_on_server = cimy_uef_get_dir_or_filename($user_login_sanitized, $data, false);
 

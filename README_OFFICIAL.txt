@@ -636,6 +636,7 @@ v2.6.3 - /07/2014
 - Fixed date range was not going beyond -/+10 years (thanks to LH)
 - Fixed PHP notice when updating an user in its profile and a file/picture/avatar is not uploaded (thanks to Adrian)
 - Fixed PHP error on multiple files upload when 'Form confirmation' is enabled
+- Fixed PHP warning when using dropdown-multi and 'Form confirmation' is enabled
 - Added Dutch (Wietse Stienstra)
 - Updated Swedish (Hugo Krantz)
 

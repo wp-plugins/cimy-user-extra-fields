@@ -425,7 +425,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 			}
 
 			if (isset($_POST[$input_name])) {
-				if ($type == "dropdown-multi")
+				if ($type == "dropdown-multi" && is_array($_POST[$input_name]))
 					$value = stripslashes(implode(",", $_POST[$input_name]));
 				else
 					$value = stripslashes($_POST[$input_name]);

@@ -631,7 +631,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.6.3 - /07/2014
+v2.6.3 - /09/2014
 - Fixed the upload of files when 'Form confirmation' is enabled (thanks to Max)
 - Fixed date range was not going beyond -/+10 years (thanks to LH)
 - Fixed PHP notice when updating an user in its profile and a file/picture/avatar is not uploaded (thanks to Adrian)
@@ -641,6 +641,7 @@ v2.6.3 - /07/2014
 - Fixed use of deprecated function 'image_resize'
 - Added Dutch (Wietse Stienstra)
 - Updated Swedish (Hugo Krantz)
+- Updated Securimage Captcha to v3.5.4
 
 v2.6.2 - 18/04/2014
 - Fixed date picker on registration page was conflicting with Google Chrome's one (thanks to Francesca)

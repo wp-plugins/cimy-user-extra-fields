@@ -643,7 +643,8 @@ function cimy_registration_captcha_check($user_login, $user_email, $errors) {
 			$errors->add("recaptcha_code", '<strong>'.__("ERROR", $cimy_uef_domain).'</strong>: '.__('Typed code is not correct.', $cimy_uef_domain));
 	}
 
-	if ($options['captcha'] == "securimage") {
+	// check that actually there is a code there
+	if ($options['captcha'] == "securimage" && !empty($_SESSION["securimage_code_disp"]["default"])) {
 		global $cuef_plugin_dir;
 		require_once($cuef_plugin_dir.'/securimage/securimage.php');
 		$securimage = new Securimage();
@@ -1283,8 +1284,8 @@ function cimy_confirmation_form() {
 			// fake registration to check if no errors then we'll proceed to confirmation phase
 			$fake_errors = register_new_user($user_login, $user_email);
 			// ok we can remove registration checks
-// 			remove_action('register_post', 'cimy_registration_check');
-// 			remove_action('register_post', 'cimy_registration_captcha_check');
+// 			remove_action('register_post', 'cimy_registration_check', 10);
+// 			remove_action('register_post', 'cimy_registration_captcha_check', 11);
 		}
 		// Might be Theme My Login, they have its own register_new_user but they don't have login_header seems so, so let's return for now!
 		else

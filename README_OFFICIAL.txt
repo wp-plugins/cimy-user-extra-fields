@@ -631,13 +631,14 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.6.3 - /09/2014
+v2.6.3 - 22/09/2014
 - Fixed the upload of files when 'Form confirmation' is enabled (thanks to Max)
 - Fixed date range was not going beyond -/+10 years (thanks to LH)
 - Fixed PHP notice when updating an user in its profile and a file/picture/avatar is not uploaded (thanks to Adrian)
 - Fixed PHP error on multiple files upload when 'Form confirmation' is enabled
 - Fixed PHP warning when using dropdown-multi and 'Form confirmation' is enabled
 - Fixed avatar thumbnail was not automatically created when 'Form configuration' is enabled
+- Fixed Securimage captcha returned 'Typed code is not correct' error for correct codes when 'Form confirmation' is enabled
 - Fixed use of deprecated function 'image_resize'
 - Added Dutch (Wietse Stienstra)
 - Updated Swedish (Hugo Krantz)

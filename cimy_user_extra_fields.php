@@ -557,7 +557,7 @@ else {
 
 	// add checks for extra fields in the registration form
 	add_action('register_post', 'cimy_registration_check', 10, 3);
-	add_action('register_post', 'cimy_registration_captcha_check', 11, 3);
+	add_action('register_post', 'cimy_registration_captcha_check', 9, 3); // this need to be prioritized over all checks
 	
 	// add extra fields to registration form
 	add_action('register_form', 'cimy_registration_form', 1);

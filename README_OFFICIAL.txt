@@ -637,8 +637,9 @@ v2.6.3 - 22/09/2014
 - Fixed PHP notice when updating an user in its profile and a file/picture/avatar is not uploaded (thanks to Adrian)
 - Fixed PHP error on multiple files upload when 'Form confirmation' is enabled
 - Fixed PHP warning when using dropdown-multi and 'Form confirmation' is enabled
-- Fixed avatar thumbnail was not automatically created when 'Form configuration' is enabled
+- Fixed avatar thumbnail was not automatically created when 'Form confirmation' is enabled
 - Fixed Securimage captcha returned 'Typed code is not correct' error for correct codes when 'Form confirmation' is enabled
+- Fixed 'true' error appears in some cases when 'Form confirmation' and captcha are enabled together
 - Fixed use of deprecated function 'image_resize'
 - Added Dutch (Wietse Stienstra)
 - Updated Swedish (Hugo Krantz)

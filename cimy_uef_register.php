@@ -609,6 +609,7 @@ function cimy_registration_check($user_login, $user_email, $errors) {
 	}
 
 	if ($options['confirm_form']) {
+		// this is executed to test registration for errors, to avoid a real registration we put a fake error
 		if ((empty($errors->errors)) && (isset($_POST["register_confirmation"])) && ($_POST["register_confirmation"] == 1)) {
 			$errors->add('register_confirmation', 'true');
 		}
@@ -1285,7 +1286,7 @@ function cimy_confirmation_form() {
 			$fake_errors = register_new_user($user_login, $user_email);
 			// ok we can remove registration checks
 // 			remove_action('register_post', 'cimy_registration_check', 10);
-// 			remove_action('register_post', 'cimy_registration_captcha_check', 11);
+// 			remove_action('register_post', 'cimy_registration_captcha_check', 9);
 		}
 		// Might be Theme My Login, they have its own register_new_user but they don't have login_header seems so, so let's return for now!
 		else

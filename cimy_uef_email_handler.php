@@ -276,10 +276,13 @@ function cimy_uef_activate_signup($key) {
 	else
 		$user_already_exists = true;
 
-	if ( ! $user_id )
+	if (is_wp_error($user_id))
+		return $user_id;
+
+	if (!$user_id)
 		return new WP_Error('create_user', __('Could not create user'), $signup);
-	else
-		cimy_register_user_extra_fields($user_id, $password, $meta);
+
+	cimy_register_user_extra_fields($user_id, $password, $meta);
 
 	if ((empty($meta["cimy_uef_wp_PASSWORD"])) && ($user_already_exists))
 		update_user_option( $user_id, 'default_password_nag', true, true ); //Set up the Password change nag.

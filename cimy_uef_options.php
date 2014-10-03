@@ -441,8 +441,8 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="mail_include_fields" value="1"<?php checked(true, $options['mail_include_fields'], true); ?> />
-				<?php _e("Show all fields in the welcome email", $cimy_uef_domain); ?>
+				<input type="checkbox" name="mail_include_fields" id="mail_include_fields" value="1"<?php checked(true, $options['mail_include_fields'], true); ?> />
+				<label for="mail_include_fields"><?php _e("Show all fields in the welcome email", $cimy_uef_domain); ?></label>
 			</th>
 			<td>
 			<?php
@@ -453,8 +453,8 @@ function cimy_show_options($results, $embedded) {
 <?php if (!is_multisite()) { ?>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="confirm_email" value="1"<?php checked(true, $options['confirm_email'], true); ?> />
-				<?php _e("Enable email confirmation", $cimy_uef_domain); ?>
+				<input type="checkbox" name="confirm_email" id="confirm_email" value="1"<?php checked(true, $options['confirm_email'], true); ?> />
+				<label for="confirm_email"><?php _e("Enable email confirmation", $cimy_uef_domain); ?></label>
 			</th>
 			<td>
 			<?php
@@ -466,8 +466,8 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="confirm_form" value="1"<?php checked(true, $options['confirm_form'], true); ?> />
-				<?php _e("Enable form confirmation", $cimy_uef_domain); ?>
+				<input type="checkbox" name="confirm_form" id="confirm_form" value="1"<?php checked(true, $options['confirm_form'], true); ?> />
+				<label for="confirm_form"><?php _e("Enable form confirmation", $cimy_uef_domain); ?></label>
 			</th>
 			<td>
 			<?php
@@ -486,8 +486,8 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="checkbox" name="redirect_to" value="source"<?php checked("source", $options['redirect_to'], true); ?> />
-				<?php _e("Redirect to the source", $cimy_uef_domain); ?>
+				<input type="checkbox" name="redirect_to" id="redirect_to" value="source"<?php checked("source", $options['redirect_to'], true); ?> />
+				<label for="redirect_to"><?php _e("Redirect to the source", $cimy_uef_domain); ?></label>
 			</th>
 			<td>
 			<?php
@@ -498,16 +498,16 @@ function cimy_show_options($results, $embedded) {
 <?php } ?>
 		<tr>
 			<th scope="row">
-				<input type="radio" name="captcha" value="none"<?php checked("none", $options['captcha'], true); ?> />
-				<?php _e('No captcha', $cimy_uef_domain); ?></a>
+				<label><input type="radio" name="captcha" value="none"<?php checked("none", $options['captcha'], true); ?> />
+				<?php _e('No captcha', $cimy_uef_domain); ?></label>
 			</th>
 			<td>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="radio" name="captcha" value="recaptcha"<?php checked("recaptcha", $options['captcha'], true); ?> />
-				<?php _e('Enable <a href="http://www.google.com/recaptcha" target="_blank">reCAPTCHA</a>', $cimy_uef_domain); ?></a>
+				<label><input type="radio" name="captcha" value="recaptcha"<?php checked("recaptcha", $options['captcha'], true); ?> />
+				<?php _e('Enable <a href="http://www.google.com/recaptcha" target="_blank">reCAPTCHA</a>', $cimy_uef_domain); ?></a></label>
 			</th>
 			<td>
 			<?php
@@ -522,8 +522,8 @@ function cimy_show_options($results, $embedded) {
 		</tr>
 		<tr>
 			<th scope="row">
-				<input type="radio" name="captcha" value="securimage"<?php checked("securimage", $options['captcha'], true); ?> />
-				<?php _e('Enable <a href="http://www.phpcaptcha.org/" target="_blank">Securimage Captcha</a>', $cimy_uef_domain); ?></a>
+				<label><input type="radio" name="captcha" value="securimage"<?php checked("securimage", $options['captcha'], true); ?> />
+				<?php _e('Enable <a href="http://www.phpcaptcha.org/" target="_blank">Securimage Captcha</a>', $cimy_uef_domain); ?></a></label>
 			</th>
 			<td>
 				<?php _e('This captcha is probably weaker, but is easier for users', $cimy_uef_domain); ?>
@@ -554,7 +554,10 @@ function cimy_show_options($results, $embedded) {
 	<h3><?php _e("Database", $cimy_uef_domain); ?></h3>
 	<table class="form-table">
 		<tr>
-			<th scope="row" width="40%"><input type="checkbox" name="db_options_check" value="1" /> Cimy User Extra Fields <?php _e("Options"); ?></th>
+			<th scope="row" width="40%">
+				<input type="checkbox" name="db_options_check" id="db_options_check" value="1" />
+				<label for="db_options_check">Cimy User Extra Fields <?php _e("Options"); ?></label>
+			</th>
 			<td width="60%">
 				<?php
 				if ($db_options) {
@@ -571,7 +574,10 @@ function cimy_show_options($results, $embedded) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="db_wp_fields_check" value="1" /> <?php _e("WordPress Fields table", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="db_wp_fields_check" id="db_wp_fields_check" value="1" />
+				<label for="db_wp_fields_check"><?php _e("WordPress Fields table", $cimy_uef_domain); ?></label>
+			</th>
 			<td>
 				<?php
 				if ($db_wp_fields >= 0) {
@@ -588,7 +594,10 @@ function cimy_show_options($results, $embedded) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="db_extra_fields_check" value="1" /> <?php _e("Extra Fields table", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="db_extra_fields_check" id="db_extra_fields_check" value="1" />
+				<label for="db_extra_fields_check"><?php _e("Extra Fields table", $cimy_uef_domain); ?></label>
+			</th>
 			<td>
 				<?php
 				if ($db_extra_fields >= 0) {
@@ -605,7 +614,10 @@ function cimy_show_options($results, $embedded) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="db_data_check" value="1" /> <?php _e("Users Data table", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="db_data_check" id="db_data_check" value="1" />
+				<label for="db_data_check"><?php _e("Users Data table", $cimy_uef_domain); ?></label>
+			</th>
 			<td>
 				<?php
 				if ($db_users_data) {
@@ -623,7 +635,10 @@ function cimy_show_options($results, $embedded) {
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="force_activation" value="1" /> <?php _e("Force tables creation", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="force_activation" id="force_activation" value="1" />
+				<label for="force_activation"><?php _e("Force tables creation", $cimy_uef_domain); ?></label>
+			</th>
 			<td>
 			<?php
 				_e("equivalent to de-activate and activate the plug-in; no other operation will be performed", $cimy_uef_domain);
@@ -649,30 +664,44 @@ function cimy_show_options($results, $embedded) {
 	<table class="form-table">
 		<tr>
 			<th scope="row" width="40%">
-				<input type="checkbox" name="hide_username" value="1"<?php checked(true, in_array('username', $options['aue_hidden_fields']), true); ?> /> <?php _e("Hide username field", $cimy_uef_domain); ?>
+				<input type="checkbox" name="hide_username" id="hide_username" value="1"<?php checked(true, in_array('username', $options['aue_hidden_fields']), true); ?> />
+				<label for="hide_username"><?php _e("Hide username field", $cimy_uef_domain); ?></label>
 			</th>
 			<td width="60%"></td>
 		</tr>
 		<tr>
 			<th>
-				<input type="checkbox" name="hide_name" value="1"<?php checked(true, in_array('name', $options['aue_hidden_fields']), true); ?> /> <?php _e("Hide name field", $cimy_uef_domain); ?>
+				<input type="checkbox" name="hide_name" id="hide_name" value="1"<?php checked(true, in_array('name', $options['aue_hidden_fields']), true); ?> />
+				<label for="hide_name"><?php _e("Hide name field", $cimy_uef_domain); ?></label>
 			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="hide_email" value="1"<?php checked(true, in_array('email', $options['aue_hidden_fields']), true); ?> /> <?php _e("Hide email field", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="hide_email" id="hide_email" value="1"<?php checked(true, in_array('email', $options['aue_hidden_fields']), true); ?> />
+				<label for="hide_email"><?php _e("Hide email field", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="hide_role" value="1"<?php checked(true, in_array('role', $options['aue_hidden_fields']), true); ?> /> <?php _e("Hide role field", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="hide_role" id="hide_role" value="1"<?php checked(true, in_array('role', $options['aue_hidden_fields']), true); ?> />
+				<label for="hide_role"><?php _e("Hide role field", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="hide_website" value="1"<?php checked(true, in_array('website', $options['aue_hidden_fields']), true); ?> /> <?php _e("Hide website field", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="hide_website" id="hide_website" value="1"<?php checked(true, in_array('website', $options['aue_hidden_fields']), true); ?> />
+				<label for="hide_website"><?php _e("Hide website field", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th><input type="checkbox" name="hide_posts" value="1"<?php checked(true, in_array('posts', $options['aue_hidden_fields']), true); ?> /> <?php _e("Hide n. posts field", $cimy_uef_domain); ?></th>
+			<th>
+				<input type="checkbox" name="hide_posts" id="hide_posts" value="1"<?php checked(true, in_array('posts', $options['aue_hidden_fields']), true); ?> />
+				<label for="hide_posts"><?php _e("Hide n. posts field", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 	</table>
@@ -681,52 +710,88 @@ function cimy_show_options($results, $embedded) {
 	<table class="form-table">
 <?php if (!is_multisite()) { ?>
 		<tr>
-			<th scope="row" width="40%"><input type="checkbox" name="show_wp_username" value="1"<?php checked(true, in_array('username', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show username", $cimy_uef_domain); ?></th>
+			<th scope="row" width="40%">
+				<input type="checkbox" name="show_wp_username" id="show_wp_username" value="1"<?php checked(true, in_array('username', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_username"><?php _e("Show username", $cimy_uef_domain); ?></label>
+			</th>
 			<td width="60%"><?php _e("when unchecked the email address will be used as username", $cimy_uef_domain); ?></td>
 		</tr>
 <?php } ?>
 		<tr>
-			<th scope="row" width="40%"><input type="checkbox" name="show_wp_password" value="1"<?php checked(true, in_array('password', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show password", $cimy_uef_domain); ?></th>
+			<th scope="row" width="40%">
+				<input type="checkbox" name="show_wp_password" id="show_wp_password" value="1"<?php checked(true, in_array('password', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_password"><?php _e("Show password", $cimy_uef_domain); ?></label>
+			</th>
 			<td width="60%"></td>
 		</tr>
 		<tr>
-			<th>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password2" value="1"<?php checked(true, in_array('password2', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show confirmation password", $cimy_uef_domain); ?></th>
+			<th>
+				&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password2" id="show_wp_password2" value="1"<?php checked(true, in_array('password2', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_password2"><?php _e("Show confirmation password", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password_meter" value="1"<?php checked(true, $options['password_meter'], true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show password strength meter", $cimy_uef_domain); ?></th>
+			<th>
+				&nbsp;&nbsp;&nbsp;<input type="checkbox" name="show_wp_password_meter" id="show_wp_password_meter" value="1"<?php checked(true, $options['password_meter'], true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_password_meter"><?php _e("Show password strength meter", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th><input type="checkbox" name="show_wp_firstname" value="1"<?php checked(true, in_array('firstname', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show first name", $cimy_uef_domain); ?></th>
+			<th>
+				<input type="checkbox" name="show_wp_firstname" id="show_wp_firstname" value="1"<?php checked(true, in_array('firstname', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_firstname"><?php _e("Show first name", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th><input type="checkbox" name="show_wp_lastname" value="1"<?php checked(true, in_array('lastname', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show last name", $cimy_uef_domain); ?></th>
+			<th>
+				<input type="checkbox" name="show_wp_lastname" id="show_wp_lastname" value="1"<?php checked(true, in_array('lastname', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_lastname"><?php _e("Show last name", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th><input type="checkbox" name="show_wp_nickname" value="1"<?php checked(true, in_array('nickname', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show nickname", $cimy_uef_domain); ?></th>
+			<th>
+				<input type="checkbox" name="show_wp_nickname" id="show_wp_nickname" value="1"<?php checked(true, in_array('nickname', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_nickname"><?php _e("Show nickname", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="show_wp_website" value="1"<?php checked(true, in_array('website', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show website", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="show_wp_website" id="show_wp_website" value="1"<?php checked(true, in_array('website', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_website"><?php _e("Show website", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="show_wp_aim" value="1"<?php checked(true, in_array('aim', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show AIM", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="show_wp_aim" id="show_wp_aim" value="1"<?php checked(true, in_array('aim', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_aim"><?php _e("Show AIM", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="show_wp_yahoo" value="1"<?php checked(true, in_array('yahoo', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show Yahoo IM", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="show_wp_yahoo" id="show_wp_yahoo" value="1"<?php checked(true, in_array('yahoo', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_yahoo"><?php _e("Show Yahoo IM", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="show_wp_jgt" value="1"<?php checked(true, in_array('jgt', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show Jabber / Google Talk", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="show_wp_jgt" id="show_wp_jgt" value="1"<?php checked(true, in_array('jgt', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_jgt"><?php _e("Show Jabber / Google Talk", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 		<tr>
-			<th scope="row"><input type="checkbox" name="show_wp_bio-info" value="1"<?php checked(true, in_array('bio-info', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> /> <?php _e("Show Biographical Info", $cimy_uef_domain); ?></th>
+			<th scope="row">
+				<input type="checkbox" name="show_wp_bio-info" id="show_wp_bio-info" value="1"<?php checked(true, in_array('bio-info', $options['wp_hidden_fields']), true); disabled(true, $db_wp_fields < 0, true); ?> />
+				<label for="show_wp_bio-info"><?php _e("Show Biographical Info", $cimy_uef_domain); ?></label>
+			</th>
 			<td></td>
 		</tr>
 	</table>

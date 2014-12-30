@@ -631,6 +631,9 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
+v2.6.4 - 31/12/2014
+- Added Hungarian (Balázs Németh)
+
 v2.6.3 - 03/10/2014
 - Fixed the upload of files when 'Form confirmation' is enabled (thanks to Max)
 - Fixed date range was not going beyond -/+10 years (thanks to LH)

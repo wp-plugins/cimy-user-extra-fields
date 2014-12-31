@@ -21,6 +21,7 @@ As for now the plug-in supports:
  * registration-date
  * avatar
  * file
+ * date
 
 future versions can have more.
 
@@ -59,43 +60,46 @@ Wordpress MultiSite unique registration:
 
 Rules are:
 
-    * min/exact/max length admitted
-	[only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
+    * min/max length admitted
+        [only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file, date]
+
+    * exact length admitted
+        [only for text, textarea, textarea-rich, password, picture, picture-url, avatar, file]
 
     * field can be empty
-	[only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file]
+        [only for text, textarea, textarea-rich, password, picture, picture-url, dropdown, dropdown-multi, avatar, file, date]
 
     * check for e-mail address syntax
-	[only for text, textarea, textarea-rich, password]
+        [only for text, textarea, textarea-rich, password]
 
     * field can be modified after the registration
-	[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file]
-	[for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
+        [only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file, date]
+        [for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
 
     * field equal to some value (for example accept terms and conditions)
-	[all except avatar by default set to 512]
+        [all except avatar by default set to 512]
 
       * equal to can be or not case sensitive
-	[only for text, textarea, textarea-rich, password, dropdown, dropdown-multi]
+        [only for text, textarea, textarea-rich, password, dropdown, dropdown-multi]
 
 Visualization rules
     * field can be hidden during registration
-	[all except the email address]
+        [all except the email address]
 
     * field can be hidden in user's profile
-	[all except the WordPress fields]
+        [all except the WordPress fields]
 
     * field can be hidden in Users Extended page
-	[all]
+        [all]
 
     * field can be hidden in Search Engine (only if you installed the template)
-	[all]
+        [all]
 
     * field can be hidden in Blog's public page (only if you installed the template)
-	[all]
+        [all]
 
     * all visualization rules can be overridden if an user has certain rights (default=no override)
-	[all]
+        [all]
 
 New fields will be visible everywhere by default, a part some WordPress fields.
 
@@ -627,8 +631,44 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.5.6 - /08/2013
+v2.6.4 - 31/12/2014
+- Fixed a DoS security issue on file, avatar and picture Extra Fields where a blog's user can delete random server's files
+  All versions between v0.9.5 and v2.6.3 (included) are vulnerable (credit to Sébastien Payet)
+- Fixed a DoS security issue on file, avatar and picture Extra Fields where user can 'hide' multiple files on the server
+  All versions between v0.9.5 and v2.6.3 (included) are vulnerable (credit to Sébastien Payet)
+- Added Hungarian (Balázs Németh)
+
+v2.6.3 - 03/10/2014
+- Fixed the upload of files when 'Form confirmation' is enabled (thanks to Max)
+- Fixed date range was not going beyond -/+10 years (thanks to LH)
+- Fixed PHP notice when updating an user in its profile and a file/picture/avatar is not uploaded (thanks to Adrian)
+- Fixed PHP error on multiple files upload when 'Form confirmation' is enabled
+- Fixed PHP warning when using dropdown-multi and 'Form confirmation' is enabled
+- Fixed avatar thumbnail was not automatically created when 'Form confirmation' is enabled
+- Fixed Securimage captcha returned 'Typed code is not correct' error for correct codes when 'Form confirmation' is enabled
+- Fixed 'true' error appears in some cases when 'Form confirmation' and captcha are enabled together
+- Fixed use of deprecated function 'image_resize'
+- Added Dutch (Wietse Stienstra)
+- Updated Swedish (Hugo Krantz)
+- Updated Securimage Captcha to v3.5.4
+
+v2.6.2 - 18/04/2014
+- Fixed date picker on registration page was conflicting with Google Chrome's one (thanks to Francesca)
+- Updated Securimage Captcha to v3.5.2
+
+v2.6.1 - 30/09/2013
+- Added dropdowns for the year and the month selectors to the date picker
+- Added Min and Max date support for the new 'date' extra field (no backend support yet)
+- Updated Securimage Captcha to v3.5.1
+- Fixed date picker popup was appearing in the registration for all the extra fields below the date itself (thanks to Claudio)
+- Fixed PHP error when user creation fails with email confirmation enabled (thanks to Francesco)
+- Added Persian translation (Negin Nickparsa)
+- Added Czech translation (Tomas Hegr)
+
+v2.6.0 - 03/09/2013
+- Added date picker support, extra field's type is called: 'date'
 - Fixed PHP warning 'Only variables should be passed by reference on line 959' (regressed on v2.5.2) (thanks to badarong for the patch)
+- Fixed clicking on options' labels were not triggering the option change
 
 v2.5.5 - 29/07/2013
 - Fixed mb_strlen is not available by default on PHP, better to use it only if available (regressed on v2.5.2) (thanks to jrmihalick)

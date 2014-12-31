@@ -48,8 +48,6 @@ function cimy_extract_ExtraFields() {
 			cimy_insert_ExtraFields_if_not_exist($get_user_id, $field_id);
 		}
 
-// 		$ef_db = $wpdb->get_results("SELECT FIELD_ID, VALUE FROM ".$wpdb_data_table." WHERE USER_ID = ".$get_user_id, ARRAY_A);
-
 		$radio_checked = array();
 		$current_fieldset = -1;
 		$tiny_mce_objects = "";
@@ -96,10 +94,6 @@ function cimy_extract_ExtraFields() {
 					continue;
 			}
 
-// 			foreach ($ef_db as $d_field) {
-// 				if ($d_field['FIELD_ID'] == $field_id)
-// 					$value = $d_field['VALUE'];
-// 			}
 			$value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=%d AND FIELD_ID=%d", $get_user_id, $field_id));
 			$old_value = $value;
 
@@ -420,9 +414,6 @@ function cimy_extract_ExtraFields() {
 				else {
 					// take the "can be modified" rule just set before
 					$dis_delete_img = $obj_disabled;
-
-// 					echo '<input type="hidden" name="'.$input_name.'_oldfile" value="'.basename($value).'" />';
-// 					echo "\n\t\t";
 				}
 
 				if ((($type == "picture") || ($type == "avatar")) && ((empty($rules["equal_to"])) || (!empty($advanced_options["no-thumb"])))) {
@@ -587,7 +578,13 @@ function cimy_update_ExtraFields() {
 				continue;
 		}
 
-		$prev_value = esc_sql(stripslashes($_POST[$input_name."_".$field_id."_prev_value"]));
+		$prev_value = $wpdb->get_var($wpdb->prepare("SELECT VALUE FROM ".$wpdb_data_table." WHERE USER_ID=%d AND FIELD_ID=%d", $get_user_id, $field_id));
+		if (is_null($prev_value))
+			$prev_value = "";
+
+		if (in_array($type, $cimy_uef_file_types)) {
+			$prev_value = basename($prev_value);
+		}
 		if (cimy_uef_is_field_disabled($type, $rules['edit'], $prev_value))
 			continue;
 
@@ -662,12 +659,7 @@ function cimy_update_ExtraFields() {
 				else
 					$delete_file = false;
 
-				if (isset($_POST[$input_name."_".$field_id."_prev_value"]))
-					$old_file = stripslashes($_POST[$input_name."_".$field_id."_prev_value"]);
-				else
-					$old_file = false;
-
-				$field_value = cimy_manage_upload($input_name, $user_login, $rules, $old_file, $delete_file, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
+				$field_value = cimy_manage_upload($input_name, $user_login, $rules, empty($prev_value) ? false : $prev_value, $delete_file, $type, (!empty($advanced_options["filename"])) ? $advanced_options["filename"] : "");
 
 				if ((!empty($field_value)) || ($delete_file)) {
 					if ($i > 0)
@@ -684,11 +676,11 @@ function cimy_update_ExtraFields() {
 					$query.= $value;
 				}
 				else {
-					$prev_value = $value;
-
-					$file_on_server = cimy_uef_get_dir_or_filename($user_login, $old_file, false);
+					$file_on_server = cimy_uef_get_dir_or_filename($user_login, $prev_value, false);
 					if (($type == "picture") || ($type == "avatar"))
 						cimy_uef_crop_image($file_on_server, $field_id_data);
+
+					$prev_value = $value;
 				}
 			}
 
@@ -710,8 +702,7 @@ function cimy_update_ExtraFields() {
 				$query.= " WHEN ".$field_id." THEN ";
 				$query.= $value;
 			}
-
-			if ($type == 'dropdown-multi') {
+			else if ($type == 'dropdown-multi') {
 				// if can be editable then write ''
 				// there is no way to understand if was YES or NO previously
 				// without adding other hidden inputs so write always

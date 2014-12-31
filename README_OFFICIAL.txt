@@ -632,6 +632,10 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 CHANGELOG:
 v2.6.4 - 31/12/2014
+- Fixed a DoS security issue on file, avatar and picture Extra Fields where a blog's user can delete random server's files
+  All versions between v0.9.5 and v2.6.3 (included) are vulnerable (credit to Sébastien Payet)
+- Fixed a DoS security issue on file, avatar and picture Extra Fields where user can 'hide' multiple files on the server
+  All versions between v0.9.5 and v2.6.3 (included) are vulnerable (credit to Sébastien Payet)
 - Added Hungarian (Balázs Németh)
 
 v2.6.3 - 03/10/2014

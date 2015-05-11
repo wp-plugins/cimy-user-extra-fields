@@ -3,13 +3,13 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.5.5
+Version: 2.6.5
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
-Copyright (c) 2006-2013 Marco Cimmino
+Copyright (c) 2006-2015 Marco Cimmino
 
 Code for drop-down support is in part from Raymond Elferink raymond@raycom.com
 Code for regular expression under equalTo rule is in part from Shane Hartman shane@shanehartman.com
@@ -91,7 +91,7 @@ RULES (stored into an associative array and serialized):
 	'edit_only_by_admin' 			=> field can be modified only by administrator
 	'edit_only_by_admin_or_if_empty' 	=> field can be modified only by administrator or if it's still empty
 	'no_edit' 				=> field cannot be modified
-[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file]
+[only for text, textarea, textarea-rich, password, picture, picture-url, checkbox, radio, dropdown, dropdown-multi, avatar, file, date]
 [for radio and checkbox 'edit_only_if_empty' has no effects and 'edit_only_by_admin_or_if_empty' has the same effect as edit_only_by_admin]
 
 - 'equal_to':			[string] => field should be equal to a specify string
@@ -126,6 +126,7 @@ TYPE can be:
 - 'registration-date'
 - 'avatar'
 - 'file'
+- 'date'
 
 */
 
@@ -161,7 +162,7 @@ add_action('admin_init', 'cimy_uef_admin_init');
 add_action('init', 'cimy_uef_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.5.5";
+$cimy_uef_version = "2.6.5";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -169,7 +170,7 @@ $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-
 // see: http://core.trac.wordpress.org/ticket/8912
 $start_cimy_uef_comment = "<!--";
 $start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version;
-$start_cimy_uef_comment .= "\tCopyright (c) 2006-2013 Marco Cimmino";
+$start_cimy_uef_comment .= "\tCopyright (c) 2006-2015 Marco Cimmino";
 $start_cimy_uef_comment .= "\t".$cimy_uef_url;
 $start_cimy_uef_comment .= "\t-->\n";
 
@@ -432,37 +433,37 @@ $wp_hidden_fields = array(
 			);
 
 // all available types
-$available_types = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "avatar", "file");
+$available_types = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "avatar", "file", "date");
 
 // types that should be pass registration check for equal to rule
-$apply_equalto_rule = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi");
+$apply_equalto_rule = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "date");
 
 // types that can have 'can be empty' rule
-$rule_canbeempty = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "dropdown", "dropdown-multi", "avatar", "file");
+$rule_canbeempty = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "dropdown", "dropdown-multi", "avatar", "file", "date");
 
 // common for min, exact and max length
-$rule_maxlen = array("text", "password", "textarea", "textarea-rich", "picture", "picture-url", "avatar", "file");
+$rule_maxlen = array("text", "password", "textarea", "textarea-rich", "picture", "picture-url", "avatar", "file", "date");
 
 // common for min, exact and max length
 $rule_maxlen_needed = array("text", "password", "picture", "picture-url", "avatar", "file");
 
+// common for min, exact and max length
+$rule_maxlen_is_str = array("date");
+
 // types that can have 'check for email syntax' rule
 $rule_email = array("text", "textarea", "textarea-rich", "password");
 
-// types that can have cannot be empty rule
-$rule_cannot_be_empty = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "avatar", "file");
-
 // types that can admit a default value if empty
-$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file", "checkbox", "radio", "dropdown", "dropdown-multi");
+$rule_profile_value = array("text", "textarea", "textarea-rich", "password", "picture", "picture-url", "avatar", "file", "checkbox", "radio", "dropdown", "dropdown-multi", "date");
 
 // types that can have 'equal to' rule
-$rule_equalto = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "file");
+$rule_equalto = array("text", "textarea", "textarea-rich", "password", "checkbox", "radio", "dropdown", "dropdown-multi", "picture", "picture-url", "registration-date", "file", "date");
 
 // types that can have 'case (in)sensitive equal to' rule
 $rule_equalto_case_sensitive = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi");
 
 // types that can have regex equal to rule
-$rule_equalto_regex  = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi");
+$rule_equalto_regex  = array("text", "textarea", "textarea-rich", "password", "dropdown", "dropdown-multi", "date");
 
 // types that are file to be uploaded
 $cimy_uef_file_types = array("picture", "avatar", "file");
@@ -472,6 +473,9 @@ $cimy_uef_file_images_types = array("picture", "avatar");
 
 // types that are textarea and needs rows and cols attributes
 $cimy_uef_textarea_types = array("textarea", "textarea-rich");
+
+// types that are input type="text"
+$cimy_uef_text_types = array("picture-url", "date");
 
 $max_length_name = 20;
 $max_length_label = 50000;
@@ -553,7 +557,7 @@ else {
 
 	// add checks for extra fields in the registration form
 	add_action('register_post', 'cimy_registration_check', 10, 3);
-	add_action('register_post', 'cimy_registration_captcha_check', 11, 3);
+	add_action('register_post', 'cimy_registration_captcha_check', 9, 3); // this need to be prioritized over all checks
 	
 	// add extra fields to registration form
 	add_action('register_form', 'cimy_registration_form', 1);

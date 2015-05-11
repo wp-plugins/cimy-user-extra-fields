@@ -631,7 +631,7 @@ A lot of times I cannot reproduce the problem and I need more details, so if you
 
 
 CHANGELOG:
-v2.6.5 - /04/2015
+v2.6.5 - 11/05/2015
 - Fixed PHP error on Extended Users on WordPress 4.2 (thanks to Ryan Marshall and Josie Stauffer)
 - Fixed PHP notice on cimy_uef_functions.php at line 673 when using avatar Extra Field (thanks to rossini7777)
 

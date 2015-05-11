@@ -3,13 +3,13 @@
 Plugin Name: Cimy User Extra Fields
 Plugin URI: http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/
 Description: Add some useful fields to registration and user's info
-Version: 2.6.4
+Version: 2.6.5
 Author: Marco Cimmino
 Author URI: mailto:cimmino.marco@gmail.com
 License: GPL2
 
 Cimy User Extra Fields - Allows adding mySQL Data fields to store/add more user info
-Copyright (c) 2006-2014 Marco Cimmino
+Copyright (c) 2006-2015 Marco Cimmino
 
 Code for drop-down support is in part from Raymond Elferink raymond@raycom.com
 Code for regular expression under equalTo rule is in part from Shane Hartman shane@shanehartman.com
@@ -162,7 +162,7 @@ add_action('admin_init', 'cimy_uef_admin_init');
 add_action('init', 'cimy_uef_init');
 
 $cimy_uef_name = "Cimy User Extra Fields";
-$cimy_uef_version = "2.6.4";
+$cimy_uef_version = "2.6.5";
 $cimy_uef_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/cimy-user-extra-fields/";
 $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-the-cimy-project-paypal/";
 
@@ -170,7 +170,7 @@ $cimy_project_url = "http://www.marcocimmino.net/cimy-wordpress-plugins/support-
 // see: http://core.trac.wordpress.org/ticket/8912
 $start_cimy_uef_comment = "<!--";
 $start_cimy_uef_comment .= "\tStart code from ".$cimy_uef_name." ".$cimy_uef_version;
-$start_cimy_uef_comment .= "\tCopyright (c) 2006-2014 Marco Cimmino";
+$start_cimy_uef_comment .= "\tCopyright (c) 2006-2015 Marco Cimmino";
 $start_cimy_uef_comment .= "\t".$cimy_uef_url;
 $start_cimy_uef_comment .= "\t-->\n";
 
